@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+
+{% block title %}Minha Conta - E-commerce Template{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Sidebar da Conta -->
+        <div class="col-lg-3 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Minha Conta</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'users:profile' %}" class="list-group-item list-group-item-action active">
+                        <i class="fas fa-user mr-2"></i> Perfil
+                    </a>
+                    <a href="{% url 'orders:order_list' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-shopping-bag mr-2"></i> Meus Pedidos
+                    </a>
+                    <a href="{% url 'users:address_list' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-map-marker-alt mr-2"></i> Endereços
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-heart mr-2"></i> Lista de Desejos
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-credit-card mr-2"></i> Métodos de Pagamento
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-bell mr-2"></i> Notificações
+                    </a>
+                    <a href="{% url 'account_logout' %}" class="list-group-item list-group-item-action text-danger">
+                        <i class="fas fa-sign-out-alt mr-2"></i> Sair
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Conteúdo Principal -->
+        <div class="col-lg-9">
+            <div class="card">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Meu Perfil</h5>
+                    <a href="{% url 'users:profile_edit' %}" class="btn btn-sm btn-primary">
+                        <i class="fas fa-edit mr-1"></i> Editar Perfil
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center mb-4">
+                            <h5>João Silva</h5>
+                            <p class="text-muted">Cliente desde Maio 2023</p>
+                        </div>
+                        <div class="col-md-8">
+                            <h6 class="border-bottom pb-2 mb-3">Informações Pessoais</h6>
+                            <div class="row mb-3">
+                                <div class="col-md-4 text-muted">Nome Completo:</div>
+                                <div class="col-md-8">João Silva</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4 text-muted">E-mail:</div>
+                                <div class="col-md-8">joao.silva@exemplo.com</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4 text-muted">Telefone:</div>
+                                <div class="col-md-8">(11) 98765-4321</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4 text-muted">CPF:</div>
+                                <div class="col-md-8">123.456.789-00</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4 text-muted">Data de Nascimento:</div>
+                                <div class="col-md-8">15/05/1985</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4 text-muted">Gênero:</div>
+                                <div class="col-md-8">Masculino</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Resumo de Atividades -->
+            <div class="row mt-4">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-shopping-bag fa-3x text-primary mb-3"></i>
+                            <h5>Pedidos</h5>
+                            <h2 class="display-4">8</h2>
+                            <p class="text-muted">Pedidos realizados</p>
+                            <a href="{% url 'orders:order_list' %}" class="btn btn-sm btn-outline-primary">Ver Pedidos</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-heart fa-3x text-danger mb-3"></i>
+                            <h5>Lista de Desejos</h5>
+                            <h2 class="display-4">12</h2>
+                            <p class="text-muted">Produtos salvos</p>
+                            <a href="#" class="btn btn-sm btn-outline-primary">Ver Lista</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-map-marker-alt fa-3x text-success mb-3"></i>
+                            <h5>Endereços</h5>
+                            <h2 class="display-4">2</h2>
+                            <p class="text-muted">Endereços salvos</p>
+                            <a href="{% url 'users:address_list' %}" class="btn btn-sm btn-outline-primary">Ver Endereços</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Últimos Pedidos -->
+            <div class="card mt-4">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Últimos Pedidos</h5>
+                    <a href="{% url 'orders:order_list' %}" class="btn btn-sm btn-outline-primary">Ver Todos</a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Pedido</th>
+                                    <th>Data</th>
+                                    <th>Status</th>
+                                    <th>Total</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#12345</td>
+                                    <td>10/05/2023</td>
+                                    <td><span class="badge badge-success">Entregue</span></td>
+                                    <td>R$ 384,60</td>
+                                    <td>
+                                        <a href="{% url 'orders:order_detail' order_number='12345' %}" class="btn btn-sm btn-outline-primary">Detalhes</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#12344</td>
+                                    <td>28/04/2023</td>
+                                    <td><span class="badge badge-info">Enviado</span></td>
+                                    <td>R$ 259,80</td>
+                                    <td>
+                                        <a href="{% url 'orders:order_detail' order_number='12344' %}" class="btn btn-sm btn-outline-primary">Detalhes</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#12343</td>
+                                    <td>15/04/2023</td>
+                                    <td><span class="badge badge-success">Entregue</span></td>
+                                    <td>R$ 129,90</td>
+                                    <td>
+                                        <a href="{% url 'orders:order_detail' order_number='12343' %}" class="btn btn-sm btn-outline-primary">Detalhes</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

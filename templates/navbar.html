@@ -1,0 +1,122 @@
+{% load static %}
+<header> 
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'core:home' %}">
+                {% if active_theme and active_theme.logo %}
+                    <img src="{{ active_theme.logo.url }}" alt="Logo" height="30">
+                {% else %}
+                    E-commerce Template
+                {% endif %}
+            </a>
+            <a class="navbar-localize" href="#">
+                <div class="navbar-localize-container-title">
+                    <span class="navbar-localize-title" data-i18n="navbar.localize-title"></span>
+                    {% if user.is_authenticated %}
+                        <p class="navbar-localize-title-user">{{ user.first_name }}</p>
+                    {% else %}
+                        <p class="navbar-localize-title-user">-</p>
+                    {% endif %}
+                </div>
+                <div class="navbar-localize-container-address">
+                    <i class="navbar-localize-icon fas fa-map-marker-alt"></i>
+                    {% if user.is_authenticated %}
+                        {% with user.addresses.all as addresses %}
+                            {% with False as encontrado %}
+                                {% for address in addresses %}
+                                    {% if not encontrado and address.is_default and address.address_type == "shipping" %}
+                                        <p>{{ address.city }} {{ address.zipcode }}</p>
+                                        {% with True as encontrado %}{% endwith %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endwith %}
+                        {% endwith %}
+                    {% else %}
+                        <p data-i18n="navbar.localize-address-not-found"></p>
+                    {% endif %}
+                </div>
+            </a>
+            <div class="navbar-search">
+                <form>
+                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Pesquisar em BRAVA.com.br">
+                    <button type="submit" class="btn btn-primary-darker"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
+            <div class="collapse navbar-collapse" id="navOptions">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'orders:cart_detail' %}">
+                            <i class="fas fa-shopping-cart"></i> Carrinho
+                            <span class="badge badge-light" id="cart-count">
+                                {% if request.user.is_authenticated %}
+                                    {{ request.user.cart.item_count|default:"0" }}
+                                {% else %}
+                                    0
+                                {% endif %}
+                            </span>
+                        </a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-user"></i> {{ user.get_short_name|default:user.username }}
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                            <a class="dropdown-item" href="{% url 'users:profile' %}">Meu Perfil</a>
+                            <a class="dropdown-item" href="{% url 'orders:order_list' %}">Meus Pedidos</a>
+                            <a class="dropdown-item" href="{% url 'users:address_list' %}">Meus Endereços</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{% url 'account_logout' %}">Sair</a>
+                        </div>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'account_login' %}">Entrar</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'account_signup' %}">Cadastrar</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <subnav>
+        <div id="subnav-controll" class="navbar-subnav">
+            <div class="arrow left" id="subnav-scroll-arrow-left">&#10094;</div>
+            <ul class="subnav-controll-list">
+                <li class="subnav-item">
+                    <a class="subnav-link" href="{% url 'products:product_list' %}" data-i18n="navbar.products"></a>
+                </li>
+                <li class="subnav-item">
+                    <a class="subnav-link" href="{% url 'products:product_list' %}">ERP Comercial</a>
+                </li>
+                <li class="subnav-item">
+                    <a class="subnav-link" href="{% url 'products:product_list' %}">Landing Pages</a>
+                </li>
+                <li class="subnav-item">
+                    <a class="subnav-link" href="{% url 'products:product_list' %}">Sistemas Embarcados</a>
+                </li>
+                <li class="subnav-item">
+                    <a class="subnav-link" href="{% url 'products:product_list' %}">Automatizações Comerciais</a>
+                </li>
+                <li class="subnav-item">
+                    <a class="subnav-link" href="{% url 'products:product_list' %}">Plano de Suporte</a>
+                </li>
+                {% if active_theme and active_theme.show_categories_menu %}
+                    {% for category in categories %}
+                        <li class="subnav-item">
+                            <a class="subnav-link" href="{% url 'products:category_detail' category.slug %}">{{ category.name }}</a>
+                        </li>
+                    {% endfor %}
+                {% endif %}
+                <li class="subnav-item">
+                    <a class="subnav-link" href="{% url 'core:contact' %}" data-i18n="navbar.contacts"></a>
+                </li>
+            </ul>
+            <div class="arrow right" id="subnav-scroll-arrow-right">&#10095;</div>
+        </div>
+    </subnav>
+</header>
+<!-- Custom JavaScript -->
+<script src="{% static 'js/navbar.js' %}"></script>

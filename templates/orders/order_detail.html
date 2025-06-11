@@ -1,0 +1,424 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalhes do Pedido #12345 - E-commerce Template{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Sidebar da Conta -->
+        <div class="col-lg-3 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Minha Conta</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'users:profile' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user mr-2"></i> Perfil
+                    </a>
+                    <a href="{% url 'orders:order_list' %}" class="list-group-item list-group-item-action active">
+                        <i class="fas fa-shopping-bag mr-2"></i> Meus Pedidos
+                    </a>
+                    <a href="{% url 'users:address_list' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-map-marker-alt mr-2"></i> Endereços
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-heart mr-2"></i> Lista de Desejos
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-credit-card mr-2"></i> Métodos de Pagamento
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-bell mr-2"></i> Notificações
+                    </a>
+                    <a href="{% url 'account_logout' %}" class="list-group-item list-group-item-action text-danger">
+                        <i class="fas fa-sign-out-alt mr-2"></i> Sair
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Conteúdo Principal -->
+        <div class="col-lg-9">
+            <div class="card mb-4">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Pedido #12345</h5>
+                    <a href="{% url 'orders:order_list' %}" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-arrow-left mr-1"></i> Voltar aos Pedidos
+                    </a>
+                </div>
+                <div class="card-body">
+                    <!-- Status do Pedido -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="order-progress">
+                                <div class="progress" style="height: 1px;">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <div class="order-step completed">
+                                        <div class="order-step-icon">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+                                        <div class="order-step-text">Pedido Realizado</div>
+                                        <div class="order-step-date">10/05/2023</div>
+                                    </div>
+                                    <div class="order-step completed">
+                                        <div class="order-step-icon">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+                                        <div class="order-step-text">Pagamento Confirmado</div>
+                                        <div class="order-step-date">10/05/2023</div>
+                                    </div>
+                                    <div class="order-step completed">
+                                        <div class="order-step-icon">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+                                        <div class="order-step-text">Em Transporte</div>
+                                        <div class="order-step-date">12/05/2023</div>
+                                    </div>
+                                    <div class="order-step completed">
+                                        <div class="order-step-icon">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+                                        <div class="order-step-text">Entregue</div>
+                                        <div class="order-step-date">15/05/2023</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Informações do Pedido -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0">Informações do Pedido</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row mb-2">
+                                        <div class="col-5 text-muted">Número do Pedido:</div>
+                                        <div class="col-7">#12345</div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-5 text-muted">Data do Pedido:</div>
+                                        <div class="col-7">10/05/2023</div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-5 text-muted">Status:</div>
+                                        <div class="col-7"><span class="badge badge-success">Entregue</span></div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-5 text-muted">Método de Pagamento:</div>
+                                        <div class="col-7">Cartão de Crédito</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-5 text-muted">Método de Entrega:</div>
+                                        <div class="col-7">Entrega Padrão</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0">Endereço de Entrega</h6>
+                                </div>
+                                <div class="card-body">
+                                    <p class="mb-1">João Silva</p>
+                                    <p class="mb-1">Av. Paulista, 1000, Apto 123</p>
+                                    <p class="mb-1">Bela Vista</p>
+                                    <p class="mb-1">São Paulo - SP</p>
+                                    <p class="mb-1">CEP: 01310-100</p>
+                                    <p class="mb-0">Telefone: (11) 98765-4321</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Itens do Pedido -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0">Itens do Pedido</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Produto</th>
+                                            <th>Preço</th>
+                                            <th>Quantidade</th>
+                                            <th class="text-right">Subtotal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div>
+                                                        <h6 class="mb-1">Produto Exemplo 1</h6>
+                                                        <p class="mb-0 text-muted small">Tamanho: M | Cor: Preto</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>R$ 99,90</td>
+                                            <td>1</td>
+                                            <td class="text-right">R$ 99,90</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div>
+                                                        <h6 class="mb-1">Produto Exemplo 2</h6>
+                                                        <p class="mb-0 text-muted small">Tamanho: G | Cor: Azul</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>R$ 79,90</td>
+                                            <td>2</td>
+                                            <td class="text-right">R$ 159,80</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div>
+                                                        <h6 class="mb-1">Produto Exemplo 3</h6>
+                                                        <p class="mb-0 text-muted small">Tamanho: P | Cor: Vermelho</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>R$ 129,90</td>
+                                            <td>1</td>
+                                            <td class="text-right">R$ 129,90</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Resumo do Pedido -->
+                    <div class="card">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0">Resumo do Pedido</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 offset-md-6">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Subtotal</span>
+                                        <span>R$ 389,60</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Desconto</span>
+                                        <span class="text-success">-R$ 20,00</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Frete</span>
+                                        <span>R$ 15,00</span>
+                                    </div>
+                                    <hr>
+                                    <div class="d-flex justify-content-between">
+                                        <strong>Total</strong>
+                                        <strong class="text-primary h5">R$ 384,60</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-white">
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'orders:order_list' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left mr-2"></i> Voltar aos Pedidos
+                        </a>
+                        <div>
+                            <a href="#" class="btn btn-outline-secondary mr-2">
+                                <i class="fas fa-print mr-2"></i> Imprimir
+                            </a>
+                            <a href="#" class="btn btn-primary">
+                                <i class="fas fa-redo mr-2"></i> Comprar Novamente
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Rastreamento -->
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Rastreamento</h5>
+                </div>
+                <div class="card-body">
+                    <div class="tracking-timeline">
+                        <div class="tracking-item">
+                            <div class="tracking-icon bg-success">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="tracking-content">
+                                <h6 class="mb-0">Entrega realizada</h6>
+                                <p class="text-muted mb-0">15/05/2023 - 14:35</p>
+                                <p>Entregue ao destinatário</p>
+                            </div>
+                        </div>
+                        <div class="tracking-item">
+                            <div class="tracking-icon bg-primary">
+                                <i class="fas fa-truck"></i>
+                            </div>
+                            <div class="tracking-content">
+                                <h6 class="mb-0">Em rota de entrega</h6>
+                                <p class="text-muted mb-0">15/05/2023 - 08:12</p>
+                                <p>Saiu para entrega ao destinatário</p>
+                            </div>
+                        </div>
+                        <div class="tracking-item">
+                            <div class="tracking-icon bg-primary">
+                                <i class="fas fa-warehouse"></i>
+                            </div>
+                            <div class="tracking-content">
+                                <h6 class="mb-0">Objeto recebido na unidade de distribuição</h6>
+                                <p class="text-muted mb-0">14/05/2023 - 16:45</p>
+                                <p>São Paulo - SP</p>
+                            </div>
+                        </div>
+                        <div class="tracking-item">
+                            <div class="tracking-icon bg-primary">
+                                <i class="fas fa-shipping-fast"></i>
+                            </div>
+                            <div class="tracking-content">
+                                <h6 class="mb-0">Objeto em trânsito</h6>
+                                <p class="text-muted mb-0">13/05/2023 - 10:22</p>
+                                <p>De Barueri - SP para São Paulo - SP</p>
+                            </div>
+                        </div>
+                        <div class="tracking-item">
+                            <div class="tracking-icon bg-primary">
+                                <i class="fas fa-box"></i>
+                            </div>
+                            <div class="tracking-content">
+                                <h6 class="mb-0">Objeto postado</h6>
+                                <p class="text-muted mb-0">12/05/2023 - 15:30</p>
+                                <p>Barueri - SP</p>
+                            </div>
+                        </div>
+                        <div class="tracking-item">
+                            <div class="tracking-icon bg-primary">
+                                <i class="fas fa-clipboard-check"></i>
+                            </div>
+                            <div class="tracking-content">
+                                <h6 class="mb-0">Pedido processado</h6>
+                                <p class="text-muted mb-0">11/05/2023 - 09:15</p>
+                                <p>Pedido separado e embalado</p>
+                            </div>
+                        </div>
+                        <div class="tracking-item">
+                            <div class="tracking-icon bg-primary">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <div class="tracking-content">
+                                <h6 class="mb-0">Pagamento confirmado</h6>
+                                <p class="text-muted mb-0">10/05/2023 - 14:20</p>
+                                <p>Pagamento aprovado</p>
+                            </div>
+                        </div>
+                        <div class="tracking-item">
+                            <div class="tracking-icon bg-primary">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <div class="tracking-content">
+                                <h6 class="mb-0">Pedido realizado</h6>
+                                <p class="text-muted mb-0">10/05/2023 - 14:05</p>
+                                <p>Pedido #12345 criado com sucesso</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_css %}
+<style>
+    /* Estilos para o progresso do pedido */
+    .order-progress {
+        position: relative;
+        margin-bottom: 30px;
+    }
+    
+    .order-step {
+        position: relative;
+        text-align: center;
+        z-index: 1;
+        width: 25%;
+    }
+    
+    .order-step-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 10px;
+    }
+    
+    .order-step.completed .order-step-icon {
+        background-color: #28a745;
+        border-color: #28a745;
+        color: white;
+    }
+    
+    .order-step-date {
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+    
+    /* Estilos para o rastreamento */
+    .tracking-timeline {
+        position: relative;
+        padding-left: 30px;
+    }
+    
+    .tracking-timeline:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 15px;
+        height: 100%;
+        width: 2px;
+        background-color: #e9ecef;
+    }
+    
+    .tracking-item {
+        position: relative;
+        padding-bottom: 25px;
+    }
+    
+    .tracking-item:last-child {
+        padding-bottom: 0;
+    }
+    
+    .tracking-icon {
+        position: absolute;
+        left: -30px;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+    }
+    
+    .tracking-content {
+        padding-left: 10px;
+    }
+</style>
+{% endblock %}
+{% endblock %}
+

@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}Contato - E-commerce Template{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <h1 class="mb-4">Entre em Contato</h1>
+            
+            <div class="card mb-5">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center mb-4 mb-md-0">
+                            <i class="fas fa-map-marker-alt fa-3x text-primary mb-3"></i>
+                            <h5>Endereço</h5>
+                            <p class="text-muted">
+                                {% if settings.address %}
+                                {{ settings.address|linebreaks }}
+                                {% else %}
+                                Av. Exemplo, 1234<br>
+                                São Paulo - SP<br>
+                                CEP: 01234-567
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-center mb-4 mb-md-0">
+                            <i class="fas fa-phone fa-3x text-primary mb-3"></i>
+                            <h5>Telefone</h5>
+                            <p class="text-muted">
+                                {% if settings.contact_phone %}
+                                {{ settings.contact_phone }}
+                                {% else %}
+                                (11) 1234-5678
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <i class="fas fa-envelope fa-3x text-primary mb-3"></i>
+                            <h5>E-mail</h5>
+                            <p class="text-muted">
+                                {% if settings.contact_email %}
+                                {{ settings.contact_email }}
+                                {% else %}
+                                contato@exemplo.com
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">Envie uma Mensagem</h4>
+                    <form>
+                        <div class="form-group">
+                            <label for="name">Nome</label>
+                            <input type="text" class="form-control" id="name" placeholder="Seu nome">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">E-mail</label>
+                            <input type="email" class="form-control" id="email" placeholder="Seu e-mail">
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Assunto</label>
+                            <input type="text" class="form-control" id="subject" placeholder="Assunto da mensagem">
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Mensagem</label>
+                            <textarea class="form-control" id="message" rows="5" placeholder="Sua mensagem"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Enviar Mensagem</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Map Section -->
+<div class="container-fluid px-0 mt-5">
+    <div class="embed-responsive embed-responsive-21by9" style="height: 400px;">
+        <iframe class="embed-responsive-item" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3657.1976683610437!2d-46.65429492392186!3d-23.56410066132443!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce59c8da0aa315%3A0xd59f9431f2c9776a!2sAv.%20Paulista%2C%20S%C3%A3o%20Paulo%20-%20SP!5e0!3m2!1spt-BR!2sbr!4v1686145862208!5m2!1spt-BR!2sbr" allowfullscreen="" loading="lazy"></iframe>
+    </div>
+</div>
+{% endblock %}
+

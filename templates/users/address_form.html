@@ -1,0 +1,220 @@
+{% extends 'base.html' %}
+
+{% block title %}Adicionar Endereço - E-commerce Template{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Sidebar da Conta -->
+        <div class="col-lg-3 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Minha Conta</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'users:profile' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user mr-2"></i> Perfil
+                    </a>
+                    <a href="{% url 'orders:order_list' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-shopping-bag mr-2"></i> Meus Pedidos
+                    </a>
+                    <a href="{% url 'users:address_list' %}" class="list-group-item list-group-item-action active">
+                        <i class="fas fa-map-marker-alt mr-2"></i> Endereços
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-heart mr-2"></i> Lista de Desejos
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-credit-card mr-2"></i> Métodos de Pagamento
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-bell mr-2"></i> Notificações
+                    </a>
+                    <a href="{% url 'account_logout' %}" class="list-group-item list-group-item-action text-danger">
+                        <i class="fas fa-sign-out-alt mr-2"></i> Sair
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Conteúdo Principal -->
+        <div class="col-lg-9">
+            <div class="card">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Adicionar Novo Endereço</h5>
+                    <a href="{% url 'users:address_list' %}" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-arrow-left mr-1"></i> Voltar aos Endereços
+                    </a>
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="name">Nome do Endereço</label>
+                                <input type="text" class="form-control" id="name" placeholder="Ex: Casa, Trabalho, etc.">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="recipient">Nome do Destinatário</label>
+                                <input type="text" class="form-control" id="recipient" placeholder="Nome completo">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="zipcode">CEP</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="zipcode" placeholder="00000-000">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" type="button" id="searchZipcode">Buscar</button>
+                                    </div>
+                                </div>
+                                <small class="form-text text-muted">
+                                    <a href="https://buscacepinter.correios.com.br/app/endereco/index.php" target="_blank">Não sei meu CEP</a>
+                                </small>
+                            </div>
+                            <div class="form-group col-md-8">
+                                <label for="street">Rua/Avenida</label>
+                                <input type="text" class="form-control" id="street" placeholder="Nome da rua ou avenida">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="number">Número</label>
+                                <input type="text" class="form-control" id="number" placeholder="Número">
+                            </div>
+                            <div class="form-group col-md-8">
+                                <label for="complement">Complemento</label>
+                                <input type="text" class="form-control" id="complement" placeholder="Apto, Bloco, Casa, etc. (opcional)">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="neighborhood">Bairro</label>
+                                <input type="text" class="form-control" id="neighborhood" placeholder="Bairro">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="city">Cidade</label>
+                                <input type="text" class="form-control" id="city" placeholder="Cidade">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="state">Estado</label>
+                                <select id="state" class="form-control">
+                                    <option selected>Selecione...</option>
+                                    <option value="AC">Acre</option>
+                                    <option value="AL">Alagoas</option>
+                                    <option value="AP">Amapá</option>
+                                    <option value="AM">Amazonas</option>
+                                    <option value="BA">Bahia</option>
+                                    <option value="CE">Ceará</option>
+                                    <option value="DF">Distrito Federal</option>
+                                    <option value="ES">Espírito Santo</option>
+                                    <option value="GO">Goiás</option>
+                                    <option value="MA">Maranhão</option>
+                                    <option value="MT">Mato Grosso</option>
+                                    <option value="MS">Mato Grosso do Sul</option>
+                                    <option value="MG">Minas Gerais</option>
+                                    <option value="PA">Pará</option>
+                                    <option value="PB">Paraíba</option>
+                                    <option value="PR">Paraná</option>
+                                    <option value="PE">Pernambuco</option>
+                                    <option value="PI">Piauí</option>
+                                    <option value="RJ">Rio de Janeiro</option>
+                                    <option value="RN">Rio Grande do Norte</option>
+                                    <option value="RS">Rio Grande do Sul</option>
+                                    <option value="RO">Rondônia</option>
+                                    <option value="RR">Roraima</option>
+                                    <option value="SC">Santa Catarina</option>
+                                    <option value="SP">São Paulo</option>
+                                    <option value="SE">Sergipe</option>
+                                    <option value="TO">Tocantins</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="phone">Telefone</label>
+                                <input type="text" class="form-control" id="phone" placeholder="(00) 00000-0000">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="reference">Ponto de Referência</label>
+                                <input type="text" class="form-control" id="reference" placeholder="Ponto de referência (opcional)">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="defaultAddress">
+                                <label class="custom-control-label" for="defaultAddress">Definir como endereço principal</label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="billingAddress">
+                                <label class="custom-control-label" for="billingAddress">Usar também como endereço de cobrança</label>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'users:address_list' %}" class="btn btn-outline-secondary">Cancelar</a>
+                            <button type="submit" class="btn btn-primary">Salvar Endereço</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    // Busca de CEP
+    document.getElementById('searchZipcode').addEventListener('click', function() {
+        const zipcode = document.getElementById('zipcode').value.replace(/\D/g, '');
+        
+        if (zipcode.length !== 8) {
+            alert('CEP inválido. Por favor, digite um CEP válido com 8 dígitos.');
+            return;
+        }
+        
+        // Simulação de busca de CEP (em um ambiente real, faria uma requisição a uma API)
+        if (zipcode === '01310100') {
+            document.getElementById('street').value = 'Avenida Paulista';
+            document.getElementById('neighborhood').value = 'Bela Vista';
+            document.getElementById('city').value = 'São Paulo';
+            document.getElementById('state').value = 'SP';
+        } else {
+            alert('CEP não encontrado. Por favor, preencha os dados manualmente.');
+        }
+    });
+    
+    // Máscara para CEP
+    document.getElementById('zipcode').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 5) {
+            value = value.substring(0, 5) + '-' + value.substring(5, 8);
+        }
+        e.target.value = value;
+    });
+    
+    // Máscara para telefone
+    document.getElementById('phone').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 0) {
+            value = '(' + value;
+            if (value.length > 3) {
+                value = value.substring(0, 3) + ') ' + value.substring(3);
+            }
+            if (value.length > 10) {
+                value = value.substring(0, 10) + '-' + value.substring(10);
+            }
+        }
+        e.target.value = value;
+    });
+</script>
+{% endblock %}
+{% endblock %}
+

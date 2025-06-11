@@ -1,0 +1,337 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout - E-commerce Template{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">Checkout</h1>
+    
+    <!-- Progresso do Checkout -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="checkout-progress">
+                <div class="progress" style="height: 1px;">
+                    <div class="progress-bar bg-primary" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <div class="checkout-step active">
+                        <div class="checkout-step-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="checkout-step-text">Carrinho</div>
+                    </div>
+                    <div class="checkout-step active">
+                        <div class="checkout-step-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="checkout-step-text">Endereço</div>
+                    </div>
+                    <div class="checkout-step">
+                        <div class="checkout-step-icon">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <div class="checkout-step-text">Pagamento</div>
+                    </div>
+                    <div class="checkout-step">
+                        <div class="checkout-step-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="checkout-step-text">Confirmação</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Endereço de Entrega -->
+            <div class="card mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Endereço de Entrega</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card h-100 border-primary">
+                                <div class="card-body">
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" id="address1" name="address" class="custom-control-input" checked>
+                                        <label class="custom-control-label" for="address1">
+                                            <strong>Endereço Principal</strong>
+                                        </label>
+                                    </div>
+                                    <hr>
+                                    <p class="mb-1">João Silva</p>
+                                    <p class="mb-1">Av. Paulista, 1000, Apto 123</p>
+                                    <p class="mb-1">Bela Vista</p>
+                                    <p class="mb-1">São Paulo - SP</p>
+                                    <p class="mb-1">CEP: 01310-100</p>
+                                    <p class="mb-0">Telefone: (11) 98765-4321</p>
+                                </div>
+                                <div class="card-footer bg-white">
+                                    <a href="#" class="btn btn-sm btn-outline-primary">Editar</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" id="address2" name="address" class="custom-control-input">
+                                        <label class="custom-control-label" for="address2">
+                                            <strong>Endereço de Trabalho</strong>
+                                        </label>
+                                    </div>
+                                    <hr>
+                                    <p class="mb-1">João Silva</p>
+                                    <p class="mb-1">Rua Augusta, 500, Sala 45</p>
+                                    <p class="mb-1">Consolação</p>
+                                    <p class="mb-1">São Paulo - SP</p>
+                                    <p class="mb-1">CEP: 01304-000</p>
+                                    <p class="mb-0">Telefone: (11) 3456-7890</p>
+                                </div>
+                                <div class="card-footer bg-white">
+                                    <a href="#" class="btn btn-sm btn-outline-primary">Editar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <a href="#" class="btn btn-outline-primary">
+                        <i class="fas fa-plus mr-2"></i> Adicionar Novo Endereço
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Método de Entrega -->
+            <div class="card mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Método de Entrega</h5>
+                </div>
+                <div class="card-body">
+                    <div class="custom-control custom-radio mb-3">
+                        <input type="radio" id="shippingStandard" name="shipping" class="custom-control-input" checked>
+                        <label class="custom-control-label d-flex justify-content-between" for="shippingStandard">
+                            <div>
+                                <strong>Entrega Padrão</strong>
+                                <p class="text-muted mb-0">Entrega em 7-10 dias úteis</p>
+                            </div>
+                            <span>R$ 15,00</span>
+                        </label>
+                    </div>
+                    <div class="custom-control custom-radio mb-3">
+                        <input type="radio" id="shippingExpress" name="shipping" class="custom-control-input">
+                        <label class="custom-control-label d-flex justify-content-between" for="shippingExpress">
+                            <div>
+                                <strong>Entrega Expressa</strong>
+                                <p class="text-muted mb-0">Entrega em 3-5 dias úteis</p>
+                            </div>
+                            <span>R$ 25,00</span>
+                        </label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="shippingPremium" name="shipping" class="custom-control-input">
+                        <label class="custom-control-label d-flex justify-content-between" for="shippingPremium">
+                            <div>
+                                <strong>Entrega Premium</strong>
+                                <p class="text-muted mb-0">Entrega em 1-2 dias úteis</p>
+                            </div>
+                            <span>R$ 35,00</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Método de Pagamento -->
+            <div class="card mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Método de Pagamento</h5>
+                </div>
+                <div class="card-body">
+                    <div class="custom-control custom-radio mb-3">
+                        <input type="radio" id="paymentCreditCard" name="payment" class="custom-control-input" checked>
+                        <label class="custom-control-label" for="paymentCreditCard">
+                            <strong>Cartão de Crédito</strong>
+                        </label>
+                    </div>
+                    
+                    <div class="credit-card-form mb-4 ml-4">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="cardNumber">Número do Cartão</label>
+                                <input type="text" class="form-control" id="cardNumber" placeholder="0000 0000 0000 0000">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="cardName">Nome no Cartão</label>
+                                <input type="text" class="form-control" id="cardName" placeholder="Nome como está no cartão">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="cardExpiry">Validade</label>
+                                <input type="text" class="form-control" id="cardExpiry" placeholder="MM/AA">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="cardCvv">CVV</label>
+                                <input type="text" class="form-control" id="cardCvv" placeholder="123">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="cardInstallments">Parcelas</label>
+                                <select class="form-control" id="cardInstallments">
+                                    <option>1x de R$ 384,60 sem juros</option>
+                                    <option>2x de R$ 192,30 sem juros</option>
+                                    <option>3x de R$ 128,20 sem juros</option>
+                                    <option>4x de R$ 96,15 sem juros</option>
+                                    <option>5x de R$ 76,92 sem juros</option>
+                                    <option>6x de R$ 64,10 sem juros</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="custom-control custom-radio mb-3">
+                        <input type="radio" id="paymentBoleto" name="payment" class="custom-control-input">
+                        <label class="custom-control-label" for="paymentBoleto">
+                            <strong>Boleto Bancário</strong>
+                            <p class="text-muted mb-0">O boleto será gerado após a confirmação do pedido.</p>
+                        </label>
+                    </div>
+                    
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="paymentPix" name="payment" class="custom-control-input">
+                        <label class="custom-control-label" for="paymentPix">
+                            <strong>PIX</strong>
+                            <p class="text-muted mb-0">O QR Code será gerado após a confirmação do pedido.</p>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Observações -->
+            <div class="card mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Observações</h5>
+                </div>
+                <div class="card-body">
+                    <textarea class="form-control" rows="3" placeholder="Informações adicionais sobre o pedido (opcional)"></textarea>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Resumo do Pedido -->
+            <div class="card mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Resumo do Pedido</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal (3 itens)</span>
+                        <span>R$ 389,60</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Desconto</span>
+                        <span class="text-success">-R$ 20,00</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Frete</span>
+                        <span>R$ 15,00</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-4">
+                        <strong>Total</strong>
+                        <strong class="text-primary h5">R$ 384,60</strong>
+                    </div>
+                    
+                    <a href="{% url 'orders:checkout_confirm' %}" class="btn btn-primary btn-block">
+                        Finalizar Pedido
+                    </a>
+                    <a href="{% url 'orders:cart_detail' %}" class="btn btn-outline-secondary btn-block mt-2">
+                        Voltar ao Carrinho
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Itens do Pedido -->
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Itens do Pedido</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex mb-3">
+                        <div>
+                            <h6 class="mb-1">Produto Exemplo 1</h6>
+                            <p class="mb-1 text-muted small">Tamanho: M | Cor: Preto</p>
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted small">Qtd: 1</span>
+                                <span>R$ 99,90</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex mb-3">
+                        <div>
+                            <h6 class="mb-1">Produto Exemplo 2</h6>
+                            <p class="mb-1 text-muted small">Tamanho: G | Cor: Azul</p>
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted small">Qtd: 2</span>
+                                <span>R$ 159,80</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex">
+                        <div>
+                            <h6 class="mb-1">Produto Exemplo 3</h6>
+                            <p class="mb-1 text-muted small">Tamanho: P | Cor: Vermelho</p>
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted small">Qtd: 1</span>
+                                <span>R$ 129,90</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_css %}
+<style>
+    .checkout-progress {
+        position: relative;
+        margin-bottom: 30px;
+    }
+    
+    .checkout-step {
+        position: relative;
+        text-align: center;
+        z-index: 1;
+        width: 25%;
+    }
+    
+    .checkout-step-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 10px;
+    }
+    
+    .checkout-step.active .checkout-step-icon {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: white;
+    }
+    
+    .checkout-step.active .checkout-step-text {
+        color: #007bff;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+{% endblock %}
+

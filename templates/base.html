@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="hidden-content-html" lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    {% if active_theme %}
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family={{ active_theme.heading_font|urlencode }}:wght@400;700&family={{ active_theme.body_font|urlencode }}:wght@400;700&display=swap">
+    {% else %}
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    {% endif %}
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    {% if active_theme %}
+        <style>
+            :root {
+                --off-white: {{ active_theme.off_white }};
+                --white: {{ active_theme.white }};
+                --black: {{ active_theme.black }};
+
+                --primary-color: {{ active_theme.primary_color }};
+                --secondary-color: {{ active_theme.secondary_color }};
+
+                --fb-info-color: {{ active_theme.fb_info_color }};
+                --fb-danger-color: {{ active_theme.fb_danger_color }};
+                --fb-warning-color: {{ active_theme.fb_warning_color }};
+                --fb-success-color: {{ active_theme.fb_success_color }};
+
+                --neutral-color: {{ active_theme.neutral_color }};
+                --shadow-color: {{ active_theme.shadow_color }};
+
+                --heading-font: "{{ active_theme.heading_font }}";
+                --body-font: "{{ active_theme.body_font }}";
+            }
+            
+            body {
+                font-family: var(--body-font), sans-serif;
+            }
+            
+            h1, h2, h3, h4, h5, h6 {
+                font-family: var(--heading-font), sans-serif;
+            }
+            
+            {{ active_theme.custom_css|safe }}
+        </style>
+    {% endif %}
+    
+    {% block extra_css %}{% endblock %}
+    
+    <!-- Favicon -->
+    {% if active_theme and active_theme.favicon %}
+        <link rel="icon" href="{{ active_theme.favicon.url }}">
+    {% else %}
+        <link rel="icon" href="{% static 'images/favicon.ico' %}">
+    {% endif %}
+</head>
+<body>
+    {% if user %}<span id="data-lang">en-US</span>{% endif %}
+    {% if not user %}<span id="data-lang">en-US</span>{% endif %}
+    <!-- Navbar -->
+    {% include 'navbar.html' %}
+
+    <!-- Loader -->
+    {% include 'loader.html' %}
+    
+    <!-- Main Content -->
+    <main class="container py-4">
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    {% include 'footer.html' %}
+
+    <!-- Notification Container -->
+    <div id="notification-container"></div>
+    
+    <!-- jQuery and Bootstrap Bundle (includes Popper) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="{% static 'js/main.js' %}"></script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

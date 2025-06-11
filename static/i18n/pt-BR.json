@@ -1,0 +1,9 @@
+{
+  "loading": "Carregando...",
+  "navbar": {
+    "localize-title": "Enviar para ",
+    "localize-address-not-found": "Sem Localização",
+    "products": "Catálogo",
+    "contacts": "Contatos"
+  }
+}

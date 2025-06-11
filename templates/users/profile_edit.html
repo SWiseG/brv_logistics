@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Perfil - E-commerce Template{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Sidebar da Conta -->
+        <div class="col-lg-3 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Minha Conta</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'users:profile' %}" class="list-group-item list-group-item-action active">
+                        <i class="fas fa-user mr-2"></i> Perfil
+                    </a>
+                    <a href="{% url 'orders:order_list' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-shopping-bag mr-2"></i> Meus Pedidos
+                    </a>
+                    <a href="{% url 'users:address_list' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-map-marker-alt mr-2"></i> Endereços
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-heart mr-2"></i> Lista de Desejos
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-credit-card mr-2"></i> Métodos de Pagamento
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-bell mr-2"></i> Notificações
+                    </a>
+                    <a href="{% url 'account_logout' %}" class="list-group-item list-group-item-action text-danger">
+                        <i class="fas fa-sign-out-alt mr-2"></i> Sair
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Conteúdo Principal -->
+        <div class="col-lg-9">
+            <div class="card">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Editar Perfil</h5>
+                    <a href="{% url 'users:profile' %}" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-arrow-left mr-1"></i> Voltar ao Perfil
+                    </a>
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="row mb-4">
+                            <div class="col-md-4 text-center">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="profilePicture">
+                                    <label class="custom-file-label" for="profilePicture">Escolher arquivo</label>
+                                </div>
+                                <small class="form-text text-muted">
+                                    Formatos aceitos: JPG, PNG. Tamanho máximo: 2MB.
+                                </small>
+                            </div>
+                            <div class="col-md-8">
+                                <h6 class="border-bottom pb-2 mb-3">Informações Pessoais</h6>
+                                
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="firstName">Nome</label>
+                                        <input type="text" class="form-control" id="firstName" value="João">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="lastName">Sobrenome</label>
+                                        <input type="text" class="form-control" id="lastName" value="Silva">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="email">E-mail</label>
+                                    <input type="email" class="form-control" id="email" value="joao.silva@exemplo.com" readonly>
+                                    <small class="form-text text-muted">
+                                        Para alterar seu e-mail, entre em contato com o suporte.
+                                    </small>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="phone">Telefone</label>
+                                        <input type="text" class="form-control" id="phone" value="(11) 98765-4321">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="cpf">CPF</label>
+                                        <input type="text" class="form-control" id="cpf" value="123.456.789-00">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="birthdate">Data de Nascimento</label>
+                                        <input type="date" class="form-control" id="birthdate" value="1985-05-15">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="gender">Gênero</label>
+                                        <select id="gender" class="form-control">
+                                            <option>Selecione...</option>
+                                            <option value="male" selected>Masculino</option>
+                                            <option value="female">Feminino</option>
+                                            <option value="other">Outro</option>
+                                            <option value="prefer_not_to_say">Prefiro não informar</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h6 class="border-bottom pb-2 mb-3">Preferências</h6>
+                        
+                        <div class="form-group">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="newsletterSubscription" checked>
+                                <label class="custom-control-label" for="newsletterSubscription">Receber newsletter com ofertas e novidades</label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="orderNotifications" checked>
+                                <label class="custom-control-label" for="orderNotifications">Receber notificações sobre meus pedidos</label>
+                            </div>
+                        </div>
+                        
+                        <h6 class="border-bottom pb-2 mb-3">Alterar Senha</h6>
+                        
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="currentPassword">Senha Atual</label>
+                                <input type="password" class="form-control" id="currentPassword">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="newPassword">Nova Senha</label>
+                                <input type="password" class="form-control" id="newPassword">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="confirmPassword">Confirmar Nova Senha</label>
+                                <input type="password" class="form-control" id="confirmPassword">
+                            </div>
+                        </div>
+                        <small class="form-text text-muted mb-4">
+                            Deixe os campos de senha em branco se não desejar alterá-la.
+                        </small>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'users:profile' %}" class="btn btn-outline-secondary">Cancelar</a>
+                            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    // Máscara para telefone
+    document.getElementById('phone').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 0) {
+            value = '(' + value;
+            if (value.length > 3) {
+                value = value.substring(0, 3) + ') ' + value.substring(3);
+            }
+            if (value.length > 10) {
+                value = value.substring(0, 10) + '-' + value.substring(10);
+            }
+        }
+        e.target.value = value;
+    });
+    
+    // Máscara para CPF
+    document.getElementById('cpf').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 3) {
+            value = value.substring(0, 3) + '.' + value.substring(3);
+        }
+        if (value.length > 7) {
+            value = value.substring(0, 7) + '.' + value.substring(7);
+        }
+        if (value.length > 11) {
+            value = value.substring(0, 11) + '-' + value.substring(11, 13);
+        }
+        e.target.value = value;
+    });
+    
+    // Nome do arquivo selecionado
+    document.getElementById('profilePicture').addEventListener('change', function(e) {
+        const fileName = e.target.files[0].name;
+        const label = document.querySelector('.custom-file-label');
+        label.textContent = fileName;
+    });
+</script>
+{% endblock %}
+{% endblock %}
+

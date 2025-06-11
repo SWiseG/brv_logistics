@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista de Produtos - E-commerce Template{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Sidebar / Filtros -->
+        <div class="col-lg-3">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Filtros</h5>
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="mb-4">
+                            <h6 class="font-weight-bold">Categorias</h6>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="category1">
+                                <label class="form-check-label" for="category1">
+                                    Categoria 1
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="category2">
+                                <label class="form-check-label" for="category2">
+                                    Categoria 2
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="category3">
+                                <label class="form-check-label" for="category3">
+                                    Categoria 3
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="category4">
+                                <label class="form-check-label" for="category4">
+                                    Categoria 4
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="category5">
+                                <label class="form-check-label" for="category5">
+                                    Categoria 5
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h6 class="font-weight-bold">Preço</h6>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>R$ 0</span>
+                                <span>R$ 1000</span>
+                            </div>
+                            <input type="range" class="form-range w-100" min="0" max="1000" id="priceRange">
+                            <div class="d-flex justify-content-between mt-2">
+                                <div class="input-group input-group-sm">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">R$</span>
+                                    </div>
+                                    <input type="number" class="form-control" placeholder="Min" aria-label="Mínimo">
+                                </div>
+                                <div class="mx-2">-</div>
+                                <div class="input-group input-group-sm">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">R$</span>
+                                    </div>
+                                    <input type="number" class="form-control" placeholder="Max" aria-label="Máximo">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h6 class="font-weight-bold">Avaliação</h6>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="rating5">
+                                <label class="form-check-label" for="rating5">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="rating4">
+                                <label class="form-check-label" for="rating4">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="far fa-star text-warning"></i>
+                                    e acima
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="rating3">
+                                <label class="form-check-label" for="rating3">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="far fa-star text-warning"></i>
+                                    <i class="far fa-star text-warning"></i>
+                                    e acima
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="rating2">
+                                <label class="form-check-label" for="rating2">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="far fa-star text-warning"></i>
+                                    <i class="far fa-star text-warning"></i>
+                                    <i class="far fa-star text-warning"></i>
+                                    e acima
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-block">Aplicar Filtros</button>
+                        <button type="reset" class="btn btn-outline-secondary btn-block mt-2">Limpar Filtros</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Lista de Produtos -->
+        <div class="col-lg-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3">Produtos</h1>
+                <div class="d-flex align-items-center">
+                    <label for="sort" class="mr-2 mb-0">Ordenar por:</label>
+                    <select class="form-control form-control-sm" id="sort">
+                        <option>Relevância</option>
+                        <option>Preço: Menor para Maior</option>
+                        <option>Preço: Maior para Menor</option>
+                        <option>Nome: A-Z</option>
+                        <option>Nome: Z-A</option>
+                        <option>Mais Recentes</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="row">
+                {% for i in '123456789'|make_list %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 product-card">
+                        {% if forloop.counter|divisibleby:3 %}
+                        <span class="badge badge-danger position-absolute" style="top: 10px; right: 10px;">-20%</span>
+                        {% endif %}
+                        <a href="{% url 'products:product_detail' slug='produto-exemplo' %}">
+                        </a>
+                        <div class="card-body">
+                            <a href="{% url 'products:product_detail' slug='produto-exemplo' %}" class="text-decoration-none">
+                                <h5 class="card-title">Produto {{ i }}</h5>
+                            </a>
+                            <p class="card-text text-muted small">Categoria</p>
+                            <div class="mb-2">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="far fa-star text-warning"></i>
+                                <span class="text-muted small">(24)</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    {% if forloop.counter|divisibleby:3 %}
+                                    <span class="product-price product-sale-price">R$ 79,90</span>
+                                    <span class="product-original-price">R$ 99,90</span>
+                                    {% else %}
+                                    <span class="product-price">R$ 99,90</span>
+                                    {% endif %}
+                                </div>
+                                <a href="#" class="btn btn-sm btn-outline-primary"><i class="fas fa-shopping-cart"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Paginação -->
+            <nav aria-label="Navegação de página" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Anterior</a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Próximo</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

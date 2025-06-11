@@ -1,0 +1,9 @@
+{
+  "loading": "Loading...",
+  "navbar": {
+    "localize-title": "Send to",
+    "localize-address-not-found": "No Address",
+    "products": "Catalog",
+    "contacts": "Contact"
+  }
+}

@@ -1,0 +1,62 @@
+<footer class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <h5>Sobre Nós</h5>
+                <p>{{ settings.site_description }}</p>
+                <p>
+                    {% if settings.facebook_url %}
+                    <a href="{{ settings.facebook_url }}" target="_blank" class="text-decoration-none mr-2">
+                        <i class="fab fa-facebook-square fa-2x"></i>
+                    </a>
+                    {% endif %}
+                    {% if settings.instagram_url %}
+                    <a href="{{ settings.instagram_url }}" target="_blank" class="text-decoration-none mr-2">
+                        <i class="fab fa-instagram fa-2x"></i>
+                    </a>
+                    {% endif %}
+                    {% if settings.twitter_url %}
+                    <a href="{{ settings.twitter_url }}" target="_blank" class="text-decoration-none mr-2">
+                        <i class="fab fa-twitter-square fa-2x"></i>
+                    </a>
+                    {% endif %}
+                    {% if settings.youtube_url %}
+                    <a href="{{ settings.youtube_url }}" target="_blank" class="text-decoration-none">
+                        <i class="fab fa-youtube fa-2x"></i>
+                    </a>
+                    {% endif %}
+                </p>
+            </div>
+            <div class="col-md-4 mb-4">
+                <h5>Links Úteis</h5>
+                <ul class="list-unstyled">
+                    <li><a href="{% url 'core:home' %}">Home</a></li>
+                    <li><a href="{% url 'products:product_list' %}">Produtos</a></li>
+                    <li><a href="{% url 'core:contact' %}">Contato</a></li>
+                    <li><a href="#">Termos de Uso</a></li>
+                    <li><a href="#">Política de Privacidade</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4 mb-4">
+                <h5>Contato</h5>
+                <address>
+                    {% if settings.address %}
+                    <p>{{ settings.address|linebreaks }}</p>
+                    {% endif %}
+                    {% if settings.contact_phone %}
+                    <p><i class="fas fa-phone"></i> {{ settings.contact_phone }}</p>
+                    {% endif %}
+                    {% if settings.contact_email %}
+                    <p><i class="fas fa-envelope"></i> {{ settings.contact_email }}</p>
+                    {% endif %}
+                </address>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <p>&copy; {% now "Y" %} E-commerce Template. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </div>
+</footer>

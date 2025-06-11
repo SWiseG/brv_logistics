@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+
+{% block title %}Meus Pedidos - E-commerce Template{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Sidebar da Conta -->
+        <div class="col-lg-3 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Minha Conta</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'users:profile' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user mr-2"></i> Perfil
+                    </a>
+                    <a href="{% url 'orders:order_list' %}" class="list-group-item list-group-item-action active">
+                        <i class="fas fa-shopping-bag mr-2"></i> Meus Pedidos
+                    </a>
+                    <a href="{% url 'users:address_list' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-map-marker-alt mr-2"></i> Endereços
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-heart mr-2"></i> Lista de Desejos
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-credit-card mr-2"></i> Métodos de Pagamento
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-bell mr-2"></i> Notificações
+                    </a>
+                    <a href="{% url 'account_logout' %}" class="list-group-item list-group-item-action text-danger">
+                        <i class="fas fa-sign-out-alt mr-2"></i> Sair
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Conteúdo Principal -->
+        <div class="col-lg-9">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Meus Pedidos</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Filtros -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Buscar pedido...">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-md-end">
+                                <select class="form-control" style="width: auto;">
+                                    <option>Todos os pedidos</option>
+                                    <option>Últimos 30 dias</option>
+                                    <option>Últimos 6 meses</option>
+                                    <option>2023</option>
+                                    <option>2022</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Lista de Pedidos -->
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Pedido</th>
+                                    <th>Data</th>
+                                    <th>Status</th>
+                                    <th>Total</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#12345</td>
+                                    <td>10/05/2023</td>
+                                    <td><span class="badge badge-success">Entregue</span></td>
+                                    <td>R$ 384,60</td>
+                                    <td>
+                                        <a href="{% url 'orders:order_detail' order_number='12345' %}" class="btn btn-sm btn-outline-primary">Detalhes</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#12344</td>
+                                    <td>28/04/2023</td>
+                                    <td><span class="badge badge-info">Enviado</span></td>
+                                    <td>R$ 259,80</td>
+                                    <td>
+                                        <a href="{% url 'orders:order_detail' order_number='12344' %}" class="btn btn-sm btn-outline-primary">Detalhes</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#12343</td>
+                                    <td>15/04/2023</td>
+                                    <td><span class="badge badge-success">Entregue</span></td>
+                                    <td>R$ 129,90</td>
+                                    <td>
+                                        <a href="{% url 'orders:order_detail' order_number='12343' %}" class="btn btn-sm btn-outline-primary">Detalhes</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#12342</td>
+                                    <td>02/04/2023</td>
+                                    <td><span class="badge badge-success">Entregue</span></td>
+                                    <td>R$ 199,90</td>
+                                    <td>
+                                        <a href="{% url 'orders:order_detail' order_number='12342' %}" class="btn btn-sm btn-outline-primary">Detalhes</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#12341</td>
+                                    <td>20/03/2023</td>
+                                    <td><span class="badge badge-success">Entregue</span></td>
+                                    <td>R$ 349,70</td>
+                                    <td>
+                                        <a href="{% url 'orders:order_detail' order_number='12341' %}" class="btn btn-sm btn-outline-primary">Detalhes</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#12340</td>
+                                    <td>05/03/2023</td>
+                                    <td><span class="badge badge-success">Entregue</span></td>
+                                    <td>R$ 159,80</td>
+                                    <td>
+                                        <a href="{% url 'orders:order_detail' order_number='12340' %}" class="btn btn-sm btn-outline-primary">Detalhes</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#12339</td>
+                                    <td>18/02/2023</td>
+                                    <td><span class="badge badge-success">Entregue</span></td>
+                                    <td>R$ 279,90</td>
+                                    <td>
+                                        <a href="{% url 'orders:order_detail' order_number='12339' %}" class="btn btn-sm btn-outline-primary">Detalhes</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#12338</td>
+                                    <td>05/02/2023</td>
+                                    <td><span class="badge badge-success">Entregue</span></td>
+                                    <td>R$ 99,90</td>
+                                    <td>
+                                        <a href="{% url 'orders:order_detail' order_number='12338' %}" class="btn btn-sm btn-outline-primary">Detalhes</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Paginação -->
+                    <nav aria-label="Navegação de página" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Anterior</a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Próximo</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

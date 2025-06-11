@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block title %}Meus Endereços - E-commerce Template{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Sidebar da Conta -->
+        <div class="col-lg-3 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Minha Conta</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'users:profile' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user mr-2"></i> Perfil
+                    </a>
+                    <a href="{% url 'orders:order_list' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-shopping-bag mr-2"></i> Meus Pedidos
+                    </a>
+                    <a href="{% url 'users:address_list' %}" class="list-group-item list-group-item-action active">
+                        <i class="fas fa-map-marker-alt mr-2"></i> Endereços
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-heart mr-2"></i> Lista de Desejos
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-credit-card mr-2"></i> Métodos de Pagamento
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-bell mr-2"></i> Notificações
+                    </a>
+                    <a href="{% url 'account_logout' %}" class="list-group-item list-group-item-action text-danger">
+                        <i class="fas fa-sign-out-alt mr-2"></i> Sair
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Conteúdo Principal -->
+        <div class="col-lg-9">
+            <div class="card">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Meus Endereços</h5>
+                    <a href="{% url 'users:address_add' %}" class="btn btn-primary">
+                        <i class="fas fa-plus mr-1"></i> Adicionar Endereço
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Endereço 1 -->
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100 border-primary">
+                                <div class="card-header bg-white">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h6 class="mb-0">Endereço Principal</h6>
+                                        <span class="badge badge-primary">Principal</span>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <p class="mb-1">João Silva</p>
+                                    <p class="mb-1">Av. Paulista, 1000, Apto 123</p>
+                                    <p class="mb-1">Bela Vista</p>
+                                    <p class="mb-1">São Paulo - SP</p>
+                                    <p class="mb-1">CEP: 01310-100</p>
+                                    <p class="mb-0">Telefone: (11) 98765-4321</p>
+                                </div>
+                                <div class="card-footer bg-white">
+                                    <div class="d-flex justify-content-between">
+                                        <a href="{% url 'users:address_edit' pk=1 %}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-edit mr-1"></i> Editar
+                                        </a>
+                                        <a href="{% url 'users:address_delete' pk=1 %}" class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash-alt mr-1"></i> Excluir
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Endereço 2 -->
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100">
+                                <div class="card-header bg-white">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h6 class="mb-0">Endereço de Trabalho</h6>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <p class="mb-1">João Silva</p>
+                                    <p class="mb-1">Rua Augusta, 500, Sala 45</p>
+                                    <p class="mb-1">Consolação</p>
+                                    <p class="mb-1">São Paulo - SP</p>
+                                    <p class="mb-1">CEP: 01304-000</p>
+                                    <p class="mb-0">Telefone: (11) 3456-7890</p>
+                                </div>
+                                <div class="card-footer bg-white">
+                                    <div class="d-flex justify-content-between">
+                                        <a href="{% url 'users:address_edit' pk=2 %}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-edit mr-1"></i> Editar
+                                        </a>
+                                        <a href="{% url 'users:address_delete' pk=2 %}" class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash-alt mr-1"></i> Excluir
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Adicionar Novo Endereço (Card) -->
+                        <div class="col-md-6">
+                            <div class="card h-100 border-dashed">
+                                <div class="card-body d-flex flex-column align-items-center justify-content-center text-center">
+                                    <i class="fas fa-plus-circle fa-3x text-muted mb-3"></i>
+                                    <h5>Adicionar Novo Endereço</h5>
+                                    <p class="text-muted">Adicione um novo endereço para entrega ou cobrança</p>
+                                    <a href="{% url 'users:address_add' %}" class="btn btn-outline-primary mt-2">
+                                        <i class="fas fa-plus mr-1"></i> Adicionar Endereço
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_css %}
+<style>
+    .border-dashed {
+        border-style: dashed;
+        border-width: 2px;
+        border-color: #dee2e6;
+    }
+</style>
+{% endblock %}
+{% endblock %}
+
