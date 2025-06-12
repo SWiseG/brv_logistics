@@ -1,6 +1,11 @@
 {
   "loading": "Loading...",
   "navbar": {
+    "welcome": "Hello",
+    "make-login": "make login",
+    "update-cep": "Update PostalCode",
+    "welcome-title-drop": "Account and Options",
+    "cart": "Cart",
     "localize-title": "Send to",
     "localize-address-not-found": "No Address",
     "products": "Catalog",

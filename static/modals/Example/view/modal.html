@@ -1,0 +1,103 @@
+<div class="modal-container example-modal">
+    <div class="modal-content p-4">
+        <div class="modal-header border-0">
+            <span class="modal-title" data-modal-title>Formulário Exemplo</span>
+        </div>
+
+        <div class="modal-body" data-modal-body>
+            <form id="example-form">
+                <!-- Campo de texto -->
+                <div class="mb-3">
+                    <label for="nome" class="form-label">Nome</label>
+                    <input type="text" class="form-control" id="nome" placeholder="Digite seu nome">
+                </div>
+
+                <!-- Campo de e-mail -->
+                <div class="mb-3">
+                    <label for="email" class="form-label">E-mail</label>
+                    <input type="email" class="form-control" id="email" placeholder="exemplo@email.com">
+                </div>
+
+                <!-- Campo de senha -->
+                <div class="mb-3">
+                    <label for="senha" class="form-label">Senha</label>
+                    <input type="password" class="form-control" id="senha">
+                </div>
+
+                <!-- Campo de número -->
+                <div class="mb-3">
+                    <label for="idade" class="form-label">Idade</label>
+                    <input type="number" class="form-control" id="idade">
+                </div>
+
+                <!-- Campo de arquivo -->
+                <div class="mb-3">
+                    <label for="arquivo" class="form-label">Upload de Arquivo</label>
+                    <input class="form-control" type="file" id="arquivo">
+                </div>
+
+                <!-- Select -->
+                <div class="mb-3">
+                    <label for="estado" class="form-label">Estado</label>
+                    <select class="form-select" id="estado">
+                    <option selected>Escolha...</option>
+                    <option value="sp">São Paulo</option>
+                    <option value="rj">Rio de Janeiro</option>
+                    </select>
+                </div>
+
+                <!-- Select múltiplo -->
+                <div class="mb-3">
+                    <label for="interesses" class="form-label">Interesses</label>
+                    <select multiple class="form-select" id="interesses">
+                    <option>Programação</option>
+                    <option>Design</option>
+                    <option>Marketing</option>
+                    </select>
+                </div>
+
+                <!-- Textarea -->
+                <div class="mb-3">
+                    <label for="mensagem" class="form-label">Mensagem</label>
+                    <textarea class="form-control" id="mensagem" rows="3"></textarea>
+                </div>
+
+                <!-- Checkbox -->
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="check1">
+                    <label class="form-check-label" for="check1">Aceito os termos</label>
+                </div>
+
+                <!-- Radio buttons -->
+                <div class="mb-3">
+                    <label class="form-label d-block">Gênero:</label>
+                    <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="genero" id="masculino" value="masculino">
+                    <label class="form-check-label" for="masculino">Masculino</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="genero" id="feminino" value="feminino">
+                    <label class="form-check-label" for="feminino">Feminino</label>
+                    </div>
+                </div>
+
+                <!-- Switch (checkbox estilizado) -->
+                <div class="mb-3 form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="modoEscuro">
+                    <label class="form-check-label" for="modoEscuro">Modo Escuro</label>
+                </div>
+
+                <!-- Range (slider) -->
+                <div class="mb-3">
+                    <label for="volume" class="form-label">Volume</label>
+                    <input type="range" class="form-range" min="0" max="100" id="volume">
+                </div>
+            </form>
+        </div>
+
+        <div class="modal-footer border-0 mt-3" data-modal-footer>
+            <button type="button" id="modal-send" class="btn btn-primary" data-modal-send>Enviar</button>
+            <button type="button" id="modal-cancel" class="btn btn-danger" data-modal-cancel>Cancelar</button>
+        </div>
+    </div>
+</div>

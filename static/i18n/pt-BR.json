@@ -1,6 +1,11 @@
 {
   "loading": "Carregando...",
   "navbar": {
+    "welcome": "Olá",
+    "make-login": "faça seu login",
+    "update-cep": "Atualizar CEP",
+    "welcome-title-drop": "Conta e Opções",
+    "cart": "Carrinho",
     "localize-title": "Enviar para ",
     "localize-address-not-found": "Sem Localização",
     "products": "Catálogo",

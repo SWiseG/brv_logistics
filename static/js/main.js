@@ -436,7 +436,7 @@ window.require = (scripts, callback) => {
 // Main
 document.addEventListener('DOMContentLoaded', async function() {
     // Inicializar módulos
-    await require('global, utils, bindings, themes, translation', async (res) => {
+    await require('global, utils, message, bindings, themes, translation', async (res) => {
         // Global
         window.global = new Global();
 
@@ -464,6 +464,18 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Finally
         global.initHtml();
         utils.loading(false);
+
+    
+        modal.open({
+            htmlUrl: '/static/modals/Example/view/modal.html',
+            scriptUrl: '/static/modals/Example/script/modal.js',
+            params: { nome: 'Usuário' },
+        }).then(result => {
+            console.log('Resultado do modal:', result);
+        }).catch(err => {
+            console.warn('Modal cancelado:', err);
+        });
+
     });
 
     FormValidation.init();

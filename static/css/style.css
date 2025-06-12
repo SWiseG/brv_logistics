@@ -188,12 +188,101 @@ subnav #subnav-controll .subnav-controll-list .subnav-item:active
     transform: translateY(-1px);
 }
 
-#navOptions {
+.navbar-settings {
     margin-left: auto;
     justify-content: flex-end;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    max-height: inherit;
+}
+
+.navbar-settings .navbar-nav {
+    height: 100%;
+    box-sizing: border-box;
+    max-height: inherit;
+    gap: 34px;
+}
+
+.navbar-settings .navbar-nav .nav-item.cart,
+.navbar-settings .navbar-nav .nav-item.dropdown {
+    min-width: 130px;
+    padding: 0 !important;
+}
+
+.navbar-settings .navbar-nav .nav-item.cart .nav-link,
+.navbar-settings .navbar-nav .nav-item.dropdown .nav-link {
+    padding: 0 !important;
+}
+
+.navbar-settings .navbar-nav .nav-item.cart .nav-link i {
+    font-size: 30px;
+    line-height: 32px;
+    color: var(--primary-text) !important;
+}
+
+.navbar-settings .navbar-nav .nav-item.cart .nav-link span {
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary-text) !important;
+}
+
+.navbar-settings .navbar-nav .nav-item.cart .nav-link #cart-count {
+    text-align: center;
+    margin: 0px;
+    background: var(--fb-warning);
+    border: 2px solid var(--fb-warning-lighter);
+    position: relative;
+    font-size: 10px;
+    padding: 2px 5px;
+    top: -18px;
+    left: -20px;
+    color: var(--fb-danger-darker) !important;
+}
+
+.navbar-settings .navbar-nav .nav-item.dropdown .nav-link {
+    padding: 0 !important;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    flex: 1;
+    place-items: flex-start;
+    place-content: center;
+    line-height: 16px;
+}
+
+.navbar-settings .navbar-nav .nav-item.dropdown .nav-link .navbar-settings-container-welcome {
+    font-size: 12px;
+    height: fit-content;
+    width: fit-content;
+    display: flex;
+    color: var(--primary-text) !important;
+    padding: 0;
+    text-align: center;
+}
+
+.navbar-settings .navbar-nav .nav-item.dropdown .nav-link .navbar-settings-container-title {
+    font-size: 14px;
+    font-weight: 600;
+    height: fit-content;
+    width: fit-content;
+    display: flex;
+    gap: 0px;
+    color: var(--primary-text) !important;
+    align-items: center;
+}
+.navbar-settings .navbar-nav .nav-item.dropdown .nav-link.dropdown-toggle::after {
+    padding: 0 !important;
+    display: block;
+    position: absolute;
+    right: 4px;
+    bottom: 6px;
+    margin: 0 !important;
 }
 
 .navbar-localize {
+    min-width: 170px;
     box-sizing: border-box;
     max-height: inherit;
     height: 100%;
@@ -201,6 +290,7 @@ subnav #subnav-controll .subnav-controll-list .subnav-item:active
     padding-inline: 12px;
     display: flex;
     flex-direction: column;
+    line-height: 16px;
 }
 
 .navbar-localize  .navbar-localize-container-title {
@@ -343,9 +433,11 @@ subnav #subnav-controll .subnav-controll-list .subnav-item:active
 .btn {
     border-radius: 14px;
     font-weight: 500;
+    font-size: 14px;
     padding-inline: 8px;
     transition: all 0.3s ease;
-    border: 2px solid transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
     outline: 0 !important;
     outline-offset: 0 !important;
     box-shadow: none !important;
@@ -361,22 +453,22 @@ subnav #subnav-controll .subnav-controll-list .subnav-item:active
 .btn-primary:active,
 .btn-primary:hover {
     background: var(--primary-darker);
-    border-color: var(--primary);
+    border-color: var(--primary-darker);
     color: var(--primary-text);
 }
 
 .btn-outline-primary {
     background-color: transparent;
-    border-color: var(--primary-darker);
-    color: var(--primary-color);
+    border-color: var(--primary);
+    color: var(--primary-text);
 }
 
 .btn-outline-primary:focus, 
 .btn-outline-primary:active,
 .btn-outline-primary:hover {
-    background-color: var(--primary);
+    background-color: transparent;
     border-color: var(--primary-darker);
-    color: var(--primary-color);
+    color: var(--primary-text);
 }
 
 
@@ -389,23 +481,23 @@ subnav #subnav-controll .subnav-controll-list .subnav-item:active
 .btn-primary-darker:focus,
 .btn-primary-darker:active,
 .btn-primary-darker:hover {
-    background: var(--primary);
+    background: var(--primary-darker);
     border-color: var(--primary-darker);
     color: var(--primary-text);
 }
 
 .btn-outline-primary-darker {
     background-color: transparent;
-    border-color: var(--primary);
-    color: var(--primary-color);
+    border-color: var(--primary-darker);
+    color: var(--primary-text);
 }
 
 .btn-outline-primary-darker:focus, 
 .btn-outline-primary-darker:active,
 .btn-outline-primary-darker:hover {
-    background-color: var(--primary-darker);
-    border-color: var(--primary);
-    color: var(--primary-color);
+    background-color: transparent;
+    border-color: var(--primary-darker);
+    color: var(--primary-text);
 }
 
 
@@ -416,57 +508,54 @@ subnav #subnav-controll .subnav-controll-list .subnav-item:active
 }
 
 .btn-secondary:focus,
-.btn-secondary:active, 
+.btn-secondary:active,
 .btn-secondary:hover {
     background: var(--neutral-darker);
-    border-color: var(--neutral);
+    border-color: var(--neutral-darker);
     color: var(--neutral-text);
 }
 
 .btn-outline-secondary {
     background-color: transparent;
-    border-color: var(--neutral-darker);
-    color: var(--neutral-color);
+    border-color: var(--neutral);
+    color: var(--neutral-text);
 }
 
 .btn-outline-secondary:focus, 
 .btn-outline-secondary:active,
 .btn-outline-secondary:hover {
-    background-color: var(--neutral);
+    background-color: transparent;
     border-color: var(--neutral-darker);
-    color: var(--neutral-color);
+    color: var(--neutral-text);
 }
 
-
 .btn-danger {
-    background: var(--danger);
-    border-color: var(--danger-darker);
-    color: var(--danger-text);
+    background: var(--fb-danger);
+    border-color: var(--fb-danger-darker);
+    color: var(--fb-danger-text);
 }
 
 .btn-danger:focus,
 .btn-danger:active,
 .btn-danger:hover {
-    background: var(--danger-darker);
-    border-color: var(--danger);
-    color: var(--danger-text);
+    background: var(--fb-danger-darker);
+    border-color: var(--fb-danger-darker);
+    color: var(--fb-danger-text);
 }
 
 .btn-outline-danger {
     background-color: transparent;
-    border-color: var(--danger-darker);
-    color: var(--danger-color);
+    border-color: var(--fb-danger);
+    color: var(--fb-danger-text);
 }
 
 .btn-outline-danger:focus, 
 .btn-outline-danger:active,
 .btn-outline-danger:hover {
-    background-color: var(--danger);
-    border-color: var(--danger-darker);
-    color: var(--danger-color);
+    background-color: transparent;
+    border-color: var(--fb-danger-darker);
+    color: var(--fb-danger-text);
 }
-
-
 
 /* Jumbotron */
 .jumbotron {
@@ -518,18 +607,21 @@ subnav #subnav-controll .subnav-controll-list .subnav-item:active
 /* Formulários */
 .form-control {
     border-radius: 8px;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--neutral-border);
     padding: 0.75rem 1rem;
     transition: all 0.3s ease;
+    color: var(--off-white-text) !important;
+    background-color: var(--off-white) !important;
 }
 
 .form-control:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    outline: 0 !important;
+    border-color: var(--primary-border);
+    box-shadow: none !important;
 }
 
 .custom-control-label::before {
-    border-radius: 4px;
+    border-radius: 8px;
 }
 
 .custom-control-input:checked ~ .custom-control-label::before {
@@ -815,7 +907,7 @@ subnav #subnav-controll .subnav-controll-list .subnav-item:active
     max-width: 300px;
     padding: 1rem;
     margin-bottom: 1rem;
-    border-radius: 4px;
+    border-radius: 8px;
     box-shadow: 0 4px 6px var(--shadow-color);
     display: inline-flex;
     align-items: center;
@@ -915,14 +1007,55 @@ subnav #subnav-controll .subnav-controll-list .subnav-item:active
 
 /* Estilos para dropdowns */
 .dropdown-menu {
+    transition: max-height .5s linear;
     border-radius: 8px;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 5px 15px var(--shadow-color);
+    box-shadow: 0 0px 2px var(--shadow-color);
+    background: var(--white);
+
+    display: block !important;
+    max-height: 0px;
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+    border: 0px;
+
+    &.show {
+        transition: max-height .5s linear;
+        max-height: 2000px;
+    }
+
+    /* &::before {
+        display: block;
+        position: absolute;
+        top: -16px;
+        right: 72px;
+        color: var(--white);
+        font-family: 'Font Awesome 5 Free';
+        content: "\f0d7";
+        font-size: 18px;
+        font-weight: 900;
+        transform: rotate(180deg);
+    } */
+}
+
+.dropdown-item {
+    transition: all 0.2s ease;
+    font-size: 14px;
+    color: var(--white-text);
+    font-weight: 500;
+    line-height: 24px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .dropdown-item:hover {
-    background-color: var(--footer-background-color);
-    color: var(--primary-color);
+    background-color: var(--neutral-lightest);
+    color: var(--white-text);
+}
+.dropdown-item.disabled  {
+    background-color: var(--neutral-lightest);
+    color: var(--white-text);
 }
 
 /* Estilos para progress bars */
@@ -999,3 +1132,91 @@ subnav #subnav-controll .subnav-controll-list .subnav-item:active
     color: var(--primary-color);
 }
 
+/* Estilos para modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1050;
+    display: none;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    outline: 0;
+    background: rgba(0,0,0,0.4);
+    max-width: 100vw;
+    max-height: 100vh;
+}
+
+.modal-dialog {
+    transform: translateY(-30px);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+
+    margin: 0 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+.modal.fade {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.modal.fade.show {
+  opacity: 1;
+}
+
+.modal.fade.show .modal-dialog {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.custom-fade .modal-dialog {
+    transform: translateY(-50px);
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
+}
+
+.custom-fade.show .modal-dialog {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.modal .modal-dialog {
+    .modal-container {
+        place-items: center;
+        justify-items: center;
+        width: 100%;
+        height: 100%;
+
+        &.example-modal {
+            .modal-content {
+                max-height: 550px;
+                max-width: 530px;
+                padding: 0px !important;
+
+                .modal-header {
+                    background: var(--primary);
+                    font-weight: 500;
+                    color: var(--primary-text);
+
+                    span {
+                        font-size: 14px;
+                        font-weight: 600;
+                    }
+                }
+                .modal-body {
+                    background: var(--white);
+                    overflow: auto;
+                }
+                .modal-footer {
+                    background: var(--off-white);
+                    margin: 0px !important;
+                    border-top: 1px solid var(--neutral-border) !important;
+                }
+            }
+        }
+        
+    }
+}
