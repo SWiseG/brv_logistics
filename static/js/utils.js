@@ -49,9 +49,9 @@ function Utils() {
             }
 
             var remove = (toast) => {
-                const index = Main.toasts.indexOf(toast);
+                const index = global.toasts.indexOf(toast);
                 if (index !== -1) {
-                    Main.toasts.splice(index, 1);
+                    global.toasts.splice(index, 1);
                     toast.remove();
                     recalculate();
                 }
@@ -59,9 +59,9 @@ function Utils() {
 
             var recalculate = () => {
                 let offset = 0;
-                Main.toasts.forEach((toast, index) => {
+                global.toasts.forEach((toast, index) => {
                     toast.style.top = `${offset}px`;
-                    offset += toast.offsetHeight + 10; // espaço entre Main.toasts
+                    offset += toast.offsetHeight + 10; // espaço entre global.toasts
                 });
             }
             const toast = document.createElement("div");
@@ -71,7 +71,7 @@ function Utils() {
             // Adiciona ao DOM
             var toastContainer = document.getElementById("notification-container");
             toastContainer.appendChild(toast);
-            Main.toasts.push(toast);
+            global.toasts.push(toast);
 
             // Recalcula posições
             recalculate();

@@ -3,7 +3,7 @@ function Translations() {
     return {
         async init() {
             // Internacionalização: Carrega idioma salvo ou padrão
-            const savedLang = localStorage.getItem('lang') || 'pt-BR';
+            const savedLang = localStorage.getItem('lang') || 'en-US';
             document.getElementById('data-lang').value = savedLang;
 
             const response = await fetch(`/static/i18n/${savedLang}.json`);
