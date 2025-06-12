@@ -117,7 +117,7 @@ window.bindings = {
 
       bindingsList.forEach(binding => {
         const [action, key] = binding.split(':').map(s => s.trim());
-        const obs = bindings.observables[key] || key;
+        var obs = bindings.observables[key] || key;
 
         if (action === 'text') {
           if (typeof obs === 'function' && obs.subscribe) {
@@ -132,12 +132,47 @@ window.bindings = {
           }
         }
         else if (action === 'click') {
-          debugger
-          if(obs.startsWith())
-          if (typeof obs === 'function') {
-            el.addEventListener('click', () => obs());
+          if (typeof key === 'string') {
+            let methodStr = key.trim();
+            let func = null;
+
+            // Remove $root. se existir
+            if (methodStr.startsWith('$root.') && window['ctor']) {
+              methodStr = methodStr.replace('$root.', '');
+              func = ctor[methodStr];
+            } 
+            else {
+              // Verifica se começa com alguma palavra legada
+              const legacy = legacyWords.find(word => methodStr.startsWith(word + '.'));
+
+              if (legacy) {
+                const parts = methodStr.split('.');
+                const objName = parts[0]; // Ex: 'global'
+                const methodName = parts.slice(1).join('.'); // Ex: 'minhaFuncao'
+
+                const obj = window[objName];
+                func = obj && typeof obj[methodName] === 'function' ? obj[methodName].bind(obj) : null;
+              } else {
+                // Se não for $root. nem legacy, procura direto em window
+                func = typeof window[methodStr] === 'function' ? window[methodStr] : null;
+              }
+            }
+
+            // Atribui o click se for função válida
+            if (typeof func === 'function') {
+              if (!el._bindingClickHandler || el._bindingClickHandler.toString() !== func.toString()) {
+                if (el._bindingClickHandler) {
+                  el.removeEventListener('click', el._bindingClickHandler);
+                }
+
+                const handler = () => func();
+                el.addEventListener('click', handler);
+                el._bindingClickHandler = handler;
+              }
+            }
           }
         }
+
         else if (action === 'component') {
           const componentFn = bindings.components[key];
           if (typeof componentFn === 'function') {
@@ -149,5 +184,9 @@ window.bindings = {
         }
       });
     });
+  },
+
+  reload: () => {
+    return bindings.init();
   }
 };

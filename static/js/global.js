@@ -17,6 +17,26 @@ function Global() {
         initHtml: () => {
             $('html').removeClass('hidden-content-html');
         },
+        mixinMergeStrategy: (constructor, mixin) => {
+            const result = { ...constructor };
+
+            for (const key in mixin) {
+                if (!mixin.hasOwnProperty(key)) continue;
+
+                const val1 = constructor[key];
+                const val2 = mixin[key];
+
+                if (val1 === undefined) {
+                    result[key] = val2;
+                } else if (typeof val1 === 'object' && typeof val2 === 'object' && val1 !== null && val2 !== null) {
+                    result[key] = mergeRespectingFirst(val1, val2); // recursão para objetos aninhados
+                } else if (val1 !== val2) {
+                    result[key] = val1;
+                };
+            };
+
+            return result;
+        },
         applyMixinArgs: (name, module) => {
             ctor = {};
             if(module) return ctor = module.ctor;
@@ -33,6 +53,10 @@ function Global() {
             if(moduleLoaded.hasOwnProperty('init') && typeof moduleLoaded['init'] === 'function') 
                 moduleLoaded['init'](name, path, dependencies, callback, params);
 
+            function finallyThen() {
+                // Reload Bindings
+                return bindings.reload();
+            }
             async function start(module) {
                 global.applyMixinArgs(module.name,module);
                 if(moduleLoaded.hasOwnProperty('checkParams') && typeof moduleLoaded['checkParams'] === 'function') 
@@ -44,13 +68,13 @@ function Global() {
                 return module.started = true;
             }
 
-            async function register(name, path, dependencies, moduleLoaded, params) {
+            async function register(name, path, dependencies, finalModule, params) {
                 var module = {
                     name,
                     path,
                     dependencies,
                     params,
-                    ctor: moduleLoaded,
+                    ctor: finalModule,
                     started: false,
                     createdAt: new Date()
                 };
@@ -70,14 +94,16 @@ function Global() {
                         if(!mdFounded) throw Error(`Could not load dependencie from ${name}. Dependencie: ${dp}`);
                         if(!mdFounded.started) await start(mdFounded);
                         loadedDependencies.modules.push(mdFounded);
-                        moduleLoaded.ctor = $.extend(moduleLoaded.ctor, mdFounded.ctor);
+                        moduleLoaded = global.mixinMergeStrategy(moduleLoaded, mdFounded.ctor);
                     });
                     registeredModule = await register(name, path, loadedDependencies, moduleLoaded, params);
+                    finallyThen();
                     return global.modules.push(registeredModule);
                 });
             }
             else {
                 registeredModule = await register(name, path, dependencies, moduleLoaded, params);
+                finallyThen();
                 return global.modules.push(registeredModule);
             };
         },
