@@ -9,9 +9,8 @@ class UserAdmin(BaseUserAdmin):
 
 @admin.register(Address)
 class AddressAdmin(admin.ModelAdmin):
-    list_display = ['user', 'street', 'city', 'state', 'zipcode', 'is_default']
+    list_display = ['user', 'street', 'city', 'state', 'postal_code', 'is_default']
     
 @admin.register(GroupType)
 class GroupTypeAdmin(admin.ModelAdmin):
     list_display = ['group', 'is_adm', 'is_dev']
-

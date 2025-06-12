@@ -64,13 +64,6 @@ a:hover {
     width: 0px;
 }
 
-#notification-container {
-    position: fixed;
-    top: 4rem;
-    right: 1rem;
-    z-index: 10000;
-}
-
 /* Header e Navegação */
 subnav {
     display: flex;
@@ -432,7 +425,7 @@ subnav #subnav-controll .subnav-controll-list .subnav-item:active
 /* Botões */
 .btn {
     border-radius: 14px;
-    font-weight: 500;
+    font-weight: 700;
     font-size: 14px;
     padding-inline: 8px;
     transition: all 0.3s ease;
@@ -441,11 +434,15 @@ subnav #subnav-controll .subnav-controll-list .subnav-item:active
     outline: 0 !important;
     outline-offset: 0 !important;
     box-shadow: none !important;
+
+    &.full {
+        width: 100%;
+    }
 }
 
 .btn-primary {
     background: var(--primary);
-    border-color: var(--primary-darker);
+    border-color: var(--primary);
     color: var(--primary-text);
 }
 
@@ -468,7 +465,7 @@ subnav #subnav-controll .subnav-controll-list .subnav-item:active
 .btn-outline-primary:hover {
     background-color: transparent;
     border-color: var(--primary-darker);
-    color: var(--primary-text);
+    color: var(--primary);
 }
 
 
@@ -481,29 +478,29 @@ subnav #subnav-controll .subnav-controll-list .subnav-item:active
 .btn-primary-darker:focus,
 .btn-primary-darker:active,
 .btn-primary-darker:hover {
-    background: var(--primary-darker);
-    border-color: var(--primary-darker);
+    background: var(--primary);
+    border-color: var(--primary);
     color: var(--primary-text);
 }
 
 .btn-outline-primary-darker {
     background-color: transparent;
     border-color: var(--primary-darker);
-    color: var(--primary-text);
+    color: var(--primary);
 }
 
 .btn-outline-primary-darker:focus, 
 .btn-outline-primary-darker:active,
 .btn-outline-primary-darker:hover {
     background-color: transparent;
-    border-color: var(--primary-darker);
-    color: var(--primary-text);
+    border-color: var(--primary);
+    color: var(--primary);
 }
 
 
 .btn-secondary {
     background: var(--neutral);
-    border-color: var(--neutral-darker);
+    border-color: var(--neutral);
     color: var(--neutral-text);
 }
 
@@ -518,7 +515,7 @@ subnav #subnav-controll .subnav-controll-list .subnav-item:active
 .btn-outline-secondary {
     background-color: transparent;
     border-color: var(--neutral);
-    color: var(--neutral-text);
+    color: var(--neutral);
 }
 
 .btn-outline-secondary:focus, 
@@ -526,15 +523,19 @@ subnav #subnav-controll .subnav-controll-list .subnav-item:active
 .btn-outline-secondary:hover {
     background-color: transparent;
     border-color: var(--neutral-darker);
-    color: var(--neutral-text);
+    color: var(--neutral);
 }
 
+.btn-cancel,
 .btn-danger {
     background: var(--fb-danger);
-    border-color: var(--fb-danger-darker);
+    border-color: var(--fb-danger);
     color: var(--fb-danger-text);
 }
 
+.btn-cancel:focus,
+.btn-cancel:active,
+.btn-cancel:hover,
 .btn-danger:focus,
 .btn-danger:active,
 .btn-danger:hover {
@@ -543,18 +544,22 @@ subnav #subnav-controll .subnav-controll-list .subnav-item:active
     color: var(--fb-danger-text);
 }
 
+.btn-outline-cancel,
 .btn-outline-danger {
     background-color: transparent;
     border-color: var(--fb-danger);
     color: var(--fb-danger-text);
 }
 
+.btn-outline-cancel:focus, 
+.btn-outline-cancel:active,
+.btn-outline-cancel:hover,
 .btn-outline-danger:focus, 
 .btn-outline-danger:active,
 .btn-outline-danger:hover {
     background-color: transparent;
     border-color: var(--fb-danger-darker);
-    color: var(--fb-danger-text);
+    color: var(--fb-danger);
 }
 
 /* Jumbotron */
@@ -901,80 +906,46 @@ subnav #subnav-controll .subnav-controll-list .subnav-item:active
 
 /* Estilos para notificações */
 .notification {
-    position: absolute;
-    right: 0;
-    min-width: 300px;
-    max-width: 300px;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px var(--shadow-color);
-    display: inline-flex;
-    align-items: center;
-    justify-content: flex-start;
-    background: var(--white);
-    color: var(--white-text);
     font-weight: 500;
-    border: 1px solid var(--neutral-border);
-    gap: 0.5rem;
-    transition: all 0.3s ease-in-out;
-    cursor: pointer;
-    opacity: 0;
-    white-space: break-spaces;
-    transform: translateY(-20px);
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 12px;
     line-break: anywhere;
+    
+    background: var(--neutral);
+    color: var(--neutral-text);
 
-    &.show {
-        opacity: 1;
-        transform: translateY(0);
+    border: 1px solid transparent;
+    border-color: var(--neutral-border);
+
+    &.iconed {
+        padding-left: 40px;
+        .icon {
+            position: absolute;
+            left: 10px;
+            font-size: 18px;
+            top: 35%;
+        }
+    }
+    &.info {
+        background: var(--fb-info);
+        color: var(--fb-info-text);
+        border-color: var(--fb-info);
+    }
+    &.error {
+        background: var(--fb-danger);
+        color: var(--fb-danger-text);
+        border-color: var(--fb-danger);
+    }
+    &.warning {
+        background: var(--fb-warning);
+        color: var(--fb-warning-text);
+        border-color: var(--fb-warning);
+    }
+    &.success {
+        background: var(--fb-success);
+        color: var(--fb-success-text);
+        border-color: var(--fb-success); 
     }
 
-    &.hide {
-        opacity: 1;
-        transform: translateY(-20px);
-    }
-
-    &::before {
-        transition: all 0.3s ease-in-out;
-        content: var(--fb-info-icon);
-        font-family: var(--font-family-awesome);
-        color: var(--neutral-color);
-        height: 30px;
-        width: 30px;
-        font-weight: 900;
-        display: inline-block;
-        font-size: 18px;
-    }
-}
-
-.notification.info {
-    &::before {
-        color: var(--fb-info-color);
-    }
-}
-
-.notification.success {
-    &::before {
-        content: var(--fb-success-icon);
-        color: var(--fb-success-color);
-    }
-}
-
-.notification.danger,
-.notification.error {
-    &::before {
-        content: var(--fb-danger-icon);
-        color: var(--fb-danger-color);
-    }
-}
-
-.notification.warning {
-    &::before {
-        content: var(--fb-warning-icon);
-        color: var(--fb-warning-color);
-    }
 }
 
 /* Estilos para modais */
@@ -1024,18 +995,48 @@ subnav #subnav-controll .subnav-controll-list .subnav-item:active
         max-height: 2000px;
     }
 
-    /* &::before {
-        display: block;
-        position: absolute;
-        top: -16px;
-        right: 72px;
-        color: var(--white);
-        font-family: 'Font Awesome 5 Free';
-        content: "\f0d7";
-        font-size: 18px;
-        font-weight: 900;
-        transform: rotate(180deg);
-    } */
+    &.navbar-dropdown-settings {
+        left: -160px;
+        margin-top: 10px;
+        .container-list-options {
+            height: 200px;
+            width: 300px;
+
+            &.login {
+                height: 100px;
+                padding: 12px;
+
+                .btn {
+                    font-size: 12px;
+                    text-transform: lowercase;
+                    &::first-letter {
+                        text-transform: uppercase;
+                    }
+
+                }
+                
+                .container-new-user {
+                    display: flex;
+                    text-align: center;
+                    width: 100%;
+                    height: 100%;
+                    padding-block: 12px;
+                    justify-content: center;
+                    gap: 4px;
+
+                    .new-client-msg {
+                        font-size: 12px;
+                        color: var(--white-text);
+                    }
+                    .new-client-link {
+                        font-size: 12px;
+                        color: var(--fb-info);
+                        text-decoration: underline;
+                    }
+                }
+            }
+        }
+    }
 }
 
 .dropdown-item {

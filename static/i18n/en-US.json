@@ -1,8 +1,19 @@
 {
   "loading": "Loading...",
+  "notification": {
+    "neutral": "System message",
+    "info": "System message",
+    "success": "Operation Completed",
+    "warning": "Warning",
+    "error": "Error",
+    "danger": "Error"
+  },
   "navbar": {
     "welcome": "Hello",
     "make-login": "make login",
+    "try-login": "Make the login",
+    "make-register": "Start here",
+    "new-user-question": "New customer?",
     "update-cep": "Update PostalCode",
     "welcome-title-drop": "Account and Options",
     "cart": "Cart",

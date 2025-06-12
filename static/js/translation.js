@@ -14,13 +14,13 @@ function Translations() {
         },
 
         applyTranslations() {
-            document.querySelectorAll('[data-i18n]').forEach(translate._translate);
+            document.querySelectorAll('[data-i18n]').forEach(translate._getTranslation);
             const translatorObserver = new MutationObserver(mutations => {
                 for (const mutation of mutations) {
                     for (const node of mutation.addedNodes) {
                         if (node.nodeType === 1) {
-                            if (node.hasAttribute('data-i18n')) translate._translate(node);
-                            node.querySelectorAll?.('[data-i18n]').forEach(translate._translate);
+                            if (node.hasAttribute('data-i18n')) translate._getTranslation(node);
+                            node.querySelectorAll?.('[data-i18n]').forEach(translate._getTranslation);
                         };
                     };
                 };
@@ -32,11 +32,15 @@ function Translations() {
             });
         },
 
-        _translate(el) {
+        _getTranslation(el) {
             const key = el.getAttribute('data-i18n');
-            const text = key.split('.').reduce((o, i) => o?.[i], translations);
+            const text = translate._translate(key);
             if (text) el.textContent = text;
-        }
+        },
 
+        _translate(message) {
+            const text = message.split('.').reduce((o, i) => o?.[i], translations)
+            return !!text && '' !== text ? text : message;
+        }
     };
 };

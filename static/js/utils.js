@@ -37,59 +37,6 @@ function Utils() {
             };
         },
 
-        // Mostrar notificação
-        notify: function(message, type = 'success') {
-            var close = (toast) => {
-                toast.classList.remove("show");
-                toast.classList.add("hide");
-
-                toast.addEventListener("transitionend", () => {
-                    remove(toast);
-                }, { once: true });
-            }
-
-            var remove = (toast) => {
-                const index = global.toasts.indexOf(toast);
-                if (index !== -1) {
-                    global.toasts.splice(index, 1);
-                    toast.remove();
-                    recalculate();
-                }
-            }
-
-            var recalculate = () => {
-                let offset = 0;
-                global.toasts.forEach((toast, index) => {
-                    toast.style.top = `${offset}px`;
-                    offset += toast.offsetHeight + 10; // espaço entre global.toasts
-                });
-            }
-            const toast = document.createElement("div");
-            toast.className = `notification ${type}`;
-            toast.innerText = message;
-
-            // Adiciona ao DOM
-            var toastContainer = document.getElementById("notification-container");
-            toastContainer.appendChild(toast);
-            global.toasts.push(toast);
-
-            // Recalcula posições
-            recalculate();
-
-            // Trigger entrada (deixar o browser "sentir" o appendChild primeiro)
-            setTimeout(() => {
-                toast.classList.add("show");
-
-                // Fecha após 10 segundos
-                setTimeout(() => close(toast), 10000);
-
-                // Clique para fechar
-                toast.addEventListener("click", () => close(toast));
-            }, 10);
-
-
-        },
-
         // Loading
         loading: function(action=true) {
             var loading = document.getElementById('global-loader');

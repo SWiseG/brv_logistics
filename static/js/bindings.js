@@ -99,6 +99,17 @@ window.bindings = {
   // Inicializa os bindings no DOM (ou subtree)
   init(root = document) {
     root.querySelectorAll('[data-bind]').forEach(el => {
+      const legacyWords = [
+        'global',
+        'bindings',
+        'main',
+        'message',
+        'navbar',
+        'notify',
+        'themes',
+        'translations',
+        'utils',
+      ];
       const bindStr = el.getAttribute('data-bind');
       if (!bindStr) return;
 
@@ -106,7 +117,7 @@ window.bindings = {
 
       bindingsList.forEach(binding => {
         const [action, key] = binding.split(':').map(s => s.trim());
-        const obs = bindings.observables[key];
+        const obs = bindings.observables[key] || key;
 
         if (action === 'text') {
           if (typeof obs === 'function' && obs.subscribe) {
@@ -121,6 +132,8 @@ window.bindings = {
           }
         }
         else if (action === 'click') {
+          debugger
+          if(obs.startsWith())
           if (typeof obs === 'function') {
             el.addEventListener('click', () => obs());
           }

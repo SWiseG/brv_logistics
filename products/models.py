@@ -1,7 +1,20 @@
-from django.db import models
 from django.utils.text import slugify
+from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.contrib.postgres.fields import JSONField
+from django.db.models import Q, CheckConstraint, UniqueConstraint
+from decimal import Decimal
 
-class Category(models.Model):
+from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.contrib.postgres.fields import JSONField
+from django.db.models import Q, CheckConstraint, UniqueConstraint
+from decimal import Decimal
+from models.base import BaseModel
+from models.validators import validate_sku, validate_positive_decimal, validate_phone
+from users.models import User
+
+class Category(BaseModel):
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
     description = models.TextField(blank=True, null=True)
@@ -10,6 +23,10 @@ class Category(models.Model):
     is_active = models.BooleanField(default=True)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
+    
+    # SEO
+    meta_title = models.CharField(max_length=200, blank=True)
+    meta_description = models.TextField(blank=True)
     
     def save(self, *args, **kwargs):
         if not self.slug:

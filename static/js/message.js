@@ -1,23 +1,24 @@
 window.modal = (function () {
     let modalStack = [];
 
-    function loadHtml(url) {
-        return fetch(url).then(r => {
+    function loadHtml(view) {
+        return fetch(`/static/modals/${view}/view/modal.html`).then(r => {
             if (!r.ok) throw new Error("Erro ao carregar HTML do modal.");
             return r.text();
         });
     }
 
-    function loadScript(url) {
+    function loadScript(view) {
         return new Promise((resolve, reject) => {
-            if (!url) return resolve();
-            const existing = document.querySelector(`script[src="${url}"]`);
+            if (!view) return resolve();
+            var viewExpression = `/static/modals/${view}/view/modal.js`;
+            const existing = document.querySelector(`script[src="${viewExpression}"]`);
             if (existing) {
                 resolve();
                 return;
             }
             const script = document.createElement('script');
-            script.src = url;
+            script.src = viewExpression;
             script.onload = resolve;
             script.onerror = reject;
             document.body.appendChild(script);
@@ -61,25 +62,14 @@ window.modal = (function () {
         });
     }
 
-    async function open({ htmlUrl, scriptUrl = null, params = {}, title = null, showSend = true, showCancel = true, sendText = 'Enviar', cancelText = 'Cancelar' }) {
-        const html = await loadHtml(htmlUrl);
-        await loadScript(scriptUrl);
+    async function open({ view, params = {} }) {
+        const html = await loadHtml(view);
+        await loadScript(view);
 
         // Oculta o modal anterior, se houver
-        if (modalStack.length) {
-            await modalStack[modalStack.length - 1].modalEl.modal('hide');
-        }
+        if (modalStack.length) await modalStack[modalStack.length - 1].modalEl.modal('hide');
 
         const modalEl = createModalWrapper(html);
-        const modalContent = modalEl.find('.modal-content');
-
-        // Setar título e botões se forem dinâmicos
-        if (title) modalContent.find('.modal-title').text(title);
-        const btnSend = modalContent.find('#modal-send');
-        const btnCancel = modalContent.find('#modal-cancel');
-
-        showSend ? btnSend.text(sendText).show() : btnSend.hide();
-        showCancel ? btnCancel.text(cancelText).show() : btnCancel.hide();
 
         // Chamada da função activate antes de mostrar
         callFunctionIfExists('activate', params);

@@ -9,7 +9,7 @@
                     E-commerce Template
                 {% endif %}
             </a>
-            <a class="navbar-localize" href="#">
+            <a class="navbar-localize" href="#" data-bind="click: onAddress">
                 <div class="navbar-localize-container-title">
                     {% if user.is_authenticated %}
                         <span class="navbar-localize-title" data-i18n="navbar.localize-title"></span>
@@ -34,7 +34,7 @@
                             {% endwith %}
                         {% endwith %}
                     {% else %}
-                        <p data-i18n="navbar.localize-address-not-found"></p>
+                        <p data-i18n="navbar.localize-address-not-found" openLoginModal></p>
                     {% endif %}
                 </div>
             </a>
@@ -56,12 +56,13 @@
                                     <span data-i18n="navbar.welcome-title-drop"></span>
                                 </div>
                             </a>
-                            <div class="dropdown-menu has-before" aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="{% url 'users:profile' %}">Meu Perfil</a>
+                            <div class="dropdown-menu navbar-dropdown-settings" aria-labelledby="userDropdown">
+                                <div class="container-list-options login"></div>
+                                {% comment %} <a class="dropdown-item" href="{% url 'users:profile' %}">Meu Perfil</a>
                                 <a class="dropdown-item" href="{% url 'orders:order_list' %}">Meus Pedidos</a>
                                 <a class="dropdown-item" href="{% url 'users:address_list' %}">Meus Endereços</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="{% url 'account_logout' %}">Sair</a>
+                                <a class="dropdown-item" href="{% url 'account_logout' %}">Sair</a> {% endcomment %}
                             </div>
                         </li>
                     {% else %}
@@ -74,9 +75,14 @@
                                     <span data-i18n="navbar.welcome-title-drop"></span>
                                 </div>
                             </a>
-                            <div class="dropdown-menu has-before" aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="{% url 'account_login' %}">Entrar</a>
-                                <a class="dropdown-item" href="{% url 'account_signup' %}">Cadastrar</a>
+                            <div class="dropdown-menu navbar-dropdown-settings" aria-labelledby="userDropdown">
+                                <div class="container-list-options login">
+                                    <a class="btn btn-primary full" href="{% url 'account_login' %}" data-i18n="navbar.make-login"></a>
+                                    <div class="container-new-user">
+                                        <span class="new-client-msg" data-i18n="navbar.new-user-question"></span>
+                                        <a class="new-client-link" href="{% url 'account_signup' %}" data-i18n="navbar.make-register"></a>
+                                    </div>
+                                </div>
                             </div>
                         </li>
                     {% endif %}
@@ -134,5 +140,4 @@
         </div>
     </subnav>
 </header>
-<!-- Custom JavaScript -->
-<script src="{% static 'js/navbar.js' %}"></script>
+<module data-tag="{% static 'js/modules/navbar.js' %}"></module>

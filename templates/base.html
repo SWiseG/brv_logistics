@@ -7,6 +7,7 @@
     <title>{% block title %}{% endblock %}</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
     
     <!-- Font Awesome -->
@@ -94,18 +95,16 @@
     
     <!-- Footer -->
     {% include 'footer.html' %}
-
-    <!-- Notification Container -->
-    <div id="notification-container"></div>
     
     <!-- jQuery and Bootstrap Bundle (includes Popper) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- Custom JavaScript -->
     <script src="{% static 'js/main.js' %}"></script>
-    
+
     {% block extra_js %}{% endblock %}
 </body>
 </html>

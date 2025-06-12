@@ -53,5 +53,15 @@ function Navbar() {
             }
         },
 
+        onAddress: () => {
+            // modal.open({
+            //     view: 'Example',
+            //     params: { nome: 'Usuário' },
+            // }).then(result => {
+            //     console.log('Resultado do modal:', result);
+            // }).catch(err => {
+            //     console.warn('Modal cancelado:', err);
+            // });
+        }
     };
 };
