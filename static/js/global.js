@@ -3,6 +3,8 @@ function Global() {
     return {
         modules: [],
         translations: {},
+        options: {},
+        messages: [],
         currentLang: 'pt-BR',
         cart: {
             items: [],
@@ -16,6 +18,29 @@ function Global() {
         },
         initHtml: () => {
             $('html').removeClass('hidden-content-html');
+        },
+        initMessages: async () => {
+            try {
+                const response = await fetch('/modals/', { credentials: 'include' });
+
+                if (!response.ok) {
+                    console.error(
+                        `%c[Modals Load Error: ${response.status}`,
+                        "color: red; font-weight: bold;",
+                        "color: white;"
+                    );
+                };
+
+                global.messages = await response.json();
+                if(window['logger']) 
+                    logger.log('Content modals script loaded');
+            } catch (error) {
+                if(window['logger'])
+                    logger.log(
+                        `[Modals Load Error - ${error}`,
+                        'error'
+                    );
+            };
         },
         mixinMergeStrategy: (constructor, mixin) => {
             const result = { ...constructor };
@@ -37,8 +62,12 @@ function Global() {
 
             return result;
         },
-        applyMixinArgs: (name, module) => {
-            ctor = {};
+        applyMixinArgs: (name, module, partial) => {
+            if(!partial) ctor = {};
+            else {
+                window.parent = {...ctor};
+                ctor = {};
+            };
             if(module) return ctor = module.ctor;
             var module = global.modules.find(x => x.path === name);
             if(!module) throw Error(`Could not load constructor from ${name}`); 
@@ -47,7 +76,7 @@ function Global() {
         createModule: async (name) => {
             return await require(name);
         },
-        registerModule: async (name, path, dependencies, callback, params) => {
+        registerModule: async (name, path, dependencies, callback, partial, params) => {
             var registeredModule = null;
             var moduleLoaded = callback();
             if(moduleLoaded.hasOwnProperty('init') && typeof moduleLoaded['init'] === 'function') 
@@ -58,14 +87,17 @@ function Global() {
                 return bindings.reload();
             }
             async function start(module) {
-                global.applyMixinArgs(module.name,module);
-                if(moduleLoaded.hasOwnProperty('checkParams') && typeof moduleLoaded['checkParams'] === 'function') 
-                    await moduleLoaded['checkParams'](name, path, dependencies, callback, params);
-                if(moduleLoaded.hasOwnProperty('checkParamsThen') && typeof moduleLoaded['checkParamsThen'] === 'function') 
-                    await moduleLoaded['checkParamsThen'](name, path, dependencies, callback, params);
-                if(moduleLoaded.hasOwnProperty('compositionComplete') && typeof moduleLoaded['compositionComplete'] === 'function') 
-                    await moduleLoaded['compositionComplete'](name, path, dependencies, callback, params);
-                return module.started = true;
+                global.applyMixinArgs(module.name,module,partial);
+                if(!partial) {
+                    if(moduleLoaded.hasOwnProperty('checkParams') && typeof moduleLoaded['checkParams'] === 'function') 
+                        await moduleLoaded['checkParams'](name, path, dependencies, callback, params);
+                    if(moduleLoaded.hasOwnProperty('checkParamsThen') && typeof moduleLoaded['checkParamsThen'] === 'function') 
+                        await moduleLoaded['checkParamsThen'](name, path, dependencies, callback, params);
+                    if(moduleLoaded.hasOwnProperty('compositionComplete') && typeof moduleLoaded['compositionComplete'] === 'function') 
+                        await moduleLoaded['compositionComplete'](name, path, dependencies, callback, params);
+                    return module.started = true;
+                };
+                return false;
             }
 
             async function register(name, path, dependencies, finalModule, params) {
@@ -78,7 +110,12 @@ function Global() {
                     started: false,
                     createdAt: new Date()
                 };
-                console.log(`Module loaded: ${module.name}. Returned from module: ${module.ctor}`)
+                if(window['logger']) 
+                    logger.log(
+                        `[Module Binding]%c Name: ${module.name} | Assigned Module: ${module.ctor}`,
+                        'success'
+                    );
+
                 start(module);
                 return module;
             }
@@ -121,6 +158,33 @@ function Global() {
                         await global.createModule(modules);
                     };
                 })
+            };
+        },
+
+        getCookie: (name) => {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        },
+
+        applyHashProperties: () => {
+            var $hashOptions = $('datahash');
+            if($hashOptions?.length > 0) {
+                var options = JSON.parse($hashOptions.attr('val'));
+                Object.keys(options).forEach((key) => {
+                    var res = options[key] === 'true' || options[key] === 'false' ? Boolean(options[key]) : options[key];
+                    global.options[key] = res;
+                });
+                $hashOptions.remove();
             };
         }
     }

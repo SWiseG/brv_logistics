@@ -1,109 +1,234 @@
+from datetime import timedelta
 from django.db import models
-from django.conf import settings
-from products.models import Product, ProductVariant
+from django.contrib.auth import get_user_model
+from django.utils import timezone
 import uuid
+import random
+import string
+from models.base import BaseModel
+from products.models import Product, ProductVariant
 
-class Cart(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
-    session_id = models.CharField(max_length=255, blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    def __str__(self):
-        return f"Carrinho {self.id}"
-    
-    @property
-    def total(self):
-        return sum(item.subtotal for item in self.items.all())
-    
-    @property
-    def item_count(self):
-        return sum(item.quantity for item in self.items.all())
+User = get_user_model()
 
-class CartItem(models.Model):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    variant = models.ForeignKey(ProductVariant, on_delete=models.CASCADE, blank=True, null=True)
-    quantity = models.PositiveIntegerField(default=1)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    
+def default_expires_at():
+    return timezone.now() + timedelta(days=30)
+
+class Cart(BaseModel):
+    """Carrinho de compras"""
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE, null=True, blank=True, related_name='shopping_carts', verbose_name='Usuário')
+    session_key = models.CharField(max_length=100, null=True, blank=True, verbose_name='Chave da Sessão')  # Para usuários não logados
+    currency = models.CharField(max_length=3, default='BRL', verbose_name='Moeda')
+    expires_at = models.DateTimeField(default=default_expires_at, verbose_name='Expira em')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Criado em')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='Atualizado em')
+
+    class Meta:
+        verbose_name = 'Carrinho de Compras'
+        verbose_name_plural = 'Carrinhos de Compras'
+        ordering = ['-updated_at']
+        constraints = [
+            models.CheckConstraint(
+                check=(
+                    models.Q(user__isnull=False, session_key__isnull=True) |
+                    models.Q(user__isnull=True, session_key__isnull=False)
+                ),
+                name='cart_user_or_session'
+            )
+        ]
+
     def __str__(self):
-        variant_name = f" - {self.variant.name}" if self.variant else ""
-        return f"{self.product.name}{variant_name} ({self.quantity})"
-    
+        if self.user:
+            return f"Carrinho de {self.user.get_full_name() or self.user.username}"
+        return f"Carrinho da sessão {self.session_key}"
+
     @property
-    def price(self):
-        if self.variant:
-            return self.variant.price
-        return self.product.current_price
-    
+    def total_items(self):
+        return self.items.aggregate(total=models.Sum('quantity'))['total'] or 0
+
     @property
     def subtotal(self):
-        return self.price * self.quantity
+        return sum(item.total_price for item in self.items.all())
 
-class Coupon(models.Model):
-    code = models.CharField(max_length=50, unique=True)
-    description = models.CharField(max_length=255, blank=True, null=True)
-    discount_type = models.CharField(max_length=10, choices=[('percentage', 'Porcentagem'), ('fixed', 'Valor Fixo')])
-    discount_value = models.DecimalField(max_digits=10, decimal_places=2)
-    minimum_order_value = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    is_active = models.BooleanField(default=True)
-    valid_from = models.DateTimeField()
-    valid_to = models.DateTimeField()
-    usage_limit = models.PositiveIntegerField(default=1)
-    used_count = models.PositiveIntegerField(default=0)
-    date_created = models.DateTimeField(auto_now_add=True)
-    
+    def clear(self):
+        """Limpa todos os itens do carrinho"""
+        self.items.all().delete()
+
+
+class CartItem(BaseModel):
+    """Itens do carrinho"""
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items', verbose_name='Carrinho')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Produto')
+    variant = models.ForeignKey(ProductVariant, on_delete=models.CASCADE, null=True, blank=True, verbose_name='Variante')
+    quantity = models.PositiveIntegerField(verbose_name='Quantidade')
+    unit_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Preço Unitário')  # Preço no momento da adição
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Criado em')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='Atualizado em')
+
+    class Meta:
+        verbose_name = 'Item do Carrinho'
+        verbose_name_plural = 'Itens do Carrinho'
+        unique_together = ['cart', 'product', 'variant']
+        ordering = ['-created_at']
+
     def __str__(self):
-        return self.code
+        product_name = self.variant.product.name if self.variant else self.product.name
+        return f"{product_name} x{self.quantity}"
 
-class Order(models.Model):
-    ORDER_STATUS_CHOICES = [
+    @property
+    def total_price(self):
+        return self.unit_price * self.quantity
+
+    def save(self, *args, **kwargs):
+        # Atualiza o preço automaticamente se não foi definido
+        if not self.unit_price:
+            if self.variant:
+                self.unit_price = self.variant.effective_price
+            else:
+                self.unit_price = self.product.price
+        super().save(*args, **kwargs)
+
+
+class Order(BaseModel):
+    """Pedidos principais"""
+    STATUS_CHOICES = [
         ('pending', 'Pendente'),
-        ('paid', 'Pago'),
+        ('confirmed', 'Confirmado'),
         ('processing', 'Processando'),
         ('shipped', 'Enviado'),
         ('delivered', 'Entregue'),
         ('cancelled', 'Cancelado'),
+        ('refunded', 'Reembolsado'),
+        ('partially_refunded', 'Parcialmente Reembolsado'),
+        ('returned', 'Devolvido'),
     ]
     
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    order_number = models.CharField(max_length=20, unique=True, editable=False)
-    status = models.CharField(max_length=20, choices=ORDER_STATUS_CHOICES, default='pending')
-    shipping_address = models.ForeignKey('users.Address', on_delete=models.SET_NULL, null=True, related_name='shipping_orders')
-    billing_address = models.ForeignKey('users.Address', on_delete=models.SET_NULL, null=True, related_name='billing_orders')
-    shipping_method = models.CharField(max_length=100, blank=True, null=True)
-    shipping_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    payment_method = models.CharField(max_length=100)
-    subtotal = models.DecimalField(max_digits=10, decimal_places=2)
-    discount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    total = models.DecimalField(max_digits=10, decimal_places=2)
-    coupon = models.ForeignKey(Coupon, on_delete=models.SET_NULL, blank=True, null=True)
-    notes = models.TextField(blank=True, null=True)
-    date_created = models.DateTimeField(auto_now_add=True)
-    date_updated = models.DateTimeField(auto_now=True)
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    order_number = models.CharField(max_length=50, unique=True, verbose_name='Número do Pedido')
+    user = models.ForeignKey('users.User', on_delete=models.PROTECT, null=True, blank=True, related_name='orders', verbose_name='Usuário')
     
-    def save(self, *args, **kwargs):
-        if not self.order_number:
-            # Gerar número de pedido único
-            self.order_number = str(uuid.uuid4()).split('-')[0].upper()
-        super().save(*args, **kwargs)
+    # Status
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='pending', verbose_name='Status')
     
+    # Endereços
+    billing_address = models.JSONField(verbose_name='Endereço de Cobrança')
+    shipping_address = models.JSONField(verbose_name='Endereço de Entrega')
+    
+    # Valores
+    currency = models.CharField(max_length=3, default='BRL', verbose_name='Moeda')
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Subtotal')
+    tax_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name='Valor dos Impostos')
+    shipping_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name='Valor do Frete')
+    discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name='Valor do Desconto')
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Valor Total')
+    
+    # Informações adicionais
+    notes = models.TextField(blank=True, verbose_name='Observações')
+    internal_notes = models.TextField(blank=True, verbose_name='Observações Internas')
+    
+    # Datas importantes
+    confirmed_at = models.DateTimeField(null=True, blank=True, verbose_name='Confirmado em')
+    shipped_at = models.DateTimeField(null=True, blank=True, verbose_name='Enviado em')
+    delivered_at = models.DateTimeField(null=True, blank=True, verbose_name='Entregue em')
+    cancelled_at = models.DateTimeField(null=True, blank=True, verbose_name='Cancelado em')
+    
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Criado em')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='Atualizado em')
+
+    class Meta:
+        verbose_name = 'Pedido'
+        verbose_name_plural = 'Pedidos'
+        ordering = ['-created_at']
+
     def __str__(self):
         return f"Pedido #{self.order_number}"
 
-class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    variant = models.ForeignKey(ProductVariant, on_delete=models.CASCADE, blank=True, null=True)
-    product_name = models.CharField(max_length=255)  # Snapshot do nome do produto
-    variant_name = models.CharField(max_length=255, blank=True, null=True)  # Snapshot do nome da variante
-    price = models.DecimalField(max_digits=10, decimal_places=2)  # Preço no momento da compra
-    quantity = models.PositiveIntegerField(default=1)
-    subtotal = models.DecimalField(max_digits=10, decimal_places=2)
-    
-    def __str__(self):
-        variant_info = f" - {self.variant_name}" if self.variant_name else ""
-        return f"{self.product_name}{variant_info} ({self.quantity})"
+    def save(self, *args, **kwargs):
+        if not self.order_number:
+            self.order_number = self.generate_order_number()
+        super().save(*args, **kwargs)
 
+    @staticmethod
+    def generate_order_number():
+        """Gera um número único para o pedido"""
+        prefix = timezone.now().strftime('%Y%m%d')
+        suffix = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+        return f"{prefix}-{suffix}"
+
+    @property
+    def total_items(self):
+        return self.items.aggregate(total=models.Sum('quantity'))['total'] or 0
+
+    @property
+    def is_paid(self):
+        return self.payment_transactions.filter(status='completed').exists()
+
+    @property
+    def can_be_cancelled(self):
+        return self.status in ['pending', 'confirmed', 'processing']
+
+
+class OrderItem(BaseModel):
+    """Itens do pedido"""
+    STATUS_CHOICES = [
+        ('pending', 'Pendente'),
+        ('confirmed', 'Confirmado'),
+        ('processing', 'Processando'),
+        ('shipped', 'Enviado'),
+        ('delivered', 'Entregue'),
+        ('cancelled', 'Cancelado'),
+        ('returned', 'Devolvido'),
+        ('refunded', 'Reembolsado'),
+    ]
+    
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items', verbose_name='Pedido')
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, null=True, blank=True, verbose_name='Produto')
+    variant = models.ForeignKey(ProductVariant, on_delete=models.PROTECT, null=True, blank=True, verbose_name='Variante')
+    
+    # Snapshot dos dados no momento da compra
+    product_name = models.CharField(max_length=300, verbose_name='Nome do Produto')
+    product_sku = models.CharField(max_length=100, verbose_name='SKU do Produto')
+    variant_attributes = models.JSONField(default=dict, blank=True, verbose_name='Atributos da Variante')
+    
+    # Quantidades e preços
+    quantity = models.PositiveIntegerField(verbose_name='Quantidade')
+    unit_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Preço Unitário')
+    total_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Preço Total')
+    
+    # Status específico do item
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='pending', verbose_name='Status')
+    
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Criado em')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='Atualizado em')
+
+    class Meta:
+        verbose_name = 'Item do Pedido'
+        verbose_name_plural = 'Itens do Pedido'
+        ordering = ['id']
+
+    def __str__(self):
+        return f"{self.product_name} x{self.quantity} - {self.order.order_number}"
+
+    def save(self, *args, **kwargs):
+        if not self.total_price:
+            self.total_price = self.unit_price * self.quantity
+        super().save(*args, **kwargs)
+
+
+class OrderStatusHistory(BaseModel):
+    """Histórico de status dos pedidos"""
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='status_history', verbose_name='Pedido')
+    previous_status = models.CharField(max_length=50, blank=True, verbose_name='Status Anterior')
+    new_status = models.CharField(max_length=50, verbose_name='Novo Status')
+    comment = models.TextField(blank=True, verbose_name='Comentário')
+    user = models.ForeignKey('users.User', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Usuário')  # Quem alterou
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Criado em')
+
+    class Meta:
+        verbose_name = 'Histórico de Status'
+        verbose_name_plural = 'Histórico de Status'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.order.order_number} - {self.previous_status} → {self.new_status}"
+    
+    

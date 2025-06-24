@@ -1,34 +1,31 @@
 from django.db import models
-from django.contrib.postgres.fields import JSONField
-from models.base import BaseModel, AddressMixin
-from models.validators import validate_cnpj, validate_positive_price
+from models.base import BaseModel
+from django.core.validators import MinValueValidator, MaxValueValidator
+from models.validators import validate_positive_price
+from django.contrib.auth import get_user_model
 
-class Supplier(BaseModel, AddressMixin):
+User = get_user_model()
+
+class Supplier(BaseModel):
     """Fornecedores"""
-    company_name = models.CharField('Razão Social', max_length=200)
-    trade_name = models.CharField('Nome Fantasia', max_length=200, blank=True)
-    contact_name = models.CharField('Nome do Contato', max_length=200, blank=True)
-    email = models.EmailField('Email', blank=True)
-    phone = models.CharField('Telefone', max_length=20, blank=True)
-    website = models.URLField('Website', blank=True)
-    
-    # Documentos
-    tax_id = models.CharField('CNPJ', max_length=18, validators=[validate_cnpj], blank=True)
-    state_registration = models.CharField('Inscrição Estadual', max_length=20, blank=True)
-    municipal_registration = models.CharField('Inscrição Municipal', max_length=20, blank=True)
-    
-    # Configurações comerciais
-    payment_terms = models.PositiveIntegerField('Prazo de Pagamento (dias)', default=30)
-    discount_percentage = models.DecimalField('Desconto (%)', max_digits=5, decimal_places=2, default=0)
-    minimum_order_value = models.DecimalField('Valor Mínimo do Pedido', max_digits=10, decimal_places=2, default=0)
-    
-    # Status e avaliação
-    is_active = models.BooleanField('Ativo', default=True)
-    rating = models.DecimalField('Avaliação', max_digits=3, decimal_places=2, default=5.00)
-    
-    # Informações adicionais
-    notes = models.TextField('Observações', blank=True)
-    bank_info = JSONField('Informações Bancárias', default=dict, blank=True)
+    id = models.BigAutoField(primary_key=True)
+    company_name = models.CharField(max_length=200, verbose_name='Nome da Empresa')
+    contact_name = models.CharField(max_length=200, blank=True, verbose_name='Nome do Contato')
+    email = models.EmailField(blank=True, verbose_name='E-mail')
+    phone = models.CharField(max_length=20, blank=True, verbose_name='Telefone')
+    website = models.URLField(blank=True, verbose_name='Website')
+    address_line_1 = models.CharField(max_length=255, blank=True, verbose_name='Endereço')
+    address_line_2 = models.CharField(max_length=255, blank=True, verbose_name='Complemento')
+    city = models.CharField(max_length=100, blank=True, verbose_name='Cidade')
+    state = models.CharField(max_length=100, blank=True, verbose_name='Estado')
+    postal_code = models.CharField(max_length=20, blank=True, verbose_name='CEP')
+    country = models.CharField(max_length=100, blank=True, verbose_name='País')
+    tax_id = models.CharField(max_length=50, blank=True, verbose_name='CNPJ/CPF')
+    payment_terms = models.IntegerField(default=30, verbose_name='Prazo de Pagamento (dias)')
+    is_active = models.BooleanField(default=True, verbose_name='Ativo')
+    rating = models.DecimalField(max_digits=3, decimal_places=2, default=5.00, validators=[MinValueValidator(0), MaxValueValidator(5)], verbose_name='Avaliação')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Criado em')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='Atualizado em')
     
     class Meta:
         verbose_name = 'Fornecedor'
@@ -94,7 +91,7 @@ class PurchaseOrder(BaseModel):
     def __str__(self):
         return f"PO {self.po_number} - {self.supplier.company_name}"
 
-class PurchaseOrderItem(models.Model):
+class PurchaseOrderItem(BaseModel):
     """Itens do pedido de compra"""
     purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey('products.Product', on_delete=models.CASCADE)

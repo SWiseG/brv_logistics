@@ -60,20 +60,50 @@ function Themes() {
         },
 
         generateColorVariants(name, hexColor, target = document.documentElement) {
+            if (!name || typeof hexColor !== 'string' || !hexColor.startsWith('#')) {
+                console.warn(`generateColorVariants: Nome inválido ou cor hex inválida (${hexColor})`);
+                return;
+            }
+
             const hsl = themes.hexToHSL(hexColor);
-            const variants = {
-                [`--${name}-lightest`]: themes.hslToCSS({ ...hsl, l: Math.min(hsl.l + 40, 100) }),
-                [`--${name}-lighter`]:  themes.hslToCSS({ ...hsl, l: Math.min(hsl.l + 20, 100) }),
-                [`--${name}`]:          themes.hslToCSS(hsl),
-                [`--${name}-darker`]:   themes.hslToCSS({ ...hsl, l: Math.max(hsl.l - 20, 10) }),
-                [`--${name}-darkest`]:  themes.hslToCSS({ ...hsl, l: Math.max(hsl.l - 40, 0) }),
-                [`--${name}-text`]:     hsl.l > 60 ? '#000000' : '#ffffff',
-                [`--${name}-border`]:   themes.hslToCSS({ ...hsl, l: hsl.l > 50 ? hsl.l - 30 : hsl.l + 30 })
+            if (!hsl) {
+                console.warn(`generateColorVariants: Falha ao converter HEX para HSL: ${hexColor}`);
+                return;
+            }
+
+            const clamp = (value) => Math.max(0, Math.min(100, value));
+
+            // Define a função para gerar os H, S, L de uma variação
+            const setHSLVars = (variantName, h, s, l) => {
+                target.style.setProperty(`--${variantName}-H`, `${h}`);
+                target.style.setProperty(`--${variantName}-S`, `${s}%`);
+                target.style.setProperty(`--${variantName}-L`, `${l}%`);
             };
 
-            Object.entries(variants).forEach(([key, value]) => {
-                target.style.setProperty(key, value);
+            // Cor base
+            setHSLVars(name, hsl.h, hsl.s, hsl.l);
+            target.style.setProperty(`--${name}`, `hsl(${hsl.h} ${hsl.s}% ${hsl.l}%)`);
+
+            // Variações
+            const variations = [
+                { suffix: 'lighter',  l: clamp(hsl.l + 20) },
+                { suffix: 'lightest', l: clamp(hsl.l + 40) },
+                { suffix: 'darker',   l: clamp(hsl.l - 5) },
+                { suffix: 'darkest',  l: clamp(hsl.l - 10) },
+                { suffix: 'border',   l: clamp(85) }
+            ];
+
+            variations.forEach(variant => {
+                const variantName = `${name}-${variant.suffix}`;
+                setHSLVars(variantName, hsl.h, hsl.s, variant.l);
+                target.style.setProperty(`--${variantName}`, `hsl(${hsl.h} ${hsl.s}% ${variant.l}%)`);
             });
+
+            // Texto (com base na cor base)
+            target.style.setProperty(`--${name}-text`, hsl.l > 60 ? 'var(--black)' : 'var(--white)');
+
+            // Alpha
+            target.style.setProperty(`--${name}-half-alpha`, `hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, 0.5)`);
         },
 
         generateThemeVariants(baseColors) {

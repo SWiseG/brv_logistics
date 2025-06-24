@@ -84,11 +84,35 @@ window.notify = (function () {
         return word ? word.charAt(0).toUpperCase() + word.slice(1) : '';
     }
 
+    function global() {
+        console.log('Looking for server messages');
+        let messages = [];
+
+        for (let i = 0; i < localStorage.length; i++) {
+            let key = localStorage.key(i);
+            if (key.startsWith('dj-msg-')) {
+                messages.push({
+                    key: key,
+                    value: localStorage.getItem(key)
+                });
+            }
+        };
+
+        messages.forEach(msg => {
+            console.log(msg);
+        });
+
+        console.log('Server messages were cleaned successfuly');
+    }
+
+    setInterval(global, 100000);
+
     return {
         show,
         success,
         warning,
         danger,
         info,
+        global
     };
 })();

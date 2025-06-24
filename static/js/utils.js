@@ -3,7 +3,7 @@ function Utils() {
     return {
         // Formatar preço
         formatPrice: function(price) {
-            return new Intl.NumberFormat('pt-BR', {
+            return new Intl.NumberFormat(global.currentLang, {
                 style: 'currency',
                 currency: 'BRL'
             }).format(price);

@@ -1,16 +1,24 @@
 // Instalando require
-window.define = async (path, requires, callback) => { return await global.registerModule(callback.name, path, requires, callback) };
+window.define = async (path, requires, callback, partial=false) => { return await global.registerModule(callback.name, path, requires, callback, partial) };
 
-window.require = (scripts, callback) => {
+window.require = (scripts, callback, partial=false) => {
     if(!scripts || "" === scripts) return false;
     scripts = String(scripts).split(',');
 
     const define = (src) => {
         return new Promise((resolve, reject) => {
             src = src.trim();
-            if(!src || "" === src) return false;
-            if(!src.startsWith('/static/')) src = `/static/js/${src}`;
-            if(!src.endsWith('js')) src = `${src}.js`;
+            if(!partial) {
+                if(!src || "" === src) return false;
+                if(!src.startsWith('/static/')) src = `/static/js/${src}`;
+                if(!src.endsWith('js')) src = `${src}.js`;
+            }
+            else {
+                if(!src || "" === src) return false;
+                if(!src.startsWith('/static/')) src = `/static/${src}`;
+                if(!src.endsWith('js')) src = `${src}.js`;
+            };
+
 
             const script = document.createElement('script');
             script.src = src;
@@ -33,12 +41,20 @@ window.require = (scripts, callback) => {
     Promise.all(scripts.map(define))
         .then((srcs) => {
             srcs.forEach(scriptName => {
-                console.log(`Success to load module: ${scriptName}`);
+                if(window['logger'])
+                    logger.log(
+                        `[Module Load Success - ${new Date().toLocaleTimeString()}] ${scriptName}`,
+                        'succcess'
+                    );
             });
             if (typeof callback === 'function') callback();
         })
         .catch((error) => {
-            console.error(error);
+            if(window['logger'])
+                logger.log(
+                    `[Module Load Error - ${new Date().toLocaleTimeString()}] ${error}`,
+                    'error'
+                );
         });
 }
 
@@ -46,9 +62,10 @@ window.require = (scripts, callback) => {
 document.addEventListener('DOMContentLoaded', async function() {
     // Inicializar módulos
     var ctor = {};
-    await require('global, utils, message, notify, bindings, themes, translation', async (res) => {
+    await require('global, utils, message, notify, bindings, themes, translation, enchancer', async (res) => {
         // Global
         window.global = new Global();
+        global.applyHashProperties();
 
         // Bindings
         bindings.init();
@@ -65,10 +82,13 @@ document.addEventListener('DOMContentLoaded', async function() {
         window.translate = new Translations();
         translate.init();
 
-        // Navbar
+        // Modules
         window.ctor = await global.loadModules();
 
         // Finally
+        await global.initMessages();
+        enchancer.init();
+        notify.global();
         global.initHtml();
         utils.loading(false);
 

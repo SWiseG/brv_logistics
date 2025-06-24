@@ -2,8 +2,20 @@ from models.base import BaseModel, BaseModelWithoutSoftDelete
 from django.contrib.auth.models import AbstractUser, Group
 from django.db.models import Q, CheckConstraint
 from django.db import models
+import random
+import string
+from django.utils import timezone
+from datetime import timedelta
 
 class User(AbstractUser, BaseModelWithoutSoftDelete):
+    GENDER_CHOICES = [
+        ('M', 'Masculino'),
+        ('F', 'Feminino'),
+        ('O', 'Outro'),
+        ('P', 'Prefiro não informar'),
+    ]
+    date_of_birth = models.DateField(null=True, blank=True, verbose_name='Data de Nascimento')
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, verbose_name='Gênero')
     phone = models.CharField(max_length=20, blank=True, null=True)
     profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
     is_customer = models.BooleanField(default=True)
@@ -12,13 +24,15 @@ class User(AbstractUser, BaseModelWithoutSoftDelete):
     
     class Meta:
         db_table = 'users'
+        verbose_name = 'Usuário'
+        verbose_name_plural = 'Usuários'
         indexes = [
             models.Index(fields=['phone']),
             models.Index(fields=['created_at']),
         ]
         constraints = [
             CheckConstraint(
-                check=Q(phone__isnull=True) | ~Q(phone=''),
+                check=models.Q(phone__isnull=True) | ~models.Q(phone=''),
                 name='phone_not_empty_if_provided'
             ),
         ]
@@ -33,6 +47,10 @@ class GroupType(BaseModel):
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='group')
     is_adm = models.BooleanField(default=False)
     is_dev = models.BooleanField(default=False)
+    
+    class Meta:
+        verbose_name = 'Grupo Categoria'
+        verbose_name_plural = 'Grupo Categorias'
 
 class Address(BaseModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='addresses')
@@ -51,6 +69,8 @@ class Address(BaseModel):
     
     class Meta:
         db_table = 'address'
+        verbose_name = 'Endereço'
+        verbose_name_plural = 'Endereços'
         unique_together = ('user', 'address_type', 'is_default')
         indexes = [
             models.Index(fields=['user', 'address_type']),
@@ -84,3 +104,187 @@ class Address(BaseModel):
     
     def __str__(self):
         return f"{self.address_type} - {self.get_full_address()}"
+    
+class EmailVerification(models.Model):
+    """Model para armazenar códigos de verificação por email"""
+    
+    email = models.EmailField()
+    verification_code = models.CharField(max_length=6)
+    verification_type = models.CharField(
+        max_length=20,
+        choices=[
+            ('registration', 'Cadastro'),
+            ('password_reset', 'Reset de Senha'),
+            ('email_change', 'Alteração de Email'),
+            ('login_verification', 'Verificação de Login')
+        ],
+        default='registration'
+    )
+    
+    # Dados temporários do usuário (para registro)
+    temp_user_data = models.JSONField(default=dict, blank=True)
+    
+    # Controle de tentativas
+    attempts = models.IntegerField(default=0)
+    max_attempts = models.IntegerField(default=3)
+    
+    # Timestamps
+    created_at = models.DateTimeField(default=timezone.now)
+    expires_at = models.DateTimeField()
+    verified_at = models.DateTimeField(null=True, blank=True)
+    
+    # Status
+    is_used = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    
+    class Meta:
+        verbose_name = 'Verificação de Email'
+        verbose_name_plural = 'Verificações de Email'
+        indexes = [
+            models.Index(fields=['email', 'verification_type']),
+            models.Index(fields=['verification_code']),
+            models.Index(fields=['expires_at']),
+        ]
+    
+    def save(self, *args, **kwargs):
+        if not self.verification_code:
+            self.verification_code = self.generate_code()
+        
+        if not self.expires_at:
+            # Código expira em 10 minutos
+            self.expires_at = timezone.now() + timedelta(minutes=10)
+        
+        super().save(*args, **kwargs)
+    
+    @staticmethod
+    def generate_code():
+        """Gera código de 6 dígitos"""
+        return ''.join(random.choices(string.digits, k=6))
+    
+    def is_expired(self):
+        """Verifica se o código expirou"""
+        return timezone.now() > self.expires_at
+    
+    def is_valid(self):
+        """Verifica se o código ainda é válido"""
+        return (
+            self.is_active and 
+            not self.is_used and 
+            not self.is_expired() and 
+            self.attempts < self.max_attempts
+        )
+    
+    def verify(self, code):
+        """Verifica o código fornecido"""
+        self.attempts += 1
+        
+        if not self.is_valid():
+            self.save()
+            return False, "Código inválido ou expirado"
+        
+        if self.verification_code == code:
+            self.verified_at = timezone.now()
+            self.is_used = True
+            self.save()
+            return True, "Código verificado com sucesso"
+        else:
+            self.save()
+            remaining = self.max_attempts - self.attempts
+            if remaining > 0:
+                return False, f"Código incorreto. Você tem {remaining} tentativa(s) restante(s)"
+            else:
+                self.is_active = False
+                self.save()
+                return False, "Muitas tentativas incorretas. Solicite um novo código"
+    
+    @classmethod
+    def create_verification(cls, email, verification_type='registration', temp_data=None):
+        """Cria nova verificação e invalida as anteriores"""
+        
+        # Invalidar verificações anteriores do mesmo email e tipo
+        cls.objects.filter(
+            email__iexact=email,
+            verification_type=verification_type,
+            is_active=True
+        ).update(is_active=False)
+        
+        # Criar nova verificação
+        verification = cls.objects.create(
+            email=email.lower(),
+            verification_type=verification_type,
+            temp_user_data=temp_data or {}
+        )
+        
+        return verification
+    
+    def __str__(self):
+        return f"{self.email} - {self.verification_type} - {self.verification_code}"
+    
+
+class UserPreferences(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_pref')
+    PREFERNCES_CHOICES = [
+        ('L', 'Languages'),
+        ('T', 'Themes'),
+    ]
+    type = models.CharField(max_length=1, choices=PREFERNCES_CHOICES, blank=True, verbose_name='Tipo')
+    value = models.TextField(max_length=2000,verbose_name="Valor")
+    
+    class Meta:
+        verbose_name = 'Preferência do Usuário'
+        verbose_name_plural = 'Preferências do Usuários'
+
+class UserLoginAttempt(models.Model):
+    """Model para rastrear tentativas de login"""
+    
+    email = models.EmailField()
+    ip_address = models.GenericIPAddressField()
+    user_agent = models.TextField(blank=True)
+    
+    # Status da tentativa
+    success = models.BooleanField(default=False)
+    failure_reason = models.CharField(max_length=100, blank=True)
+    
+    # Verificação requerida
+    requires_verification = models.BooleanField(default=False)
+    verification_sent = models.BooleanField(default=False)
+    
+    # Timestamps
+    attempted_at = models.DateTimeField(default=timezone.now)
+    
+    class Meta:
+        verbose_name = 'Tentativa de Login'
+        verbose_name_plural = 'Tentativas de Login'
+        indexes = [
+            models.Index(fields=['email', 'attempted_at']),
+            models.Index(fields=['ip_address', 'attempted_at']),
+        ]
+    
+    @classmethod
+    def check_security_requirements(cls, email, ip_address):
+        """Verifica se login requer verificação adicional"""
+        
+        # Verificar tentativas falhadas recentes (última hora)
+        recent_failures = cls.objects.filter(
+            email__iexact=email,
+            success=False,
+            attempted_at__gte=timezone.now() - timedelta(hours=1)
+        ).count()
+        
+        # Verificar login de IP diferente (últimos 7 dias)
+        recent_ips = cls.objects.filter(
+            email__iexact=email,
+            success=True,
+            attempted_at__gte=timezone.now() - timedelta(days=7)
+        ).values_list('ip_address', flat=True).distinct()
+        
+        requires_verification = (
+            recent_failures >= 3 or  # Muitas tentativas falhadas
+            (recent_ips and ip_address not in recent_ips)  # IP novo
+        )
+        
+        return requires_verification
+    
+    def __str__(self):
+        status = "Sucesso" if self.success else "Falha"
+        return f"{self.email} - {status} - {self.attempted_at}"

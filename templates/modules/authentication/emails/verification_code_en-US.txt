@@ -1,0 +1,26 @@
+{{ site_name }} - Código de Verificação
+
+{% if verification_type == 'registration' %}Confirme seu Cadastro{% elif verification_type == 'login_verification' %}Verificação de Login{% elif verification_type == 'password_reset' %}Redefinir Senha{% else %}Verificação de Email{% endif %}
+
+Olá{% if user_name %}, {{ user_name }}{% endif %}!
+
+{% if verification_type == 'registration' %}Obrigado por se cadastrar em nossa loja! Para finalizar seu cadastro, digite o código abaixo:{% elif verification_type == 'login_verification' %}Por segurança, precisamos verificar sua identidade. Digite o código abaixo para continuar:{% elif verification_type == 'password_reset' %}Você solicitou a redefinição de sua senha. Digite o código abaixo para continuar:{% else %}Digite o código abaixo para verificar seu email:{% endif %}
+
+SEU CÓDIGO: {{ code }}
+
+Este código expira em {{ expires_minutes }} minutos.
+
+Instruções:
+1. Digite o código de 6 dígitos no site
+2. Clique em "Verificar Código"
+3. {% if verification_type == 'registration' %}Sua conta será criada automaticamente{% elif verification_type == 'login_verification' %}Você será redirecionado para sua conta{% else %}Continue com o próximo passo{% endif %}
+
+IMPORTANTE:
+- Este código é pessoal e intransferível
+- Não compartilhe este código com ninguém
+- Se você não solicitou este código, ignore este email
+
+Dúvidas? Entre em contato: {{ support_email }}
+
+{{ site_name }}
+{{ site_url }}

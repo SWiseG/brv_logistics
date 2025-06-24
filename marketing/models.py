@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.postgres.fields import JSONField
+from django.db.models import JSONField
 from django.contrib.postgres.indexes import GinIndex
 from models.base import BaseModel
 
@@ -56,75 +56,63 @@ class EmailCampaign(BaseModel):
     def __str__(self):
         return self.name
 
-class ProductReview(BaseModel):
-    """Reviews/Avaliações de produtos"""
-    product = models.ForeignKey('products.Product', on_delete=models.CASCADE, related_name='reviews')
-    user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='reviews')
-    order_item = models.ForeignKey('orders.OrderItem', on_delete=models.SET_NULL, null=True, blank=True)
-    
-    rating = models.PositiveIntegerField('Avaliação')  # 1-5
-    title = models.CharField('Título', max_length=200, blank=True)
-    review = models.TextField('Comentário', blank=True)
-    images = JSONField('Imagens', default=list, blank=True)  # Array de URLs
-    
-    # Status
-    is_verified_purchase = models.BooleanField('Compra Verificada', default=False)
-    is_approved = models.BooleanField('Aprovado', default=False)
-    helpful_count = models.PositiveIntegerField('Útil', default=0)
-    
-    class Meta:
-        verbose_name = 'Avaliação'
-        verbose_name_plural = 'Avaliações'
-        unique_together = ['product', 'user', 'order_item']
-        indexes = [
-            models.Index(fields=['product', 'is_approved']),
-            models.Index(fields=['rating']),
-            models.Index(fields=['is_verified_purchase']),
-        ]
-        constraints = [
-            models.CheckConstraint(
-                check=models.Q(rating__gte=1, rating__lte=5),
-                name='rating_range_1_to_5'
-            )
-        ]
+
+class Coupon(BaseModel):
+    code = models.CharField(max_length=50, unique=True)
+    description = models.CharField(max_length=255, blank=True, null=True)
+    discount_type = models.CharField(max_length=10, choices=[('percentage', 'Porcentagem'), ('fixed', 'Valor Fixo')])
+    discount_value = models.DecimalField(max_digits=10, decimal_places=2)
+    minimum_order_value = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    is_active = models.BooleanField(default=True)
+    valid_from = models.DateTimeField()
+    valid_to = models.DateTimeField()
+    usage_limit = models.PositiveIntegerField(default=1)
+    used_count = models.PositiveIntegerField(default=0)
+    date_created = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
-        return f"Avaliação de {self.user.username} para {self.product.name}"
-
+        return self.code
+    
+    
 class Wishlist(BaseModel):
     """Lista de desejos"""
-    user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='wishlists')
-    name = models.CharField('Nome', max_length=200, default='Minha Lista de Desejos')
-    is_public = models.BooleanField('Pública', default=False)
-    is_default = models.BooleanField('Padrão', default=True)
-    
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='wishlists', verbose_name='Usuário')
+    name = models.CharField(max_length=200, default='Minha Lista de Desejos', verbose_name='Nome')
+    is_public = models.BooleanField(default=False, verbose_name='Pública')
+    is_default = models.BooleanField(default=True, verbose_name='Padrão')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Criado em')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='Atualizado em')
+
     class Meta:
         verbose_name = 'Lista de Desejos'
         verbose_name_plural = 'Listas de Desejos'
-        constraints = [
-            models.UniqueConstraint(
-                fields=['user', 'is_default'], 
-                condition=models.Q(is_default=True, is_deleted=False),
-                name='unique_default_wishlist_per_user'
-            )
-        ]
-    
-    def __str__(self):
-        return f"{self.name} ({self.user.username})"
+        ordering = ['-is_default', '-updated_at']
 
-class WishlistItem(models.Model):
-    """Itens da lista de desejos"""
-    wishlist = models.ForeignKey(Wishlist, on_delete=models.CASCADE, related_name='items')
-    product = models.ForeignKey('products.Product', on_delete=models.CASCADE)
-    variant = models.ForeignKey('products.ProductVariant', on_delete=models.CASCADE, null=True, blank=True)
-    added_at = models.DateTimeField('Adicionado em', auto_now_add=True)
-    
+    def __str__(self):
+        return f"{self.name} - {self.user.get_full_name() or self.user.username}"
+
+    @property
+    def total_items(self):
+        return self.items.count()
+
+class WishlistItem(BaseModel):
+    """Itens da wishlist"""
+    wishlist = models.ForeignKey(Wishlist, on_delete=models.CASCADE, related_name='items', verbose_name='Lista de Desejos')
+    product = models.ForeignKey('products.Product', on_delete=models.CASCADE, verbose_name='Produto')
+    variant = models.ForeignKey('products.ProductVariant', on_delete=models.CASCADE, null=True, blank=True, verbose_name='Variante')
+    added_at = models.DateTimeField(auto_now_add=True, verbose_name='Adicionado em')
+
     class Meta:
         verbose_name = 'Item da Lista de Desejos'
-        verbose_name_plural = 'Itens das Listas de Desejos'
+        verbose_name_plural = 'Itens da Lista de Desejos'
         unique_together = ['wishlist', 'product', 'variant']
+        ordering = ['-added_at']
 
-class RecentlyViewedProduct(models.Model):
+    def __str__(self):
+        product_name = self.variant.product.name if self.variant else self.product.name
+        return f"{product_name} - {self.wishlist.name}"
+
+class RecentlyViewedProduct(BaseModel):
     """Produtos visitados recentemente"""
     user = models.ForeignKey('users.User', on_delete=models.CASCADE, null=True, blank=True)
     session_key = models.CharField('Chave da Sessão', max_length=100, null=True, blank=True)

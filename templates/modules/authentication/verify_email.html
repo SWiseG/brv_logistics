@@ -1,0 +1,475 @@
+{% extends 'base_auth.html' %}
+{% load static %}
+
+{% block title %}Verificar Email - {{ block.super }}{% endblock %}
+
+{% block extra_css %}
+<style>
+.verification-container {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+}
+
+.verification-card {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border: none;
+    border-radius: 15px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.verification-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 15px 15px 0 0;
+    text-align: center;
+    padding: 2rem;
+}
+
+.verification-icon {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+.code-input {
+    font-size: 1.5rem;
+    text-align: center;
+    letter-spacing: 0.5rem;
+    font-weight: bold;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 1rem;
+    transition: all 0.3s ease;
+}
+
+.code-input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    outline: none;
+}
+
+.code-input.is-invalid {
+    border-color: #dc3545;
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+.resend-timer {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.resend-button {
+    border: none;
+    background: none;
+    color: #667eea;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.resend-button:hover {
+    color: #5a6fd8;
+}
+
+.resend-button:disabled {
+    color: #6c757d;
+    cursor: not-allowed;
+    text-decoration: none;
+}
+
+.verification-steps {
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    margin: 1.5rem 0;
+}
+
+.step {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.step:last-child {
+    margin-bottom: 0;
+}
+
+.step-number {
+    width: 24px;
+    height: 24px;
+    background: #667eea;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-right: 0.75rem;
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="verification-container auth">
+        <div class="verification-card w-100">
+            <!-- Header -->
+            <div class="verification-header">
+                <div class="verification-icon pulse">
+                    <i class="fas fa-envelope fa-2x"></i>
+                </div>
+                <h4 class="mb-2">Verificar Email</h4>
+                <p class="mb-0 opacity-75">
+                    {% if verification_type == 'registration' %}
+                        Enviamos um código para finalizar seu cadastro
+                    {% elif verification_type == 'login_verification' %}
+                        Verificação de segurança necessária
+                    {% elif verification_type == 'password_reset' %}
+                        Verificação para redefinir sua senha
+                    {% else %}
+                        Verificação de email necessária
+                    {% endif %}
+                </p>
+            </div>
+            
+            <div class="card-body p-4">
+                <!-- Messages -->
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+                
+                <!-- Email Info -->
+                <div class="text-center mb-4">
+                    <p class="mb-2">Código enviado para:</p>
+                    <strong class="text-primary">{{ masked_email }}</strong>
+                </div>
+                
+                <!-- Verification Form -->
+                <form id="verificationForm" method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="mb-4">
+                        <label for="verification_code" class="form-label">Código de Verificação</label>
+                        <input type="text" 
+                               class="form-control code-input" 
+                               id="verification_code" 
+                               name="verification_code" 
+                               placeholder="000000"
+                               maxlength="6"
+                               autocomplete="off"
+                               required>
+                        <div class="invalid-feedback"></div>
+                        <small class="form-text text-muted mt-2">
+                            Digite o código de 6 dígitos que enviamos para seu email
+                        </small>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-primary btn-lg" id="verifyBtn">
+                            <span class="btn-text">
+                                <i class="fas fa-check me-2"></i>Verificar Código
+                            </span>
+                            <span class="btn-loading d-none">
+                                <i class="fas fa-spinner fa-spin me-2"></i>Verificando...
+                            </span>
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Resend Section -->
+                <div class="text-center">
+                    <p class="mb-2">Não recebeu o código?</p>
+                    <div class="resend-section">
+                        <button type="button" class="resend-button" id="resendBtn" disabled>
+                            Reenviar código
+                        </button>
+                        <div class="resend-timer mt-1" id="resendTimer">
+                            Você pode solicitar um novo código em <span id="countdown">60</span>s
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Instructions -->
+                <div class="verification-steps mt-4">
+                    <h6 class="mb-3">Como funciona:</h6>
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <span>Verifique sua caixa de entrada e spam</span>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <span>Digite o código de 6 dígitos acima</span>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <span>
+                            {% if verification_type == 'registration' %}
+                                Sua conta será criada automaticamente
+                            {% elif verification_type == 'login_verification' %}
+                                Você será logado em sua conta
+                            {% else %}
+                                Prossiga com a próxima etapa
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Back Link -->
+                <div class="text-center mt-4">
+                    <a href="{% if verification_type == 'registration' %}{% url 'auth:register' %}{% else %}{% url 'auth:login' %}{% endif %}" 
+                       class="text-decoration-none">
+                        <i class="fas fa-arrow-left me-2"></i>Voltar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    let resendTimer = 60;
+    let resendInterval;
+    
+    // ================================
+    // COUNTDOWN TIMER
+    // ================================
+    function startResendTimer() {
+        resendTimer = 60;
+        $('#resendBtn').prop('disabled', true);
+        $('#resendTimer').show();
+        
+        resendInterval = setInterval(() => {
+            resendTimer--;
+            $('#countdown').text(resendTimer);
+            
+            if (resendTimer <= 0) {
+                clearInterval(resendInterval);
+                $('#resendBtn').prop('disabled', false);
+                $('#resendTimer').hide();
+            }
+        }, 1000);
+    }
+    
+    // Start initial timer
+    startResendTimer();
+    
+    // ================================
+    // CODE INPUT FORMATTING
+    // ================================
+    $('#verification_code').on('input', function() {
+        let value = $(this).val().replace(/\D/g, ''); // Only digits
+        $(this).val(value);
+        
+        // Auto-submit when 6 digits are entered
+        if (value.length === 6) {
+            setTimeout(() => {
+                $('#verificationForm').submit();
+            }, 500);
+        }
+        
+        // Clear error state
+        $(this).removeClass('is-invalid');
+        $(this).siblings('.invalid-feedback').text('');
+    });
+    
+    // Prevent non-numeric input
+    $('#verification_code').on('keypress', function(e) {
+        if (!/\d/.test(String.fromCharCode(e.which)) && e.which !== 8) {
+            e.preventDefault();
+        }
+    });
+    
+    // Auto-focus and select on page load
+    $('#verification_code').focus().select();
+    
+    // ================================
+    // FORM SUBMISSION
+    // ================================
+    $('#verificationForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        const form = $(this);
+        const code = $('#verification_code').val().trim();
+        const submitBtn = $('#verifyBtn');
+        const btnText = submitBtn.find('.btn-text');
+        const btnLoading = submitBtn.find('.btn-loading');
+        
+        // Validate code
+        if (!code || code.length !== 6) {
+            $('#verification_code').addClass('is-invalid');
+            $('#verification_code').siblings('.invalid-feedback').text('Digite um código de 6 dígitos');
+            return;
+        }
+        
+        // Show loading
+        btnText.addClass('d-none');
+        btnLoading.removeClass('d-none');
+        submitBtn.prop('disabled', true);
+        
+        // Submit via AJAX
+        $.ajax({
+            url: form.attr('action') || window.location.href,
+            method: 'POST',
+            data: form.serialize(),
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            success: function(response) {
+                if (response.success) {
+                    // Show success
+                    showNotification(response.message, 'success');
+                    
+                    // Clear timer
+                    clearInterval(resendInterval);
+                    
+                    // Redirect after delay
+                    setTimeout(() => {
+                        window.location.href = response.redirect_url || '/';
+                    }, 1500);
+                } else {
+                    // Show error
+                    $('#verification_code').addClass('is-invalid');
+                    $('#verification_code').siblings('.invalid-feedback').text(response.message);
+                    
+                    // Shake animation
+                    $('#verification_code').focus().select();
+                    
+                    showNotification(response.message, 'error');
+                }
+            },
+            error: function(xhr) {
+                console.error('Erro na verificação:', xhr);
+                showNotification('Erro interno. Tente novamente.', 'error');
+            },
+            complete: function() {
+                // Hide loading
+                btnText.removeClass('d-none');
+                btnLoading.addClass('d-none');
+                submitBtn.prop('disabled', false);
+            }
+        });
+    });
+    
+    // ================================
+    // RESEND CODE
+    // ================================
+    $('#resendBtn').on('click', function() {
+        const button = $(this);
+        
+        if (button.prop('disabled')) return;
+        
+        // Show loading
+        button.prop('disabled', true).text('Enviando...');
+        
+        $.ajax({
+            url: '{% url "auth:resend_verification" %}',
+            method: 'POST',
+            data: {
+                'csrfmiddlewaretoken': $('[name=csrfmiddlewaretoken]').val()
+            },
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            success: function(response) {
+                if (response.success) {
+                    showNotification(response.message, 'success');
+                    
+                    // Reset timer
+                    startResendTimer();
+                    
+                    // Clear and focus input
+                    $('#verification_code').val('').focus();
+                } else {
+                    showNotification(response.message, 'error');
+                    button.prop('disabled', false).text('Reenviar código');
+                }
+            },
+            error: function(xhr) {
+                console.error('Erro ao reenviar:', xhr);
+                showNotification('Erro ao reenviar código.', 'error');
+                button.prop('disabled', false).text('Reenviar código');
+            }
+        });
+    });
+    
+    // ================================
+    // UTILITY FUNCTIONS
+    // ================================
+    function showNotification(message, type = 'info') {
+        const alertClass = type === 'success' ? 'alert-success' : 
+                          type === 'error' ? 'alert-danger' : 
+                          type === 'warning' ? 'alert-warning' : 'alert-info';
+        
+        const icon = type === 'success' ? 'check-circle' : 
+                    type === 'error' ? 'exclamation-triangle' : 
+                    type === 'warning' ? 'exclamation-circle' : 'info-circle';
+        
+        const alert = $(`
+            <div class="alert ${alertClass} alert-dismissible fade show notification-alert" role="alert">
+                <i class="fas fa-${icon} me-2"></i>${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        `);
+        
+        // Remove existing notifications
+        $('.notification-alert').remove();
+        
+        // Add new notification
+        $('.card-body').prepend(alert);
+        
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            alert.fadeOut(() => alert.remove());
+        }, 5000);
+    }
+    
+    // ================================
+    // KEYBOARD SHORTCUTS
+    // ================================
+    $(document).on('keydown', function(e) {
+        // Enter to submit
+        if (e.key === 'Enter' && $('#verification_code').is(':focus')) {
+            $('#verificationForm').submit();
+        }
+        
+        // Escape to go back
+        if (e.key === 'Escape') {
+            history.back();
+        }
+    });
+});
+</script>
+{% endblock %}

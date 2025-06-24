@@ -3,13 +3,14 @@ function Translations() {
     return {
         async init() {
             // Internacionalização: Carrega idioma salvo ou padrão
-            const savedLang = localStorage.getItem('lang') || 'en-US';
+            const savedLang = localStorage.getItem('lang') || 'pt-BR';
             document.getElementById('data-lang').value = savedLang;
 
             const response = await fetch(`/static/i18n/${savedLang}.json`);
             translations = await response.json();
             currentLang = savedLang;
             translate.applyTranslations();
+            global.currentLang = savedLang;
             localStorage.setItem('lang', savedLang);
         },
 
@@ -38,9 +39,18 @@ function Translations() {
             if (text) el.textContent = text;
         },
 
-        _translate(message) {
-            const text = message.split('.').reduce((o, i) => o?.[i], translations)
-            return !!text && '' !== text ? text : message;
+        _translate(message, params = []) {
+            const text = message.split('.').reduce((o, i) => o?.[i], translations);
+            let result = !!text && text !== '' ? text : message;
+
+            if (params && params.length > 0) {
+                result = result.replace(/\{(\d+)\}/g, (match, index) => {
+                    return params[index] !== undefined ? params[index] : match;
+                });
+            };
+
+            return result;
         }
+
     };
 };

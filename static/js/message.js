@@ -1,27 +1,10 @@
 window.modal = (function () {
     let modalStack = [];
 
-    function loadHtml(view) {
-        return fetch(`/static/modals/${view}/view/modal.html`).then(r => {
+    async function loadHtml(view) {
+        return fetch(view).then(r => {
             if (!r.ok) throw new Error("Erro ao carregar HTML do modal.");
             return r.text();
-        });
-    }
-
-    function loadScript(view) {
-        return new Promise((resolve, reject) => {
-            if (!view) return resolve();
-            var viewExpression = `/static/modals/${view}/view/modal.js`;
-            const existing = document.querySelector(`script[src="${viewExpression}"]`);
-            if (existing) {
-                resolve();
-                return;
-            }
-            const script = document.createElement('script');
-            script.src = viewExpression;
-            script.onload = resolve;
-            script.onerror = reject;
-            document.body.appendChild(script);
         });
     }
 
@@ -37,12 +20,6 @@ window.modal = (function () {
         `;
         document.body.appendChild(wrapper);
         return $(wrapper);
-    }
-
-    function callFunctionIfExists(name, ...args) {
-        if (typeof window[name] === "function") {
-            return window[name](...args);
-        }
     }
 
     function animateShow(modal) {
@@ -62,52 +39,65 @@ window.modal = (function () {
         });
     }
 
-    async function open({ view, params = {} }) {
-        const html = await loadHtml(view);
-        await loadScript(view);
-
-        // Oculta o modal anterior, se houver
-        if (modalStack.length) await modalStack[modalStack.length - 1].modalEl.modal('hide');
-
-        const modalEl = createModalWrapper(html);
-
-        // Chamada da função activate antes de mostrar
-        callFunctionIfExists('activate', params);
-
-        // Mostra o modal com animação
-        await animateShow(modalEl);
-
-        callFunctionIfExists('onShow');
-        callFunctionIfExists('compositionComplete');
-
-        // Evento botão Enviar
-        btnSend.on('click', async () => {
-            const result = callFunctionIfExists('send', modalEl);
-            if (result === false) return; // bloqueia o fechamento
-            await animateHide(modalEl);
-            modalStack.pop();
-            if (modalStack.length) {
-                modalStack[modalStack.length - 1].modalEl.modal('show');
-            }
-            modalStack[modalStack.length - 1]?.resolve?.(result);
-        });
-
-        // Evento botão Cancelar
-        btnCancel.on('click', async () => {
-            callFunctionIfExists('cancel');
-            await animateHide(modalEl);
-            modalStack.pop();
-            if (modalStack.length) {
-                modalStack[modalStack.length - 1].modalEl.modal('show');
-            }
-            modalStack[modalStack.length - 1]?.reject?.('cancelado');
-        });
-
-        // Armazena na pilha
-        return new Promise((resolve, reject) => {
-            modalStack.push({ modalEl, resolve, reject });
-        });
+    function modalSettings(view) {
+        if(!window.hasOwnProperty('global') || !global) return;
+        return global.messages.find(x => x.name === view);
     }
 
+    async function open({ view, params = {} }) {
+        const modalSet = modalSettings(view);
+        if(!modalSet) throw Error('Could not found the modal configuration. Modal:' + view);
+        return new Promise((resolve, reject) => {
+            require(modalSet.scripts, async () => {
+                const html = await loadHtml('/static/' + modalSet.views);
+
+                if (modalStack.length) await modalStack[modalStack.length - 1].modalEl.modal('hide');
+
+                const modalEl = createModalWrapper(html);
+
+                const extensions = {
+                    activate: () => {},
+                    deactivate: async () => { return await ctor.cancel() },
+                    send: async () => {
+                        await animateHide(modalEl);
+                        modalStack.pop();
+                        if (modalStack.length) {
+                            modalStack[modalStack.length - 1].modalEl.modal('show');
+                        }
+                        modalStack[modalStack.length - 1]?.resolve?.(result)
+                        resolve(result); 
+                    },
+                    cancel: async () => {
+                        await animateHide(modalEl);
+                        modalStack.pop();
+                        if (modalStack.length) {
+                            modalStack[modalStack.length - 1].modalEl.modal('show');
+                        }
+                        modalStack[modalStack.length - 1]?.resolve?.('cancel')
+                        resolve('cancel');
+                    },
+                    compositionComplete: () => {},
+                };
+
+                ctor = $.extend(extensions, ctor);
+
+                var activateResult = ctor.activate(params);
+                if(activateResult === false) return;
+
+                ctor.view = modalEl;
+                ctor.compositionComplete(ctor.view, params); 
+
+                bindings.reload(ctor.view[0]);
+                
+                // Mostra o modal com animação
+                await animateShow(modalEl);
+
+                // Armazena na pilha
+                modalStack.push({ modalEl, resolve, reject });
+            }, true);
+        });
+
+    }
+    
     return { open };
 })();

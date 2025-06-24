@@ -1,5 +1,8 @@
 from django.contrib import admin
-from .models import Theme
+from .models import *
+
+from django.utils.html import format_html
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 # Configuração do admin para temas
 @admin.register(Theme)

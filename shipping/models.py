@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.postgres.fields import JSONField
+from django.db.models import JSONField
 from django.contrib.postgres.indexes import GinIndex
 from models.base import BaseModel
 from models.validators import validate_positive_price
@@ -62,7 +62,7 @@ class ShippingZone(BaseModel):
     def __str__(self):
         return self.name
 
-class ShippingZoneRegion(models.Model):
+class ShippingZoneRegion(BaseModel):
     """Regiões das zonas (Estados, CEPs, etc.)"""
     REGION_TYPES = [
         ('state', 'Estado'),
@@ -80,7 +80,7 @@ class ShippingZoneRegion(models.Model):
         verbose_name_plural = 'Regiões das Zonas'
         unique_together = ['zone', 'type', 'value']
 
-class ShippingZoneRate(models.Model):
+class ShippingZoneRate(BaseModel):
     """Preços por zona"""
     zone = models.ForeignKey(ShippingZone, on_delete=models.CASCADE, related_name='rates')
     method = models.ForeignKey(ShippingMethod, on_delete=models.CASCADE, related_name='zone_rates')
@@ -153,7 +153,7 @@ class Shipment(BaseModel):
     def __str__(self):
         return f"Envio {self.uuid} - {self.status}"
 
-class ShipmentItem(models.Model):
+class ShipmentItem(BaseModel):
     """Itens do envio"""
     shipment = models.ForeignKey(Shipment, on_delete=models.CASCADE, related_name='items')
     order_item = models.ForeignKey('orders.OrderItem', on_delete=models.CASCADE)

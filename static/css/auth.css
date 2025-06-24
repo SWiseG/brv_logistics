@@ -1,0 +1,147 @@
+.auth {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+
+    .auth-card {
+        box-shadow: 0px 13px 15px var(--primary-darkest);
+        border: none;
+        max-width: 500px;
+        min-height: 580px;
+        border-radius: 10px;
+
+        .auth-header {
+            background: var(--primary-darker);
+            color: var(--white);
+            padding-block: 14px !important;
+            border-radius: 10px 10px 0 0;
+        }
+        .card-body {
+
+            .form-floating {
+                .password-toggle {
+                    cursor: pointer;
+                    border: none;
+                    border: 1px solid var(--neutral-border) !important;
+                    background: var(--white) !important;
+                    border-radius: 8px;
+                    color: var(--white-text);
+                }
+
+                > .form-control {
+                    ~label {
+                        &::after {
+                            background-color: var(--off-white) !important;
+                        }
+                    }
+                }
+
+                .password-strength {
+                    height: 4px;
+                    border-radius: 2px;
+                    transition: all 0.3s ease;
+
+                    &.weak {
+                        background: var(--fb-danger);
+                    }
+
+                    &.medium {
+                        background: var(--fb-warning);
+                    }
+
+                    &.strong {
+                        background: var(--fb-success);
+                    }
+                }
+                
+                .email-check {
+                    position: absolute;
+                    right: 10px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    z-index: 5;
+                }
+            }
+
+            .form-floating .form-control {
+                &:focus {
+                    border-color: var(--primary-darker);
+                    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+                }
+            }
+
+            .auth-divider {
+                position: relative;
+                text-align: center;
+                margin: 1.5rem 0;
+
+                &::before {
+                    content: '';
+                    position: absolute;
+                    top: 100%;
+                    left: 0;
+                    right: 0;
+                    height: 1px;
+                    background: var(--neutral-border);
+                }
+
+                span {
+                    background: var(--white);
+                    padding: 0 1rem;
+                    color: var(--neutral);
+                }
+            }
+
+            .step-indicator {
+                display: flex;
+                justify-content: center;
+                margin-bottom: 2rem;
+
+                .step {
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 50%;
+                    background: var(--neutral-lightest);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 0 0.5rem;
+                    font-size: 0.875rem;
+                    font-weight: bold;
+                    transition: all 0.3s ease;
+
+                    &.active {
+                        background: var(--primary);
+                        color: var(--white);
+                    }
+
+                    &.completed {
+                        background: var(--fb-success);
+                        color: var(--white);
+                    }
+                }
+
+                .step-line {
+                    width: 50px;
+                    height: 2px;
+                    background: var(--neutral-lightest);
+                    margin-top: 14px;
+                    transition: all 0.3s ease;
+
+                    &.completed {
+                        background: var(--fb-success);
+                    }
+                }
+            }
+        }
+
+    }
+
+    .social-login {
+        transition: all 0.3s ease;
+        &:hover {
+            transform: translateY(-2px);
+        }
+    }
+
+}

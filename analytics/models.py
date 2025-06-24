@@ -1,9 +1,9 @@
 from django.db import models
-from django.contrib.postgres.fields import JSONField
+from django.db.models import JSONField
 from django.contrib.postgres.indexes import GinIndex
 from models.base import BaseModel
 
-class AnalyticsEvent(models.Model):
+class AnalyticsEvent(BaseModel):
     """Eventos de analytics"""
     EVENT_TYPES = [
         ('page_view', 'Visualização de Página'),
@@ -41,7 +41,7 @@ class AnalyticsEvent(models.Model):
             GinIndex(fields=['event_data']),
         ]
 
-class SalesReport(models.Model):
+class SalesReport(BaseModel):
     """Relatórios de vendas (pré-calculados para performance)"""
     PERIOD_TYPES = [
         ('daily', 'Diário'),
@@ -76,7 +76,7 @@ class SalesReport(models.Model):
             GinIndex(fields=['payment_method_breakdown']),
         ]
 
-class ProductPerformance(models.Model):
+class ProductPerformance(BaseModel):
     """Performance de produtos (cache para melhor performance)"""
     product = models.ForeignKey('products.Product', on_delete=models.CASCADE, related_name='performance_metrics')
     date = models.DateField('Data')

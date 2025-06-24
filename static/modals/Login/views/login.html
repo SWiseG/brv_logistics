@@ -1,0 +1,25 @@
+<div class="modal-container example-modal">
+    <div class="modal-content p-4">
+        <div class="modal-header border-0">
+            <span class="modal-title" data-modal-title>Formulário Exemplo</span>
+        </div>
+
+        <div class="modal-body" data-modal-body>
+            <span>Bindings test:</span>
+            <span data-bind="text: $root.valor"></span>
+            <input type="text" 
+                    name="q" 
+                    class="form-control" 
+                    placeholder="Buscar produtos, marcas..."
+                    autocomplete="off"
+                    id="navbarSearchInput"
+                    data-bind="value: $root.valor"
+                    />
+        </div>
+
+        <div class="modal-footer border-0 mt-3" data-modal-footer>
+            <button type="button" id="login-send" class="btn btn-primary" data-bind="click: $root.send">Enviar</button>
+            <button type="button" id="login-cancel" class="btn btn-danger" data-bind="click: $root.cancel">Cancelar</button>
+        </div>
+    </div>
+</div>

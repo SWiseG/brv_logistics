@@ -1,0 +1,120 @@
+<!-- Cart Dropdown Component -->
+{% if cart_items %}
+    <!-- Cart Items -->
+    <div class="cart-items" style="max-height: 300px; overflow-y: auto;">
+        {% for item in cart_items %}
+        <div class="cart-item d-flex align-items-center p-3 border-bottom">
+            <!-- Product Image -->
+            <div class="cart-item-image me-3">
+                {% if item.product.get_primary_image %}
+                    <img src="{{ item.product.get_primary_image }}" 
+                         alt="{{ item.product.name }}" 
+                         class="rounded"
+                         style="width: 50px; height: 50px; object-fit: cover;">
+                {% else %}
+                    <div class="bg-light rounded d-flex align-items-center justify-content-center"
+                         style="width: 50px; height: 50px;">
+                        <i class="fas fa-image text-muted"></i>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Product Info -->
+            <div class="cart-item-info flex-grow-1">
+                <h6 class="mb-1 text-truncate" style="max-width: 180px;">
+                    {{ item.product.name }}
+                </h6>
+                
+                {% if item.variant %}
+                <small class="text-muted d-block">
+                    {% for key, value in item.variant.attributes.items %}
+                        {{ key|capfirst }}: {{ value }}
+                        {% if not forloop.last %} • {% endif %}
+                    {% endfor %}
+                </small>
+                {% endif %}
+                
+                <div class="d-flex align-items-center justify-content-between mt-2">
+                    <!-- Quantity -->
+                    <div class="cart-item-quantity">
+                        <div class="input-group input-group-sm" style="width: 80px;">
+                            <button class="btn btn-outline-secondary btn-qty-minus" 
+                                    type="button" 
+                                    data-item-id="{{ item.id }}"
+                                    data-action="decrease">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <input type="number" 
+                                   class="form-control text-center cart-qty-input" 
+                                   value="{{ item.quantity }}" 
+                                   min="1"
+                                   data-item-id="{{ item.id }}">
+                            <button class="btn btn-outline-secondary btn-qty-plus" 
+                                    type="button" 
+                                    data-item-id="{{ item.id }}"
+                                    data-action="increase">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Price -->
+                    <div class="cart-item-price text-end">
+                        <div class="fw-bold text-primary">
+                            {% if item.variant %}
+                                R$ {{ item.variant.price|floatformat:2 }}
+                            {% else %}
+                                R$ {{ item.product.price|floatformat:2 }}
+                            {% endif %}
+                        </div>
+                        <small class="text-muted">
+                            Total: R$ {{ item.get_total_price|floatformat:2 }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Remove Button -->
+            <div class="cart-item-actions ms-2">
+                <button class="btn btn-sm btn-outline-danger btn-remove-item" 
+                        type="button" 
+                        data-item-id="{{ item.id }}"
+                        title="Remover item">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Cart Summary -->
+    <div class="cart-summary p-3 bg-light">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="fw-bold">Total ({{ total_items }} {% if total_items == 1 %}item{% else %}itens{% endif %})</span>
+            <span class="h5 text-primary mb-0 fw-bold">{{ formatted_total }}</span>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="d-grid gap-2">
+            <a href="{% url 'orders:cart' %}" class="btn btn-outline-primary btn-sm">
+                <i class="fas fa-shopping-cart me-2"></i>Ver Carrinho
+            </a>
+            <a href="{% url 'orders:checkout' %}" class="btn btn-primary btn-sm">
+                <i class="fas fa-credit-card me-2"></i>Finalizar Compra
+            </a>
+        </div>
+    </div>
+    
+{% else %}
+    <!-- Empty Cart -->
+    <div class="empty-cart text-center p-4">
+        <div class="mb-3">
+            <i class="fas fa-shopping-cart fa-3x text-muted"></i>
+        </div>
+        <h6 class="text-muted mb-2">Seu carrinho está vazio</h6>
+        <p class="text-muted small mb-3">Adicione produtos para começar suas compras</p>
+        <a href="{% url 'products:list' %}" class="btn btn-primary btn-sm">
+            <i class="fas fa-search me-2"></i>Explorar Produtos
+        </a>
+    </div>
+{% endif %}

@@ -1,4 +1,5 @@
-<footer class="py-5">
+{% load static %}
+<footer class="py-5 footer">
     <div class="container">
         <div class="row">
             <div class="col-md-4 mb-4">
@@ -31,8 +32,8 @@
                 <h5>Links Úteis</h5>
                 <ul class="list-unstyled">
                     <li><a href="{% url 'core:home' %}">Home</a></li>
-                    <li><a href="{% url 'products:product_list' %}">Produtos</a></li>
-                    <li><a href="{% url 'core:contact' %}">Contato</a></li>
+                    {% comment %} <li><a href="{% url 'products:product_list' %}">Produtos</a></li>
+                    <li><a href="{% url 'core:contact' %}">Contato</a></li> {% endcomment %}
                     <li><a href="#">Termos de Uso</a></li>
                     <li><a href="#">Política de Privacidade</a></li>
                 </ul>
@@ -52,11 +53,13 @@
                 </address>
             </div>
         </div>
-        <hr>
-        <div class="row">
-            <div class="col-md-12 text-center">
-                <p>&copy; {% now "Y" %} E-commerce Template. Todos os direitos reservados.</p>
-            </div>
-        </div>
     </div>
 </footer>
+<subfooter class="py-5 sub-footer">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <p>&copy; {% now "Y" %} E-commerce Template. Todos os direitos reservados.</p>
+        </div>
+    </div>
+<subfooter />
+<module data-tag="{% static 'js/modules/footer.js' %}"></module>

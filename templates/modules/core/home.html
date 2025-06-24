@@ -1,151 +1,228 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}
     {% if sys_config %} 
-        {{ sys_config.site_name }}
+        {% if title %} 
+            {{ sys_config.site_name }} - {{ title }}
+        {% else %}
+            {{ sys_config.site_name }}
+        {% endif %}
+    {% elif title %}
+        {{ title }}
     {% else %}
-        Home
+        -
     {% endif %}
 {% endblock %}
 
-{% block content %}
-
-<!-- Hero Section -->
-<div class="jumbotron bg-light rounded-lg p-4 p-md-5 mb-4">
-    <div class="row align-items-center">
-        <div class="col-md-6">
-            <h1 class="display-4 font-weight-bold">Bem-vindo à nossa loja</h1>
-            <p class="lead my-3">Encontre os melhores produtos com os melhores preços. Navegue por nossas categorias e descubra ofertas exclusivas.</p>
-            <p class="lead mb-0">
-                <a href="{% url 'products:product_list' %}" class="btn btn-lg btn-primary">Ver Produtos</a>
-                <a href="#featured-products" class="btn btn-lg btn-outline-secondary ml-2">Destaques</a>
-            </p>
-        </div>
-        <div class="col-md-6 d-none d-md-block">
-        </div>
-    </div>
-</div>
-
-<!-- Categories Section -->
-<section class="mb-5">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="h3">Categorias</h2>
-        <a href="{% url 'products:product_list' %}" class="text-decoration-none">Ver todas</a>
-    </div>
-    <div class="row">
-        {% for i in '12345'|make_list %}
-        <div class="col-6 col-md-4 col-lg-2 mb-4">
-            <div class="card h-100 border-0 shadow-sm">
-                <div class="card-body text-center">
-                    <h5 class="card-title mb-0">Categoria {{ i }}</h5>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-</section>
-
-<!-- Featured Products Section -->
-<section id="featured-products" class="mb-5">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="h3">Produtos em Destaque</h2>
-        <a href="{% url 'products:product_list' %}" class="text-decoration-none">Ver todos</a>
-    </div>
-    <div class="row">
-        {% for i in '123456'|make_list %}
-        <div class="col-6 col-md-4 col-lg-3 mb-4">
-            <div class="card h-100 product-card">
-                <span class="badge badge-danger position-absolute" style="top: 10px; right: 10px;">-20%</span>
-                <div class="card-body">
-                    <h5 class="card-title">Produto {{ i }}</h5>
-                    <p class="card-text text-muted small">Categoria</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <span class="product-price product-sale-price">R$ 79,90</span>
-                            <span class="product-original-price">R$ 99,90</span>
-                        </div>
-                        <a href="#" class="btn btn-sm btn-outline-primary"><i class="fas fa-shopping-cart"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-</section>
-
-<!-- Promotional Banners -->
-<section class="mb-5">
-    <div class="row">
-        <div class="col-md-6 mb-4">
-            <div class="card bg-dark text-white">
-                <div class="card-img-overlay d-flex flex-column justify-content-center">
-                    <h3 class="card-title">Ofertas Especiais</h3>
-                    <p class="card-text">Até 50% de desconto em produtos selecionados.</p>
-                    <a href="#" class="btn btn-light">Ver Ofertas</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 mb-4">
-            <div class="card bg-primary text-white">
-                <div class="card-img-overlay d-flex flex-column justify-content-center">
-                    <h3 class="card-title">Novidades</h3>
-                    <p class="card-text">Confira os produtos recém-chegados.</p>
-                    <a href="#" class="btn btn-light">Ver Novidades</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Features Section -->
-<section class="mb-5">
-    <div class="row text-center">
-        <div class="col-md-3 mb-4">
-            <div class="p-3">
-                <i class="fas fa-truck fa-3x mb-3 text-primary"></i>
-                <h4>Entrega Rápida</h4>
-                <p class="text-muted">Entregamos em todo o Brasil</p>
-            </div>
-        </div>
-        <div class="col-md-3 mb-4">
-            <div class="p-3">
-                <i class="fas fa-credit-card fa-3x mb-3 text-primary"></i>
-                <h4>Pagamento Seguro</h4>
-                <p class="text-muted">Diversas formas de pagamento</p>
-            </div>
-        </div>
-        <div class="col-md-3 mb-4">
-            <div class="p-3">
-                <i class="fas fa-undo fa-3x mb-3 text-primary"></i>
-                <h4>Devolução Garantida</h4>
-                <p class="text-muted">30 dias para devolução</p>
-            </div>
-        </div>
-        <div class="col-md-3 mb-4">
-            <div class="p-3">
-                <i class="fas fa-headset fa-3x mb-3 text-primary"></i>
-                <h4>Suporte 24/7</h4>
-                <p class="text-muted">Atendimento ao cliente</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Newsletter Section -->
-<section class="mb-5 p-4 bg-light rounded">
-    <div class="row justify-content-center">
-        <div class="col-md-8 text-center">
-            <h3>Inscreva-se em nossa Newsletter</h3>
-            <p class="text-muted mb-4">Receba ofertas exclusivas e novidades diretamente no seu e-mail.</p>
-            <form class="form-inline justify-content-center">
-                <div class="form-group mx-sm-3 mb-2">
-                    <label for="newsletter-email" class="sr-only">Email</label>
-                    <input type="email" class="form-control" id="newsletter-email" placeholder="Seu e-mail">
-                </div>
-                <button type="submit" class="btn btn-primary mb-2">Inscrever-se</button>
-            </form>
-        </div>
-    </div>
-</section>
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/home.css' %}" />
 {% endblock %}
 
+{% block content %}
+<div id="home" class="home">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
+            
+            <!-- Indicadores -->
+            <div class="carousel-indicators">
+                {% for hr in hero_sections %}
+                    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}"></button>
+                {% endfor %}
+            </div>
+
+            <!-- Slides -->
+            <div class="carousel-inner">
+                {% if hero_sections %}
+                    {% for hr in hero_sections %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <div class="hero-slide bg-cover text-white d-flex align-items-center" style="background-image: url('{{ hr.image.url }}');">
+                                <div class="container">
+                                    <h1 data-i18n="{{ hr.title|default:'' }}"></h1>
+                                    <p data-i18n="{{ hr.sub_title|default:'' }}"></p>
+                                    {% if hr.action_text %}
+                                        <a href="#" class="btn btn-light btn-lg" data-action="{{ hr.action_callback }}">{{ hr.action_text }}</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-center py-3">Sem hero sections disponíveis.</p>
+                {% endif %}
+            </div>
+
+            <!-- Controles -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+
+        </div>
+    </section>
+
+    <hr>
+    <a href="{% url 'auth:login' %}" class="btn btn-primary" data-i18n="navbar.make-login"></a>
+    <a href="{% url 'auth:register' %}" class="btn btn-secondary" data-i18n="navbar.make-register"></a>
+    <a href="{% url 'auth:logout' %}" class="btn btn-primary-outlined">Logout</a>
+
+    <hr>
+    <div class="block-elem" style="
+    display: flex;
+    gap: 24px;
+    flex-direction: column;
+"></div>
+    {% comment %} <!-- Categories Section -->
+    <section class="categories-section py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Nossas Categorias</h2>
+            <div class="row g-4">
+                {% for category in main_categories %}
+                <div class="col-md-4 col-lg-2">
+                    <div class="category-card text-center">
+                        <div class="category-icon mb-3">
+                            {% if category.image %}
+                            <img src="{{ category.image.url }}" alt="{{ category.name }}" class="img-fluid rounded-circle">
+                            {% else %}
+                            <div class="placeholder-icon">
+                                <i class="fas fa-tag fa-3x text-primary"></i>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <h5>{{ category.name }}</h5>
+                        <a href="#" class="btn btn-outline-primary btn-sm">Ver Produtos</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="featured-section py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5">Produtos em Destaque</h2>
+            <div class="row g-4">
+                {% for product in featured_products %}
+                <div class="col-md-6 col-lg-3">
+                    <div class="product-card h-100">
+                        <div class="product-image">
+                            {% if product.images.first %}
+                            <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}" class="img-fluid">
+                            {% else %}
+                            <div class="placeholder-image d-flex align-items-center justify-content-center">
+                                <i class="fas fa-image fa-3x text-muted"></i>
+                            </div>
+                            {% endif %}
+                            
+                            {% if product.compare_at_price and product.compare_at_price > product.price %}
+                            <div class="product-badge">
+                                {% widthratio product.price product.compare_at_price 100 as discount %}
+                                -{{ discount|floatformat:0 }}%
+                            </div>
+                            {% endif %}
+                            
+                            <div class="product-actions">
+                                <button class="btn btn-primary btn-sm" onclick="addToCart({{ product.id }})">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="product-info p-3">
+                            <h6 class="product-title">{{ product.name }}</h6>
+                            <div class="product-price">
+                                {% if product.compare_at_price and product.compare_at_price > product.price %}
+                                <span class="original-price text-muted text-decoration-line-through">
+                                    R$ {{ product.compare_at_price|floatformat:2 }}
+                                </span>
+                                {% endif %}
+                                <span class="current-price fw-bold text-primary">
+                                    R$ {{ product.price|floatformat:2 }}
+                                </span>
+                            </div>
+                            <div class="product-rating">
+                                <div class="stars">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-muted"></i>
+                                </div>
+                                <small class="text-muted">(4.0)</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="text-center mt-4">
+                <a href="#" class="btn btn-primary btn-lg">Ver Todos os Produtos</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Special Offers -->
+    {% if special_offers %}
+        <section class="offers-section py-5">
+            <div class="container">
+                <h2 class="text-center mb-5">Ofertas Especiais</h2>
+                <div class="row g-4">
+                    {% for product in special_offers %}
+                    <div class="col-md-6 col-lg-3">
+                        <div class="offer-card">
+                            <div class="offer-image">
+                                {% if product.images.first %}
+                                <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}" class="img-fluid">
+                                {% endif %}
+                                <div class="offer-badge">
+                                    {% widthratio product.price product.compare_at_price 100 as discount %}
+                                    {{ discount|floatformat:0 }}% OFF
+                                </div>
+                            </div>
+                            <div class="offer-info p-3 text-center">
+                                <h6>{{ product.name }}</h6>
+                                <div class="price-info">
+                                    <span class="old-price">R$ {{ product.compare_at_price|floatformat:2 }}</span>
+                                    <span class="new-price">R$ {{ product.price|floatformat:2 }}</span>
+                                </div>
+                                <button class="btn btn-danger btn-sm mt-2" onclick="addToCart({{ product.id }})">
+                                    Comprar Agora
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    {% endif %}
+
+    <!-- Newsletter -->
+    <section class="newsletter-section py-5 bg-primary text-white">
+        <div class="container text-center">
+            <h3 class="mb-4">Receba nossas ofertas por email</h3>
+            <p class="mb-4">Cadastre-se e seja o primeiro a saber das promoções!</p>
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <form class="newsletter-form" method="POST" action="#">
+                        {% csrf_token %}
+                        <div class="input-group">
+                            <input type="email" class="form-control" placeholder="Seu melhor email" name="email" required>
+                            <button class="btn btn-light" type="submit">Cadastrar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section> {% endcomment %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    <module data-tag="{% static 'js/modules/core/home.js' %}"></module>
+{% endblock %}

@@ -1,0 +1,46 @@
+/* Estilos: Notificações */
+.notification {
+    font-weight: 500;
+    font-size: 12px;
+    
+    word-wrap: break-word !important;
+    overflow-wrap: break-word;
+    hyphens: auto;
+
+    background: var(--neutral);
+    color: var(--neutral-text);
+
+    border: 1px solid transparent;
+    border-color: var(--neutral-border);
+
+    &.iconed {
+        padding-left: 40px;
+        .icon {
+            position: absolute;
+            left: 10px;
+            font-size: 18px;
+            top: 35%;
+        }
+    }
+    &.info {
+        background: var(--fb-info);
+        color: var(--fb-info-text);
+        border-color: var(--fb-info);
+    }
+    &.error {
+        background: var(--fb-danger);
+        color: var(--fb-danger-text);
+        border-color: var(--fb-danger);
+    }
+    &.warning {
+        background: var(--fb-warning);
+        color: var(--fb-warning-text);
+        border-color: var(--fb-warning);
+    }
+    &.success {
+        background: var(--fb-success);
+        color: var(--fb-success-text);
+        border-color: var(--fb-success); 
+    }
+
+}

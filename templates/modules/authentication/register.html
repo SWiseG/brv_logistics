@@ -1,0 +1,206 @@
+{% extends 'base_auth.html' %}
+{% load static %}
+
+{% block title %}
+    {% if sys_config %} 
+        {% if title %} 
+            {{ sys_config.site_name }} - {{ title }}
+        {% else %}
+            {{ sys_config.site_name }}
+        {% endif %}
+    {% elif title %}
+        {{ title }}
+    {% else %}
+        -
+    {% endif %}
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center auth">
+        <div class="col-lg-5 col-md-7">
+            <div class="card auth-card">
+                <!-- Header -->
+                <div class="card-header auth-header text-center py-4">
+                    <span class="navbar-brand">
+                        {% if active_theme and active_theme.logo %}
+                            <img src="{{ active_theme.logo.url }}" alt="Logo" height="30">
+                        {% else %}
+                            BRV Logistics - Template
+                        {% endif %}
+                    </span>
+                </div>
+
+                <div class="card-body p-4">
+                    <!-- Messages -->
+                    <script>
+                        {% for message in messages %}
+                            let number = Math.floor(Math.random() * 1000);
+                            let messageClass = `dj-msg-${number}`;
+                            localstorage.setItem(messageClass, {
+                                        level: "{{ message.level_tag }}",
+                                        text: "{{ message|escapejs }}"
+                            });
+                        {% endfor %}
+                    </script>
+                    
+                    <!-- Progress Indicator -->
+                    <div class="step-indicator">
+                        <div class="step active" data-step="1">1</div>
+                        <div class="step-line"></div>
+                        <div class="step" data-step="2">2</div>
+                        <div class="step-line"></div>
+                        <div class="step" data-step="3">3</div>
+                    </div>
+                    
+                    <!-- Register Form -->
+                    <form id="registerForm" method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        <!-- Step 1: Basic Info -->
+                        <div class="form-step" data-step="1">
+                            <h5 class="mb-3">Informações Básicas</h5>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        {{ form.first_name }}
+                                        <label for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        {{ form.last_name }}
+                                        <label for="{{ form.last_name.id_for_label }}">{{ form.last_name.label }}</label>
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Email with availability check -->
+                            <div class="form-floating mb-3 position-relative">
+                                {{ form.email }}
+                                <label for="{{ form.email.id_for_label }}" data-bind="value: $root.emailField('{{ form.email.id_for_label }}')">{{ form.email.label }}</label>
+                                <div class="email-check">
+                                    <i class="fas fa-spinner fa-spin d-none" id="emailLoader"></i>
+                                    <i class="fas fa-check text-success d-none" id="emailAvailable"></i>
+                                    <i class="fas fa-times text-danger d-none" id="emailTaken"></i>
+                                </div>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            
+                            <!-- Phone -->
+                            <div class="form-floating mb-3">
+                                {{ form.phone }}
+                                <label for="{{ form.phone.id_for_label }}" data-bind="value: $root.phoneField('{{ form.phone.id_for_label }}')">{{ form.phone.label }} (opcional)</label>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="button" class="btn btn-primary" data-bind="click: $root.nextStep" data-anotation-step="2">
+                                    Continuar <i class="fas fa-arrow-right ms-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Step 2: Password -->
+                        <div class="form-step d-none" data-step="2">
+                            <h5 class="mb-3">Criar Senha</h5>
+                            
+                            <!-- Password -->
+                            <div class="form-floating mb-3">
+                                {{ form.password1 }}
+                                <label for="{{ form.password1.id_for_label }}" data-bind="value: $root.passwordPrimaryField('{{ form.password1.id_for_label }}')">{{ form.password1.label }}</label>
+                                <div class="invalid-feedback"></div>
+                                <div class="password-strength mt-2"></div>
+                                <small class="text-muted">Mínimo 8 caracteres, inclua letras e números</small>
+                            </div>
+                            
+                            <!-- Confirm Password -->
+                            <div class="form-floating mb-3">
+                                {{ form.password2 }}
+                                <label for="{{ form.password2.id_for_label }}" data-bind="value: $root.passwordSecondaryField('{{ form.password2.id_for_label }}')">{{ form.password2.label }}</label>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            
+                            <!-- Date of Birth -->
+                            <div class="form-floating mb-4">
+                                {{ form.date_of_birth }}
+                                <label for="{{ form.date_of_birth.id_for_label }}">{{ form.date_of_birth.label }} (opcional)</label>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-outline-secondary" data-bind="click: $root.prevStep" data-anotation-step="1">
+                                    <i class="fas fa-arrow-left me-2"></i>Voltar
+                                </button>
+                                <button type="button" class="btn btn-primary flex-grow-1" data-bind="click: $root.nextStep" data-anotation-step="3">
+                                    Continuar <i class="fas fa-arrow-right ms-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Step 3: Terms and Preferences -->
+                        <div class="form-step d-none" data-step="3">
+                            <h5 class="mb-3">Finalizar Cadastro</h5>
+                            
+                            <!-- Terms and Conditions -->
+                            <div class="form-check mb-3">
+                                {{ form.accept_terms }}
+                                <label class="form-check-label" for="{{ form.accept_terms.id_for_label }}" data-bind="value: $root.acceptTermsField('{{ form.accept_terms.id_for_label }}')">
+                                    {{ form.accept_terms.label }} 
+                                    <a href="#" target="_blank" onClick="event.preventDefault()" class="text-decoration-none">termos de uso</a> e 
+                                    <a href="#" target="_blank" onClick="event.preventDefault()" class="text-decoration-none">política de privacidade</a>
+                                </label>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            
+                            <!-- Newsletter -->
+                            <div class="form-check mb-4">
+                                {{ form.newsletter_subscribed }}
+                                <label class="form-check-label" for="{{ form.newsletter_subscribed.id_for_label }}">
+                                    {{ form.newsletter_subscribed.label }}
+                                </label>
+                            </div>
+                            
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-outline-secondary" data-bind="click: $root.prevStep" data-anotation-step="2">
+                                    <i class="fas fa-arrow-left me-2"></i>Voltar
+                                </button>
+                                <button type="submit" class="btn btn-primary flex-grow-1" id="registerBtn">
+                                    <span class="btn-text">
+                                        <i class="fas fa-user-check me-2"></i>Criar Conta
+                                    </span>
+                                    <span class="btn-loading d-none">
+                                        <i class="fas fa-spinner fa-spin me-2"></i>Criando...
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    
+                    <!-- Login Link -->
+                    <div class="text-center mt-4">
+                        <p class="mb-0">
+                            Já tem uma conta? 
+                            <a href="{% url 'auth:login' %}" class="text-decoration-none fw-bold">
+                                Faça login
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    <script module="data-url" type="check-email" data-url-bind='{% url "auth:check_email" %}'></script>
+    <module data-tag="{% static 'js/modules/authentication/register.js' %}"></module>
+{% endblock %}
