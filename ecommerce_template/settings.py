@@ -239,8 +239,17 @@ AUTH_USER_MODEL = 'users.User'
 # As configurações daqui devem ser pegas através da tabela SiteSettings e também das variáveis de ambiente 
 # Revisar depois
 SITE_NAME = lazy(lambda: config_service('site_name', 'BRAVA'), str)()
-SITE_URL = 'http://localhost:8000'  # Alterar para sua URL em produção
+SITE_URL = lazy(lambda: config_service('site_url', 'http://localhost:8000'), str)()
 SUPPORT_EMAIL = lazy(lambda: config_service('contact_email', 'rafaelvargaspereira@gmail.com'), str)()
+
+# Configurações de segurança
+SECURITY_EMAIL_ENABLED = True
+WELCOME_EMAIL_ENABLED = True
+LOGIN_NOTIFICATION_ENABLED = True
+
+# Configurações de bloqueio de conta
+MAX_LOGIN_ATTEMPTS = 5
+ACCOUNT_LOCKOUT_DURATION = 30  # minutos
 
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -307,4 +316,4 @@ LOGGING = {
     },
 }
 
-SITE_ID = 1
+SITE_ID = 2

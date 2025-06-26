@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bem-vindo!</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
+        .container { max-width: 600px; margin: 0 auto; background-color: white; }
+        .header { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; padding: 40px; text-align: center; }
+        .content { padding: 30px; }
+        .welcome-icon { font-size: 64px; margin-bottom: 20px; }
+        .feature-box { background: #f8f9fa; border-left: 4px solid #28a745; padding: 15px; margin: 15px 0; }
+        .button { display: inline-block; background: #28a745; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 15px 0; }
+        .footer { background: #f8f9fa; padding: 20px; text-align: center; font-size: 14px; color: #6c757d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="welcome-icon">🎉</div>
+            <h1>Bem-vindo ao {{ site_name }}!</h1>
+            <p>Sua conta foi criada com sucesso</p>
+        </div>
+        
+        <div class="content">
+            <h2>Olá, {{ user.first_name }}!</h2>
+            
+            <p>É com grande prazer que damos as boas-vindas à nossa loja online! Sua conta foi criada com sucesso e você já pode começar a explorar nossos produtos.</p>
+            
+            <h3>O que você pode fazer agora:</h3>
+            
+            <div class="feature-box">
+                <h4>🛍️ Explorar Produtos</h4>
+                <p>Navegue por milhares de produtos em diversas categorias</p>
+            </div>
+            
+            <div class="feature-box">
+                <h4>❤️ Lista de Desejos</h4>
+                <p>Salve seus produtos favoritos para comprar depois</p>
+            </div>
+            
+            <div class="feature-box">
+                <h4>🚚 Acompanhar Pedidos</h4>
+                <p>Monitore seus pedidos em tempo real</p>
+            </div>
+            
+            <div class="feature-box">
+                <h4>🎁 Ofertas Especiais</h4>
+                <p>Receba notificações sobre promoções exclusivas</p>
+            </div>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{ site_url }}" class="button">Começar a Comprar</a>
+            </div>
+            
+            <h3>Dicas para aproveitar melhor:</h3>
+            <ul>
+                <li>Complete seu perfil para receber recomendações personalizadas</li>
+                <li>Adicione endereços de entrega para facilitar suas compras</li>
+                <li>Ative as notificações para não perder nenhuma promoção</li>
+                <li>Siga-nos nas redes sociais para ficar por dentro das novidades</li>
+            </ul>
+            
+            <p><strong>Precisa de ajuda?</strong><br>
+            Nossa equipe de suporte está sempre pronta para ajudar você. Entre em contato conosco em <a href="mailto:{{ support_email }}">{{ support_email }}</a></p>
+        </div>
+        
+        <div class="footer">
+            <p>Obrigado por escolher o {{ site_name }}!</p>
+            <p>{{ site_name }} - <a href="{{ site_url }}">{{ site_url }}</a></p>
+        </div>
+    </div>
+</body>
+</html>
+

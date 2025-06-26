@@ -74,6 +74,17 @@
     
     <!-- Main Content -->
     <main class="container py-4">
+        <!-- Messages -->
+        <script>
+            {% for message in messages %}
+                let number = Math.floor(Math.random() * 1000);
+                let messageClass = `dj-msg-${number}`;
+                localstorage.setItem(messageClass, {
+                            level: "{{ message.level_tag }}",
+                            text: "{{ message|escapejs }}"
+                });
+            {% endfor %}
+        </script>
         {% block content %}{% endblock %}
     </main>
     

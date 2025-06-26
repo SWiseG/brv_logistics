@@ -48,7 +48,8 @@
             }
         }
         .hero-slide {
-            min-height: 500px; /* ou o tamanho desejado */
+            min-height: 700px; /* ou o tamanho desejado */
+            /*  min-height: 500px; ou o tamanho desejado */
             background-position: center center;
             background-size: cover;
             background-repeat: no-repeat;
@@ -70,7 +71,8 @@
                 left: 0;
                 right: 0;
                 bottom: 0;
-                background: rgba(0, 0, 0, 0.2); /* Opcional: overlay escuro para melhorar contraste do texto */
+                background: rgba(0, 0, 0, 0.2); /* Opcional: overlay escuro para melhorar contraste do texto*/
+                /* background: linear-gradient(to bottom, var(--neutral-lighter) calc(100% - 80px), transparent); */
                 z-index: 1;
             }
         }

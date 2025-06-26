@@ -100,7 +100,7 @@ function Themes() {
             });
 
             // Texto (com base na cor base)
-            target.style.setProperty(`--${name}-text`, hsl.l > 60 ? 'var(--black)' : 'var(--white)');
+            target.style.setProperty(`--${name}-text`, hsl.l > 60 ? '#1b1b1b' : '#fafafa');
 
             // Alpha
             target.style.setProperty(`--${name}-half-alpha`, `hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, 0.5)`);

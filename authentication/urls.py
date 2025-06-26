@@ -5,7 +5,7 @@ from . import views
 app_name = 'auth'
 
 urlpatterns = [
-    # JWT Authentication
+    # Authentication
     path('login/', views.LoginView.as_view(), name='login'),
     path('register/', views.RegisterView.as_view(), name='register'),
     path('logout/', views.LogoutView.as_view(), name='logout'),
@@ -13,9 +13,6 @@ urlpatterns = [
     # Verificação de email
     path('verify-email/', views.EmailVerificationView.as_view(), name='verify_email'),
     path('resend-verification/', views.ResendVerificationView.as_view(), name='resend_verification'),
-    
-    # User Registration
-    path('register/', views.RegisterView.as_view(), name='register'),
     
     # Perfil
     path('profile/', views.ProfileView.as_view(), name='profile'),
@@ -29,11 +26,9 @@ urlpatterns = [
     
     # Recuperação de senha
     path('password-reset/', views.PasswordResetRequestView.as_view(), name='password_reset'),
-    path('password-reset-confirm/<uidb64>/<token>/', 
-         auth_views.PasswordResetConfirmView.as_view(
-             template_name='accounts/password_reset_confirm.html',
-             success_url='/accounts/login/'
-         ), name='password_reset_confirm'),
+    path('verify-reset-code/', views.VerifyResetCodeView.as_view(), name='verify_reset_code'),
+    path('password-reset-form/', views.PasswordResetFormView.as_view(), name='password_reset_form'),
+    path('resend-reset-code/', views.ResendResetCodeView.as_view(), name='resend_reset_code'),
     
     # Alteração de senha (usuário logado)
     path('change-password/', 

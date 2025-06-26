@@ -22,21 +22,29 @@
                     <i class="navbar-localize-icon fas fa-map-marker-alt"></i>
                     {% if user.is_authenticated %}
                         {% with user.addresses.all as addresses %}
-                            {% with False as encontrado %}
-                                {% for address in addresses %}
-                                    {% if not encontrado and address.is_default %}
-                                        {% if address.address_type == "shipping" or address.address_type == "both" %}
-                                            <p>{{ address.city }} {{ address.postal_code }}</p>
+                            {% if addresses %}
+                                {% with False as encontrado %}
+                                    {% for address in addresses %}
+                                        {% if not encontrado and address.is_default %}
+                                            {% if address.address_type == "shipping" or address.address_type == "both" %}
+                                                <p>{{ address.city }} {{ address.postal_code }}</p>
+                                                {% with True as encontrado %}{% endwith %}
+                                            {% endif %}
                                         {% endif %}
-                                        {% with True as encontrado %}{% endwith %}
-                                    {% endif %}
-                                {% endfor %}
-                            {% endwith %}
+                                    {% endfor %}
+                                    {% comment %} {% if not encontrado %}
+                                        <p data-i18n="navbar.localize-address-not-found"></p>
+                                    {% endif %} {% endcomment %}
+                                {% endwith %}
+                            {% else %}
+                                <p data-i18n="navbar.localize-address-not-found"></p>
+                            {% endif %}
                         {% endwith %}
                     {% else %}
                         <p data-i18n="navbar.localize-address-not-found"></p>
                     {% endif %}
                 </div>
+
             </a>
             <div class="navbar-search">
                 <form action="{% url 'products:search' %}" method="GET">
@@ -144,7 +152,7 @@
             <ul class="subnav-controll-list">
                 <!-- Categories Dropdown -->
                 <li class="nav-item dropdown mega-dropdown categories-dropdown-all">
-                    <a href="#" class="nav-link text-white dropdown-toggle px-3 py-2" 
+                    <a href="#" class="nav-link dropdown-toggle px-3 py-2" 
                         data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fas fa-bars"></i>
                         <span data-i18n="navbar.search-title-categories"></span>

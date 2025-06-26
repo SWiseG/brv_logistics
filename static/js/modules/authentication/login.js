@@ -128,7 +128,6 @@ define(`/static/js/modules/login.js`, null,
             // SOCIAL LOGIN (PLACEHOLDER)
             // ================================
             socialLoginPlaceholder: (params) => {
-                event.preventDefault();
                 if(!params) return false;
                 const provider = params.$element.text().trim();
                 var msg = translate._translate("login.in-development-state", [provider]);

@@ -13,7 +13,21 @@ def system_context(request):
         from core.models import SiteSettings
         sys_config = SiteSettings.objects.get(is_active=True)
     except:
-        sys_config = None
+        return {
+            'sys_is_debugging': json.dumps({
+                'debug': 'true',
+                'name': 'N/da',
+                'description': 'N/da',
+                'email': 'N/da',
+                'phone': 'N/da',
+                'currency': 'N/da',
+                # 'language': sys_config.language,
+                # 'allowedThemes': sys_config.get_allowed_themes(),
+                # 'allowedLanguages': sys_config.get_allowed_langs(),
+            }),
+            'sys_config': None,
+            'nav_settings': None
+        }
     
     return {
         'sys_is_debugging': json.dumps({

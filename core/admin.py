@@ -11,7 +11,8 @@ admin.site.index_title = "Painel Administrativo"
 
 @admin.register(SiteSettings)
 class SiteSettingsAdmin(admin.ModelAdmin):
-    list_display = ['site_name', 'contact_email']
+    list_display = ['site_name', 'contact_email', 'is_active']
+    list_editable = ['is_active']
     
     fieldsets = (
         ('Informações Básicas', {

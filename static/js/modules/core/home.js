@@ -12,118 +12,6 @@ define(`/static/js/modules/core/home.js`, '/static/js/mixins/components.js',
                 ctor.newsLetterFormSend();
                 ctor.applyLazyLoadingImages();
                 ctor.applyOptionsProducts();
-                var field1 = ctor.createField({
-                    type: 'combobox',
-                    id: 'category-combobox',
-                    label: 'Categoria',
-                    placeholder: 'Selecione a categoria...',
-                    comboboxOptions: {
-                        endPoint: 'categories',
-                        textField: 'name',
-                        valField: 'id'
-                    }
-                });
-                var field2 = ctor.createField({
-                    type: 'combobox',
-                    id: 'category-combobox-2',
-                    label: 'Categoria 2',
-                    placeholder: 'Selecione a categoria 2...',
-                    comboboxOptions: {
-                        endPoint: 'categories',
-                        textField: 'name',
-                        valField: 'id'
-                    },
-                    cascadeFrom: ['category-combobox']
-                });
-                $('.block-elem').append(field1);
-                $('.block-elem').append(field2);
-                // var textField = ctor.createField({label: 'Nome', placeholder: 'Digite seu nome...'});
-                // var textField2 = ctor.createField({label: 'Sobrenome', placeholder: 'Digite seu sobrenome...'});
-                // var textField3 = ctor.createField({type: 'cpf', label: 'CPF', placeholder: 'Digite seu CPF...'});
-                // var textField4 = ctor.createField({
-                //     type: 'numeric',
-                //     label: 'Numeric Field',
-                //     placeholder: 'Enter a number',
-                //     container: '.block-elem'
-                // });
-                // var textField5 = ctor.createField({
-                //     type: 'email',
-                //     label: 'Email Field',
-                //     placeholder: 'Digite um email...',
-                //     container: '.block-elem'
-                // });
-                // var textField5 = ctor.createField({
-                //     type: 'currency',
-                //     label: 'Currency Field',
-                //     placeholder: 'R$ 0,00',
-                //     container: '.block-elem'
-                // });
-                // var textField6 = ctor.createField({
-                //     type: 'time',
-                //     label: 'Time Field',
-                //     placeholder: 'HH:MM',
-                //     container: '.block-elem'
-                // });
-                // var textField7 = ctor.createField({
-                //     type: 'date',
-                //     label: 'Date Field',
-                //     container: '.block-elem'
-                // });
-                // var textField8 = ctor.createField({
-                //     type: 'datetime',
-                //     label: 'DateTime Field',
-                //     container: '.block-elem'
-                // });
-                // var textField10 = ctor.createField({
-                //     type: 'betweenDates',
-                //     id: 'between_dates_field',
-                //     label: 'Between Dates',
-                //     container: '.block-elem'
-                // });
-                // var textField11 = ctor.createField({
-                //     type: 'dropdown',
-                //     id: 'estadoCivilDropdown',
-                //     label: 'Estado Civil',
-                //     placeholder: 'Selecione...',
-                //     options: [
-                //         { label: 'Solteiro', value: 'solteiro' },
-                //         { label: 'Casado', value: 'casado' },
-                //         { label: 'Divorciado', value: 'divorciado' }
-                //     ],
-                //     useBindings: true
-                // });
-                // var textField12 = ctor.createField({
-                //     type: 'combobox',
-                //     id: 'categoriaCombobox',
-                //     label: 'Categoria',
-                //     placeholder: 'Digite o nome da categoria...',
-                //     minSearchLenght: 2,
-                //     debounceDelay: 300,
-                //     fetchOptions: (query, dropdown, input) => {
-                //         return new Promise((resolve, reject) => {
-                //             const url = query && query.length > 0
-                //                 ? `/api/v1/categories/?format=json&search=${encodeURIComponent(query)}`
-                //                 : `/api/v1/categories/?format=json`;
-
-                //             $.ajax({
-                //                 url: url,
-                //                 method: 'GET',
-                //                 dataType: 'json',
-                //                 success: function(response) {
-                //                     const items = (response.results || []).map(categoria => ({
-                //                         label: categoria.name,
-                //                         value: categoria.id
-                //                     }));
-                //                     resolve(items);
-                //                 },
-                //                 error: function() {
-                //                     reject();
-                //                 }
-                //             });
-                //         });
-                //     },
-                //     useBindings: true
-                // });
                 return true;
             },
 
@@ -520,3 +408,119 @@ define(`/static/js/modules/core/home.js`, '/static/js/mixins/components.js',
 //     }
 // `;
 // document.head.appendChild(style);
+
+
+// fields
+// var field1 = ctor.createField({
+//     type: 'multi-select',
+//     id: 'category-combobox',
+//     label: 'Categoria',
+//     placeholder: 'Selecione a categoria...',
+//     multiple: true,
+//     comboboxOptions: {
+//         endPoint: 'categories',
+//         textField: 'name',
+//         valField: 'id'
+//     }
+// });
+// var field2 = ctor.createField({
+//     type: 'combobox',
+//     id: 'category-combobox-2',
+//     label: 'Categoria 2',
+//     placeholder: 'Selecione a categoria 2...',
+//     comboboxOptions: {
+//         endPoint: 'categories',
+//         textField: 'name',
+//         valField: 'id'
+//     },
+//     cascadeFrom: ['category-combobox']
+// });
+// $('.block-elem').append(field1);
+// $('.block-elem').append(field2);
+// var textField = ctor.createField({label: 'Nome', placeholder: 'Digite seu nome...'});
+// var textField2 = ctor.createField({label: 'Sobrenome', placeholder: 'Digite seu sobrenome...'});
+// var textField3 = ctor.createField({type: 'cpf', label: 'CPF', placeholder: 'Digite seu CPF...'});
+// var textField4 = ctor.createField({
+//     type: 'numeric',
+//     label: 'Numeric Field',
+//     placeholder: 'Enter a number',
+//     container: '.block-elem'
+// });
+// var textField5 = ctor.createField({
+//     type: 'email',
+//     label: 'Email Field',
+//     placeholder: 'Digite um email...',
+//     container: '.block-elem'
+// });
+// var textField5 = ctor.createField({
+//     type: 'currency',
+//     label: 'Currency Field',
+//     placeholder: 'R$ 0,00',
+//     container: '.block-elem'
+// });
+// var textField6 = ctor.createField({
+//     type: 'time',
+//     label: 'Time Field',
+//     placeholder: 'HH:MM',
+//     container: '.block-elem'
+// });
+// var textField7 = ctor.createField({
+//     type: 'date',
+//     label: 'Date Field',
+//     container: '.block-elem'
+// });
+// var textField8 = ctor.createField({
+//     type: 'datetime',
+//     label: 'DateTime Field',
+//     container: '.block-elem'
+// });
+// var textField10 = ctor.createField({
+//     type: 'betweenDates',
+//     id: 'between_dates_field',
+//     label: 'Between Dates',
+//     container: '.block-elem'
+// });
+// var textField11 = ctor.createField({
+//     type: 'dropdown',
+//     id: 'estadoCivilDropdown',
+//     label: 'Estado Civil',
+//     placeholder: 'Selecione...',
+//     options: [
+//         { label: 'Solteiro', value: 'solteiro' },
+//         { label: 'Casado', value: 'casado' },
+//         { label: 'Divorciado', value: 'divorciado' }
+//     ],
+//     useBindings: true
+// });
+// var textField12 = ctor.createField({
+//     type: 'combobox',
+//     id: 'categoriaCombobox',
+//     label: 'Categoria',
+//     placeholder: 'Digite o nome da categoria...',
+//     minSearchLenght: 2,
+//     debounceDelay: 300,
+//     fetchOptions: (query, dropdown, input) => {
+//         return new Promise((resolve, reject) => {
+//             const url = query && query.length > 0
+//                 ? `/api/v1/categories/?format=json&search=${encodeURIComponent(query)}`
+//                 : `/api/v1/categories/?format=json`;
+
+//             $.ajax({
+//                 url: url,
+//                 method: 'GET',
+//                 dataType: 'json',
+//                 success: function(response) {
+//                     const items = (response.results || []).map(categoria => ({
+//                         label: categoria.name,
+//                         value: categoria.id
+//                     }));
+//                     resolve(items);
+//                 },
+//                 error: function() {
+//                     reject();
+//                 }
+//             });
+//         });
+//     },
+//     useBindings: true
+// });

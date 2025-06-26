@@ -1,3 +1,6 @@
+/* Animações */
+@import './animations.css';
+
 /* Responsive Design */
 @import './style-responsive.css';
 
@@ -6,6 +9,9 @@
 
 /* Estilos: Modal */
 @import './modal.css';
+
+/* Estilos: Alertas */
+@import './alert.css';
 
 /* Estilos: Componentes */
 @import './components.css';
@@ -57,14 +63,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 a {
+    transition: all .15s linear !important;
     color: var(--fb-info-lighter);
     text-decoration: none;
-    transition: color 0.3s ease;
 }
 
 a:hover {
+    transition: all .15s linear !important;
     color: var(--fb-info);
-    text-decoration: none;
+    text-decoration: underline;
 }
 
 #data-lang {
@@ -429,68 +436,6 @@ a:hover {
     border-radius: 50%;
     border-top-color: var(--black-text);
     animation: spin 1s ease-in-out infinite;
-}
-
-/* Animações */
-@keyframes bounce {
-  0%, 100% {
-    transform: translateY(-25%);
-    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
-  }
-  50% {
-    transform: translateY(0);
-    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
-  }
-}
-
-.animate-bounce {
-  animation: bounce 1s infinite;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.fade-in-up {
-    animation: fadeInUp 0.6s ease-out;
-}
-
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.05);
-    }
-    100% {
-        transform: scale(1);
-    }
-}
-
-.pulse {
-    animation: pulse 2s infinite;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-.fade-custom {
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.fade-custom.show {
-  opacity: 1;
 }
 
 /* Tema escuro (opcional) */

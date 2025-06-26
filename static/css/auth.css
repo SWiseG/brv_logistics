@@ -1,147 +1,294 @@
-.auth {
-    min-height: 80vh;
-    display: flex;
-    align-items: center;
+.base-auth {
+    height: 100vh;
+    main {
+        height: 100%;
+        .container {
+            height: 100%;
+            .auth {
+                height: 100%;
+                min-height: 80vh;
+                display: flex;
+                align-items: center;
 
-    .auth-card {
-        box-shadow: 0px 13px 15px var(--primary-darkest);
-        border: none;
-        max-width: 500px;
-        min-height: 580px;
-        border-radius: 10px;
-
-        .auth-header {
-            background: var(--primary-darker);
-            color: var(--white);
-            padding-block: 14px !important;
-            border-radius: 10px 10px 0 0;
-        }
-        .card-body {
-
-            .form-floating {
-                .password-toggle {
-                    cursor: pointer;
+                .auth-card {
+                    box-shadow: 0px 13px 15px var(--primary-darkest);
+                    background: var(--white);
                     border: none;
-                    border: 1px solid var(--neutral-border) !important;
-                    background: var(--white) !important;
-                    border-radius: 8px;
-                    color: var(--white-text);
-                }
+                    max-width: 500px;
+                    min-height: 580px;
+                    border-radius: 10px;
 
-                > .form-control {
-                    ~label {
-                        &::after {
-                            background-color: var(--off-white) !important;
+                    .auth-header {
+                        background: var(--primary-darker);
+                        box-shadow: 0px -4px 1px var(--primary-darker);
+                        color: var(--white);
+                        padding-block: 14px !important;
+                        border-radius: 10px 10px 0 0;
+
+                        .navbar-brand{
+                            img {
+                                width: 30%;
+                                height: 115%;
+                                box-sizing: border-box;
+                                overflow: hidden;
+                                object-fit: cover;
+                            }
+                        }
+
+                        &.password-header {
+                            background: linear-gradient(135deg, var(--fb-success) 0%, var(--fb-success-half-alpha) 100%);
+                            box-shadow: 0px -4px 1px linear-gradient(135deg, var(--fb-success) 0%, var(--fb-success-half-alpha) 100%);
+                        }
+
+                        &.verification-header {
+                            background: linear-gradient(135deg, var(--fb-info) 0%, var(--fb-info-half-alpha) 100%);
+                            box-shadow: 0px -4px 1px linear-gradient(135deg, var(--fb-info) 0%, var(--fb-info-half-alpha) 100%);
+                        }
+
+                        .reset-icon,
+                        .verification-icon {
+                            width: 80px;
+                            height: 80px;
+                            background: var(--primary-half-alpha);
+                            color: var(--primary-text);
+                            border-radius: 50%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            margin: 0 auto 1rem;
+                        }
+
+                        h4, p {
+                            color: var(--primary-text);
+                        }
+                    }
+                    .card-body {
+                        color: var(--white-text);
+                        .form-floating {
+                            .editor-form-field {
+                               .editor-form-input {
+                                    .code-input {
+                                        font-size: 1.5rem;
+                                        text-align: center;
+                                        letter-spacing: 0.5rem;
+                                        font-weight: bold;
+                                        border: 2px solid var(--neutral-border);
+                                        border-radius: 10px;
+                                        padding: 2rem;
+                                        transition: all 0.3s ease;
+
+                                        &:focus {
+                                            border-color: var(--primary);
+                                        }
+                                    }  
+                               }
+                            
+                            }
+                            .password-toggle {
+                                cursor: pointer;
+                                border: none;
+                                border: 1px solid var(--neutral-border) !important;
+                                background: var(--white) !important;
+                                border-radius: 8px;
+                                color: var(--white-text);
+                            }
+
+                            > .form-control {
+                                ~label {
+                                    &::after {
+                                        background-color: var(--off-white) !important;
+                                    }
+                                }
+                            }
+
+                            .password-strength {
+                                height: 4px;
+                                border-radius: 2px;
+                                transition: all 0.3s ease;
+
+                                &.weak {
+                                    background: var(--fb-danger);
+                                }
+
+                                &.medium {
+                                    background: var(--fb-warning);
+                                }
+
+                                &.strong {
+                                    background: var(--fb-success);
+                                }
+                            }
+                            
+                            .email-check {
+                                position: absolute;
+                                right: 10px;
+                                top: 50%;
+                                transform: translateY(-50%);
+                                z-index: 5;
+                            }
+                        }
+
+                        .form-floating .form-control {
+                            &:focus {
+                                border-color: var(--primary-darker);
+                                box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+                            }
+                        }
+
+                        .auth-divider {
+                            position: relative;
+                            text-align: center;
+                            margin: 1.5rem 0;
+
+                            &::before {
+                                content: '';
+                                position: absolute;
+                                top: 100%;
+                                left: 0;
+                                right: 0;
+                                height: 1px;
+                                background: var(--neutral-border);
+                            }
+
+                            span {
+                                background: var(--white);
+                                padding: 0 1rem;
+                                color: var(--neutral);
+                            }
+                        }
+
+                        .progress-indicator,
+                        .step-indicator {
+                            display: flex;
+                            justify-content: center;
+                            margin-bottom: 2rem;
+
+                            .progress-step,
+                            .step {
+                                width: 30px;
+                                height: 30px;
+                                border-radius: 50%;
+                                background: var(--neutral-lightest);
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                margin: 0 0.5rem;
+                                font-size: 0.875rem;
+                                font-weight: bold;
+                                transition: all 0.3s ease;
+
+                                &.active {
+                                    background: var(--primary);
+                                    color: var(--white);
+                                }
+
+                                &.completed {
+                                    background: var(--fb-success);
+                                    color: var(--white);
+                                }
+                            }
+
+                            .progress-line,
+                            .step-line {
+                                width: 50px;
+                                height: 2px;
+                                background: var(--neutral-lightest);
+                                margin-top: 14px;
+                                transition: all 0.3s ease;
+
+                                &.completed {
+                                    background: var(--fb-success);
+                                }
+                            }
+                        }
+
+                        .resend-section {
+                            .resend-button {
+                                transition: all .15s linear !important;
+                                appearance: none;
+                                background: transparent;
+                                font-weight: 500 !important;
+                                color: var(--fb-info-lighter);
+                                text-decoration: none;
+                                border: none;
+                                cursor: pointer;
+
+                                &:hover,
+                                &:focus {
+                                    transition: all .15s linear !important;
+                                    color: var(--fb-info);
+                                    text-decoration: underline;
+                                }
+
+                                &[disabled],
+                                &.disabled {
+                                    color: var(--neutral) !important;
+                                    opacity: 0.9;
+                                    text-decoration: none;
+                                    cursor: not-allowed;
+
+                                    &:focus,
+                                    &:active,
+                                    &:hover {
+                                        color: var(--neutral) !important;
+                                        opacity: 0.9;
+                                        text-decoration: none;
+                                        cursor: not-allowed;
+                                    }
+                                }
+                            }
+                            .resend-timer {
+                                color: var(--fb-info);
+                                #countdown {
+                                    font-weight: 600;
+                                }
+                            }
+                        }
+
+                        .step-guide,
+                        .verification-steps {
+                            padding: 1.5rem;
+                            border-radius: 10px;
+                            margin: 1.5rem 0;
+
+                            h6 {
+                                color: var(--white-text);
+                            }
+                            .step {
+                                display: flex;
+                                align-items: center;
+                                margin-bottom: 0.5rem;
+                                .step-number {
+                                    width: 24px;
+                                    height: 24px;
+                                    background: var(--primary-lighter);
+                                    color: var(--primary-text);
+                                    border-radius: 50%;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    font-size: 0.8rem;
+                                    font-weight: bold;
+                                    margin-right: 0.75rem;
+                                }
+                                span {
+                                    color: var(--white-text);
+                                }
+                            }
                         }
                     }
                 }
 
-                .password-strength {
-                    height: 4px;
-                    border-radius: 2px;
+                .social-login {
                     transition: all 0.3s ease;
-
-                    &.weak {
-                        background: var(--fb-danger);
-                    }
-
-                    &.medium {
-                        background: var(--fb-warning);
-                    }
-
-                    &.strong {
-                        background: var(--fb-success);
-                    }
-                }
-                
-                .email-check {
-                    position: absolute;
-                    right: 10px;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    z-index: 5;
-                }
-            }
-
-            .form-floating .form-control {
-                &:focus {
-                    border-color: var(--primary-darker);
-                    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-                }
-            }
-
-            .auth-divider {
-                position: relative;
-                text-align: center;
-                margin: 1.5rem 0;
-
-                &::before {
-                    content: '';
-                    position: absolute;
-                    top: 100%;
-                    left: 0;
-                    right: 0;
-                    height: 1px;
-                    background: var(--neutral-border);
-                }
-
-                span {
-                    background: var(--white);
-                    padding: 0 1rem;
-                    color: var(--neutral);
-                }
-            }
-
-            .step-indicator {
-                display: flex;
-                justify-content: center;
-                margin-bottom: 2rem;
-
-                .step {
-                    width: 30px;
-                    height: 30px;
-                    border-radius: 50%;
-                    background: var(--neutral-lightest);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    margin: 0 0.5rem;
-                    font-size: 0.875rem;
-                    font-weight: bold;
-                    transition: all 0.3s ease;
-
-                    &.active {
-                        background: var(--primary);
-                        color: var(--white);
-                    }
-
-                    &.completed {
-                        background: var(--fb-success);
-                        color: var(--white);
+                    &:hover {
+                        transform: translateY(-2px);
                     }
                 }
 
-                .step-line {
-                    width: 50px;
-                    height: 2px;
-                    background: var(--neutral-lightest);
-                    margin-top: 14px;
-                    transition: all 0.3s ease;
-
-                    &.completed {
-                        background: var(--fb-success);
-                    }
-                }
             }
         }
 
-    }
-
-    .social-login {
-        transition: all 0.3s ease;
-        &:hover {
-            transform: translateY(-2px);
-        }
     }
 
 }

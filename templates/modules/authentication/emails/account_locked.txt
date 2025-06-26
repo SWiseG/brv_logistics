@@ -1,0 +1,36 @@
+{{ site_name }} - Conta Temporariamente Bloqueada
+
+🔒 CONTA BLOQUEADA POR SEGURANÇA
+
+Olá, {{ user.first_name }}!
+
+Sua conta foi temporariamente bloqueada devido a múltiplas tentativas de login falhadas.
+
+DETALHES:
+- Data/Hora: {{ blocked_at|date:"d/m/Y H:i" }}
+- Tentativas falhadas: {{ failed_attempts }}
+- Desbloqueio automático em: {{ unlock_time|date:"d/m/Y H:i" }}
+
+COMO DESBLOQUEAR:
+
+OPÇÃO 1 - AGUARDAR:
+Sua conta será desbloqueada automaticamente em {{ unlock_minutes }} minutos.
+
+OPÇÃO 2 - REDEFINIR SENHA:
+Redefina sua senha para desbloquear imediatamente.
+
+OPÇÃO 3 - CONTATAR SUPORTE:
+Entre em contato conosco para assistência imediata.
+
+REDEFINIR SENHA: {{ site_url }}/accounts/password-reset/
+SUPORTE: {{ support_email }}
+
+DICAS DE SEGURANÇA:
+- Use senhas complexas e únicas
+- Mantenha suas credenciais seguras
+- Ative notificações de segurança
+
+Esta é uma medida de proteção para sua conta.
+
+{{ site_name }}
+{{ site_url }}

@@ -35,19 +35,7 @@
                     </span>
                 </div>
                 
-                <div class="card-body p-4">
-                    <!-- Messages -->
-                    <script>
-                        {% for message in messages %}
-                            let number = Math.floor(Math.random() * 1000);
-                            let messageClass = `dj-msg-${number}`;
-                            localstorage.setItem(messageClass, {
-                                        level: "{{ message.level_tag }}",
-                                        text: "{{ message|escapejs }}"
-                            });
-                        {% endfor %}
-                    </script>
-                    
+                <div class="card-body p-4">                    
                     <!-- Login Form -->
                     <form id="loginForm" method="post" novalidate>
                         {% csrf_token %}
@@ -122,7 +110,7 @@
                     <div class="text-center">
                         <p class="mb-0">
                             <span data-i18n="login.new-user-question"></span>
-                            <a href="{% url 'auth:register' %}" class="text-decoration-none fw-bold" data-i18n="login.make-register"></a>                            
+                            <a href="{% url 'auth:register' %}" class="fw-bold" data-i18n="login.make-register"></a>                            
                         </p>
                     </div>
                 </div>

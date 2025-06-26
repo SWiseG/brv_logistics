@@ -219,7 +219,43 @@ class EmailVerification(models.Model):
     
     def __str__(self):
         return f"{self.email} - {self.verification_type} - {self.verification_code}"
+
+class UserPasswordChange(models.Model):
+    """Histórico de alterações de senha"""
     
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='password_changes')
+    changed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    
+    # Método de alteração
+    change_method = models.CharField(
+        max_length=20,
+        choices=[
+            ('self_change', 'Alteração pelo usuário'),
+            ('reset_by_email', 'Reset por email'),
+            ('admin_change', 'Alteração pelo admin'),
+            ('forced_change', 'Alteração forçada'),
+        ],
+        default='self_change'
+    )
+    
+    # Informações de segurança
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    user_agent = models.TextField(blank=True)
+    
+    # Timestamps
+    changed_at = models.DateTimeField(default=timezone.now)
+    
+    class Meta:
+        verbose_name = 'Alteração de Senha'
+        verbose_name_plural = 'Alterações de Senha'
+        ordering = ['-changed_at']
+        indexes = [
+            models.Index(fields=['user', 'changed_at']),
+            models.Index(fields=['change_method']),
+        ]
+    
+    def __str__(self):
+        return f"{self.user.email} - {self.get_change_method_display()} - {self.changed_at}"
 
 class UserPreferences(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_pref')

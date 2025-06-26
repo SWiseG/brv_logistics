@@ -36,7 +36,7 @@
                 {% if hero_sections %}
                     {% for hr in hero_sections %}
                         <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                            <div class="hero-slide bg-cover text-white d-flex align-items-center" style="background-image: url('{{ hr.image.url }}');">
+                            <div class="hero-slide bg-cover d-flex align-items-center" style="background-image: url('{{ hr.image.url }}');">
                                 <div class="container">
                                     <h1 data-i18n="{{ hr.title|default:'' }}"></h1>
                                     <p data-i18n="{{ hr.sub_title|default:'' }}"></p>
@@ -48,7 +48,13 @@
                         </div>
                     {% endfor %}
                 {% else %}
-                    <p class="text-center py-3">Sem hero sections disponíveis.</p>
+                    <div class="carousel-item active">
+                        <div class="hero-slide bg-cover d-flex align-items-center" style="background-image: url('{{ hr.image.url }}');">
+                            <div class="container">
+                                <p class="text-center py-3">Sem hero sections disponíveis.</p>
+                            </div>
+                        </div>
+                    </div>
                 {% endif %}
             </div>
 
@@ -67,13 +73,7 @@
     <a href="{% url 'auth:login' %}" class="btn btn-primary" data-i18n="navbar.make-login"></a>
     <a href="{% url 'auth:register' %}" class="btn btn-secondary" data-i18n="navbar.make-register"></a>
     <a href="{% url 'auth:logout' %}" class="btn btn-primary-outlined">Logout</a>
-
-    <hr>
-    <div class="block-elem" style="
-    display: flex;
-    gap: 24px;
-    flex-direction: column;
-"></div>
+    <a href="{% url 'auth:password_reset' %}" class="btn btn-danger">Resetar Senha</a>
     {% comment %} <!-- Categories Section -->
     <section class="categories-section py-5">
         <div class="container">
@@ -203,7 +203,7 @@
     {% endif %}
 
     <!-- Newsletter -->
-    <section class="newsletter-section py-5 bg-primary text-white">
+    <section class="newsletter-section py-5 bg-primary">
         <div class="container text-center">
             <h3 class="mb-4">Receba nossas ofertas por email</h3>
             <p class="mb-4">Cadastre-se e seja o primeiro a saber das promoções!</p>

@@ -6,6 +6,7 @@ from theme.models import Theme
 
 class SiteSettings(BaseModel):
     site_name = models.CharField(max_length=100, default='BRV Logistics')
+    site_url = models.CharField(max_length=100,blank=True, null=True)
     site_description = models.TextField(blank=True, null=True)
     contact_email = models.EmailField()
     corp_email_token = models.CharField(max_length=100, blank=True, null=True)

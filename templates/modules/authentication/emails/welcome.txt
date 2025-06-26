@@ -1,0 +1,36 @@
+{{ site_name }} - Bem-vindo!
+
+Olá, {{ user.first_name }}!
+
+É com grande prazer que damos as boas-vindas à nossa loja online! Sua conta foi criada com sucesso e você já pode começar a explorar nossos produtos.
+
+O QUE VOCÊ PODE FAZER AGORA:
+
+🛍️ EXPLORAR PRODUTOS
+Navegue por milhares de produtos em diversas categorias
+
+❤️ LISTA DE DESEJOS
+Salve seus produtos favoritos para comprar depois
+
+🚚 ACOMPANHAR PEDIDOS
+Monitore seus pedidos em tempo real
+
+🎁 OFERTAS ESPECIAIS
+Receba notificações sobre promoções exclusivas
+
+COMEÇAR A COMPRAR: {{ site_url }}
+
+DICAS PARA APROVEITAR MELHOR:
+- Complete seu perfil para receber recomendações personalizadas
+- Adicione endereços de entrega para facilitar suas compras
+- Ative as notificações para não perder nenhuma promoção
+- Siga-nos nas redes sociais para ficar por dentro das novidades
+
+PRECISA DE AJUDA?
+Nossa equipe de suporte está sempre pronta para ajudar você.
+Entre em contato conosco em {{ support_email }}
+
+Obrigado por escolher o {{ site_name }}!
+
+{{ site_name }}
+{{ site_url }}

@@ -1,0 +1,57 @@
+{{ site_name }} - Atividade Suspeita Detectada
+
+🚨 ALERTA DE SEGURANÇA CRÍTICO
+
+Olá, {{ user.first_name }}!
+
+Detectamos atividade altamente suspeita em sua conta que requer ação imediata.
+
+ATIVIDADE DETECTADA:
+{{ activity_description }}
+
+DETALHES:
+Data/Hora: {{ detected_at|date:"d/m/Y H:i" }}
+Endereço IP: {{ ip_address }}
+Localização: {{ location|default:"Não identificada" }}
+Dispositivo: {{ user_agent|truncatewords:10 }}
+
+AÇÕES RECOMENDADAS IMEDIATAMENTE:
+
+1. ALTERAR SENHA
+Mude sua senha agora para uma senha forte e única.
+
+2. VERIFICAR ATIVIDADES
+Revise seu histórico de pedidos e alterações recentes.
+
+3. ATIVAR 2FA
+Ative a autenticação em duas etapas se disponível.
+
+4. CONTATAR SUPORTE
+Entre em contato conosco se não reconhecer esta atividade.
+
+AÇÕES RÁPIDAS:
+Alterar Senha: {{ site_url }}/accounts/change-password/
+Ver Atividades: {{ site_url }}/accounts/activity/
+Suporte Urgente: {{ support_email }}
+
+MEDIDAS DE PROTEÇÃO APLICADAS:
+- Sessões ativas foram encerradas
+- Notificações de segurança ativadas
+- Monitoramento aumentado na conta
+
+SINAIS DE CONTA COMPROMETIDA:
+- Pedidos não reconhecidos
+- Alterações não autorizadas
+- Emails não solicitados
+- Atividade em horários incomuns
+
+Se você reconhece toda a atividade, pode ignorar este alerta.
+Caso contrário, tome as medidas recomendadas imediatamente.
+
+SUPORTE DE EMERGÊNCIA: {{ support_email }}
+WhatsApp: {{ support_whatsapp|default:"Não disponível" }}
+
+Sua segurança é nossa prioridade.
+
+{{ site_name }}
+{{ site_url }}

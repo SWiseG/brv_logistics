@@ -36,18 +36,6 @@
                 </div>
 
                 <div class="card-body p-4">
-                    <!-- Messages -->
-                    <script>
-                        {% for message in messages %}
-                            let number = Math.floor(Math.random() * 1000);
-                            let messageClass = `dj-msg-${number}`;
-                            localstorage.setItem(messageClass, {
-                                        level: "{{ message.level_tag }}",
-                                        text: "{{ message|escapejs }}"
-                            });
-                        {% endfor %}
-                    </script>
-                    
                     <!-- Progress Indicator -->
                     <div class="step-indicator">
                         <div class="step active" data-step="1">1</div>
@@ -188,7 +176,7 @@
                     <div class="text-center mt-4">
                         <p class="mb-0">
                             Já tem uma conta? 
-                            <a href="{% url 'auth:login' %}" class="text-decoration-none fw-bold">
+                            <a href="{% url 'auth:login' %}" class="fw-bold">
                                 Faça login
                             </a>
                         </p>

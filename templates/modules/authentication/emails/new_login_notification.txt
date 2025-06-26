@@ -1,0 +1,26 @@
+{{ site_name }} - Novo Login Detectado
+
+🔔 NOVA ATIVIDADE EM SUA CONTA
+
+Olá, {{ user.first_name }}!
+
+Informamos que um novo login foi realizado em sua conta. Esta é apenas uma notificação de segurança.
+
+DETALHES DO LOGIN:
+Data/Hora: {{ login_time|date:"d/m/Y H:i" }}
+Endereço IP: {{ ip_address }}
+Dispositivo: {{ user_agent|truncatewords:10 }}
+
+SE FOI VOCÊ: Você pode ignorar este email. Estamos apenas mantendo você informado sobre atividades em sua conta.
+
+SE NÃO FOI VOCÊ: Recomendamos que altere sua senha imediatamente e entre em contato conosco.
+
+Para sua segurança, sempre monitore os acessos à sua conta e entre em contato conosco em caso de qualquer atividade suspeita.
+
+ALTERAR SENHA: {{ site_url }}/accounts/change-password/
+SUPORTE: {{ support_email }}
+
+Esta é uma notificação automática de segurança.
+
+{{ site_name }}
+{{ site_url }}
