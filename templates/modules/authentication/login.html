@@ -1,0 +1,133 @@
+{% extends 'base_auth.html' %}
+{% load static %}
+
+{% block title %}
+    {% if sys_config %} 
+        {% if title %} 
+            {{ sys_config.site_name }} - {{ title }}
+        {% else %}
+            {{ sys_config.site_name }}
+        {% endif %}
+    {% elif title %}
+        {{ title }}
+    {% else %}
+        -
+    {% endif %}
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center auth">
+        <div class="col-lg-5 col-md-7">
+            <div class="card auth-card">
+                <!-- Header -->
+                <div class="card-header auth-header text-center py-4">
+                    <span class="navbar-brand">
+                        {% if active_theme and active_theme.logo %}
+                            <img src="{{ active_theme.logo.url }}" alt="Logo" height="30">
+                        {% else %}
+                            BRV Logistics - Template
+                        {% endif %}
+                    </span>
+                </div>
+                
+                <div class="card-body p-4">                    
+                    <!-- Login Form -->
+                    <form id="loginForm" class="form-floating" method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        {% if next %}
+                            <input type="hidden" name="next" value="{{ next }}">
+                        {% endif %}
+                        
+                        <!-- Email -->
+                        <div class="editor-form-field mb-3 position-relative">
+                            <div class="editor-form-label">
+                                <label for="{{ form.username.id_for_label }}" class="editor-form-label-text form-label" data-bind="value: $root.emailField('{{ form.username.id_for_label }}')">{{ form.username.label }}</label>
+                            </div>
+                            <div class="editor-form-input">
+                                {{ form.username }}
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Password -->
+                        <div class="editor-form-field mb-3 position-relative">
+                            <div class="editor-form-label">
+                                <label for="{{ form.password.id_for_label }}" class="editor-form-label-text form-label" data-bind="value: $root.passwordField('{{ form.password.id_for_label }}')">{{ form.password.label }}</label>
+                            </div>
+                            <div class="editor-form-input password-field">
+                                {{ form.password }}
+                                <button type="button" class="password-toggle" id="togglePassword" data-bind="click: $root.togglePassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Remember Me & Forgot Password -->
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="remember_me" id="remember_me">
+                                <label class="form-check-label" for="remember_me" data-i18n="login.remember-me"></label>
+                            </div>
+                            <a href="{% url 'auth:password_reset' %}" class="text-decoration-none" data-i18n="login.forgot-your-password"></a>                            
+                        </div>
+                        
+                        <!-- Submit Button -->
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-primary full btn-lg align-center" id="loginBtn">
+                                <span class="btn-text">
+                                    <i class="fas fa-sign-in-alt me-2"></i>
+                                    <span data-i18n="login.login"></span>
+                                </span>
+                                <span class="btn-loading d-none">
+                                    <i class="fas fa-spinner fa-spin me-2"></i>
+                                    <span data-i18n="login.loging"></span>
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <!-- Divider -->
+                    <div class="auth-divider">
+                        <span data-i18n="login.or"></span>
+                    </div>
+                    
+                    <!-- Social Login -->
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <button class="btn btn-outline-danger w-100 social-login" data-bind="click: $root.socialLoginPlaceholder">
+                                <i class="fab fa-google me-2"></i>
+                                <span>Google</span>
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-outline-info w-100 social-login" data-bind="click: $root.socialLoginPlaceholder">
+                                <i class="fab fa-facebook me-2"></i>
+                                <span>Facebook</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Register Link -->
+                    <div class="text-center">
+                        <p class="mb-0">
+                            <span data-i18n="login.new-user-question"></span>
+                            <a href="{% url 'auth:register' %}" class="fw-bold" data-i18n="login.make-register"></a>                            
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    <module data-tag="{% static 'js/modules/authentication/login.js' %}"></module>
+{% endblock %}

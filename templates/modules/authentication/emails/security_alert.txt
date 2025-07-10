@@ -1,0 +1,40 @@
+{{ site_name }} - ALERTA DE SEGURANÇA
+
+⚠️ ATIVIDADE SUSPEITA DETECTADA ⚠️
+
+Olá, {{ user.first_name }}!
+
+Por medida de segurança, identificamos uma atividade que pode ser suspeita em sua conta e solicitamos verificação adicional.
+
+DETALHES DA ATIVIDADE:
+Data/Hora: {{ timezone.now|date:"d/m/Y H:i" }}
+Endereço IP: {{ ip_address }}
+Navegador: {{ user_agent|truncatewords:10 }}
+
+POR QUE ISSO ACONTECEU?
+- Login de um novo dispositivo ou localização
+- Múltiplas tentativas de login falhadas
+- Atividade incomum detectada
+- Medida preventiva de segurança
+
+O QUE FAZER AGORA?
+
+1. SE FOI VOCÊ: Digite o código que enviamos para confirmar sua identidade
+
+2. SE NÃO FOI VOCÊ: Altere sua senha imediatamente e entre em contato conosco
+
+ALTERAR SENHA: {{ site_url }}/accounts/change-password/
+
+🔒 DICAS DE SEGURANÇA:
+- Use senhas únicas e complexas
+- Ative a autenticação em duas etapas quando disponível
+- Não compartilhe suas credenciais
+- Mantenha seus dispositivos seguros
+
+PRECISA DE AJUDA?
+Se você não reconhece esta atividade ou tem alguma dúvida, entre em contato conosco imediatamente em {{ support_email }}
+
+Esta é uma notificação automática de segurança.
+
+{{ site_name }}
+{{ site_url }}

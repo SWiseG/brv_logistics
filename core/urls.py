@@ -1,11 +1,18 @@
 from django.urls import path
-from . import views
+from .views import *
 
 app_name = 'core'
 
 urlpatterns = [
-    path('', views.home, name='home'),
-    path('sobre/', views.about, name='about'),
-    path('contato/', views.contact, name='contact'),
+    path('', HomeView.as_view(), name='home'),
+    path('home', HomeView.as_view(), name='home'),
+    path('sobre/', AboutView.as_view(), name='about'),
+    path('contato/', ContactView.as_view(), name='contact'),
+    
+    # Search
+    path('search/suggestions/', SearchSuggestionsView.as_view(), name='search_suggestions'),
+    
+    # Static Modals
+    path('modals/', static_modals, name='modals')
 ]
 

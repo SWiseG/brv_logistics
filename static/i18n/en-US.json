@@ -1,14 +1,58 @@
 {
   "loading": "Loading...",
+  "not-result-found": "No results found",
+  "not-result-found-for": "No results found for",
+  "error-result-found": "Error to find registers",
+  "notification": {
+    "neutral": "System message",
+    "info": "System message",
+    "success": "Operation Completed",
+    "warning": "Warning",
+    "error": "Error",
+    "danger": "Error"
+  },
   "navbar": {
     "welcome": "Hello",
     "make-login": "make login",
+    "try-login": "Make the login",
+    "make-register": "Start here",
+    "new-user-question": "New customer?",
     "update-cep": "Update PostalCode",
     "welcome-title-drop": "Account and Options",
     "cart": "Cart",
     "localize-title": "Send to",
     "localize-address-not-found": "No Address",
     "products": "Catalog",
-    "contacts": "Contact"
+    "contacts": "Contact",
+    "search-all-results": "All the results",
+    "search-title-products": "Products",
+    "search-title-categories": "Categories"
+  },
+  "subnav": {
+    "offers": "Offers",
+    "hot": "Hot"
+  },
+  "login": {
+    "remember-me": "Remember me", 
+    "login": "Login", 
+    "or": "or",
+    "loging": "Loading...", 
+    "forgot-your-password": "Forgot your password?",
+    "make-register": "Start here",
+    "new-user-question": "New customer?",
+    "in-development-state": "Login with {0} in development",
+    "error": "Login error",
+    "internal-server-error": "Internal error. Try again."
+  },
+  "register": {
+    "error": "Register error",
+    "internal-server-error": "Internal error. Try again."
+  },
+  "form-feedback": {
+    "invalid": "Please, make sure that all fields of the form are valid."
+  },
+  "field-feedback": {
+    "required": "Field '{0}' is required",
+    "invalid": "Field value '{0}' is invalid"
   }
 }

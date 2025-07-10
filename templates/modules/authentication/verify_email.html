@@ -1,0 +1,143 @@
+{% extends 'base_auth.html' %}
+{% load static %}
+
+{% block title %}
+    {% if sys_config %} 
+        {% if title %} 
+            {{ sys_config.site_name }} - {{ title }}
+        {% else %}
+            {{ sys_config.site_name }}
+        {% endif %}
+    {% elif title %}
+        {{ title }}
+    {% else %}
+        -
+    {% endif %}
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center auth">
+        <div class="col-lg-5 col-md-7">
+            <div class="card auth-card">
+                <!-- Header -->
+                <div class="card-header auth-header text-center py-4">
+                    <div class="verification-icon pulse">
+                        <i class="fas fa-envelope fa-2x"></i>
+                    </div>
+                    <h4 class="mb-2">Verificar Email</h4>
+                    <p class="mb-0 opacity-75">
+                        {% if verification_type == 'registration' %}
+                            Enviamos um código para finalizar seu cadastro
+                        {% elif verification_type == 'login_verification' %}
+                            Verificação de segurança necessária
+                        {% elif verification_type == 'password_reset' %}
+                            Verificação para redefinir sua senha
+                        {% else %}
+                            Verificação de email necessária
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Email Info -->
+                    <div class="email-info text-center mb-4">
+                        <p class="mb-2">Código enviado para:</p>
+                        <strong class="text-primary">{{ masked_email }}</strong>
+                    </div>
+                    
+                    <!-- Verification Form -->
+                    <form class="form-floating" id="verificationForm" method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="editor-form-field mb-4">
+                            <div class="editor-form-label">
+                                <label for="verification_code" class="editor-form-label-text form-label">Código de Verificação</label>
+                            </div>
+                            <div class="editor-form-input">
+                                <input type="text" 
+                                    class="form-control code-input" 
+                                    id="verification_code" 
+                                    name="verification_code" 
+                                    placeholder="000000"
+                                    maxlength="6"
+                                    autocomplete="off"
+                                    required />
+                                    <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted msg-field-code-input mt-2 mb-2">
+                            Digite o código de 6 dígitos que enviamos para seu email
+                        </small>
+                        <!-- Submit Button -->
+                        <div class="d-grid mb-3 mt-3">
+                            <button type="submit" class="btn btn-primary btn-lg align-center full" id="verifyBtn">
+                                <span class="btn-text">
+                                    <i class="fas fa-check me-2"></i>Verificar Código
+                                </span>
+                                <span class="btn-loading d-none">
+                                    <i class="fas fa-spinner fa-spin me-2"></i>Verificando...
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <!-- Resend Section -->
+                    <div class="text-center">
+                        <p class="mb-2">Não recebeu o código?</p>
+                        <div class="resend-section">
+                            <button type="button" class="resend-button fw-bold" id="resendBtn" disabled data-bind="click: $root.resendCode">
+                                Reenviar código
+                            </button>
+                            <div class="resend-timer mt-1" href="#" id="resendTimer" onClick="event.preventDefault()">
+                                Você pode solicitar um novo código em <span id="countdown">60</span>s
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Instructions -->
+                    <div class="verification-steps mt-4">
+                        <h6 class="mb-3">Como funciona:</h6>
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <span>Verifique sua caixa de entrada e spam</span>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <span>Digite o código de 6 dígitos acima</span>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <span>
+                                {% if verification_type == 'registration' %}
+                                    Sua conta será criada automaticamente
+                                {% elif verification_type == 'login_verification' %}
+                                    Você será logado em sua conta
+                                {% else %}
+                                    Prossiga com a próxima etapa
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Back Link -->
+                    <div class="text-center mt-4">
+                        <a href="{% if verification_type == 'registration' %}{% url 'auth:register' %}{% else %}{% url 'auth:login' %}{% endif %}" 
+                        class="text-decoration-none">
+                            <i class="fas fa-arrow-left me-2"></i>Voltar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    <script module="data-url" type="check-email" data-url-bind='{% url "auth:resend_verification" %}'></script>
+    <module data-tag="{% static 'js/modules/authentication/verify.email.js' %}"></module>
+{% endblock %}

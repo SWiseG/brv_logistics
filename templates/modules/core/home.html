@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    {% if sys_config %} 
+        {% if title %} 
+            {{ sys_config.site_name }} - {{ title }}
+        {% else %}
+            {{ sys_config.site_name }}
+        {% endif %}
+    {% elif title %}
+        {{ title }}
+    {% else %}
+        -
+    {% endif %}
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/home.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div id="home" class="home">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
+            
+            <!-- Indicadores -->
+            <div class="carousel-indicators">
+                {% for hr in hero_sections %}
+                    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}"></button>
+                {% endfor %}
+            </div>
+
+            <!-- Slides -->
+            <div class="carousel-inner">
+                {% if hero_sections %}
+                    {% for hr in hero_sections %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <div class="hero-slide bg-cover d-flex align-items-center" style="background-image: url('{{ hr.image.url }}');">
+                                <div class="container">
+                                    <h1 data-i18n="{{ hr.title|default:'' }}"></h1>
+                                    <p data-i18n="{{ hr.sub_title|default:'' }}"></p>
+                                    {% if hr.action_text %}
+                                        <a href="#" class="btn btn-light btn-lg" data-action="{{ hr.action_callback }}">{{ hr.action_text }}</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="carousel-item active">
+                        <div class="hero-slide bg-cover d-flex align-items-center" style="background-image: url('{{ hr.image.url }}');">
+                            <div class="container">
+                                <p class="text-center py-3">Sem hero sections disponíveis.</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Controles -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="home-common-section category-section">
+        <div id="categories" class="container-categories container">
+            <div class="section-header">
+                <h2 class="section-title">Categorias</h2>
+                <p class="section-subtitle">Explore nossa variedade de produtos</p>
+            </div>
+            
+            <div class="grid-categories row" id="categoriesGrid">
+                <!-- Categories will be loaded here -->
+                <div class="col-12 text-center">
+                    <div class="loading-skeleton" style="height: 200px; border-radius: 8px;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products Section -->
+    <section class="home-common-section products-section">
+        <div id="featured-products" class="container">
+            <div class="section-header">
+                <h2 class="section-title">Produtos em destaque</h2>
+                <p class="section-subtitle">Selecionados especialmente para você</p>
+            </div>
+            
+            <div class="row" id="featuredGrid">
+                <!-- Featured products will be loaded here -->
+                {% for i in "1234"|make_list %}
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="loading-skeleton" style="height: 400px; border-radius: 8px;"></div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <hr>
+    <a href="{% url 'auth:login' %}" class="btn btn-primary" data-i18n="navbar.make-login"></a>
+    <a href="{% url 'auth:register' %}" class="btn btn-secondary" data-i18n="navbar.make-register"></a>
+    <a href="{% url 'auth:logout' %}" class="btn btn-primary-outlined">Logout</a>
+    <a href="{% url 'auth:password_reset' %}" class="btn btn-danger">Resetar Senha</a>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    <module data-tag="{% static 'js/modules/core/home.js' %}"></module>
+{% endblock %}

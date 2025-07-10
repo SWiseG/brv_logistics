@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alerta de Segurança</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
+        .container { max-width: 600px; margin: 0 auto; background-color: white; }
+        .header { background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%); color: white; padding: 30px; text-align: center; }
+        .content { padding: 30px; }
+        .alert-icon { font-size: 64px; margin-bottom: 20px; }
+        .warning-box { background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px; padding: 15px; margin: 20px 0; }
+        .info-box { background: #f8f9fa; border-left: 4px solid #007bff; padding: 15px; margin: 15px 0; }
+        .button { display: inline-block; background: #dc3545; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 15px 0; }
+        .footer { background: #f8f9fa; padding: 20px; text-align: center; font-size: 14px; color: #6c757d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="alert-icon">⚠️</div>
+            <h1>Alerta de Segurança</h1>
+            <p>Atividade suspeita detectada em sua conta</p>
+        </div>
+        
+        <div class="content">
+            <h2>Olá, {{ user.first_name }}!</h2>
+            
+            <div class="warning-box">
+                <strong>⚠️ Atenção:</strong> Detectamos uma tentativa de login que requer verificação adicional em sua conta.
+            </div>
+            
+            <p>Por medida de segurança, identificamos uma atividade que pode ser suspeita em sua conta e solicitamos verificação adicional.</p>
+            
+            <h3>Detalhes da Atividade:</h3>
+            
+            <div class="info-box">
+                <strong>Data/Hora:</strong> {{ timezone.now|date:"d/m/Y H:i" }}<br>
+                <strong>Endereço IP:</strong> {{ ip_address }}<br>
+                <strong>Navegador:</strong> {{ user_agent|truncatewords:10 }}
+            </div>
+            
+            <h3>Por que isso aconteceu?</h3>
+            <ul>
+                <li>Login de um novo dispositivo ou localização</li>
+                <li>Múltiplas tentativas de login falhadas</li>
+                <li>Atividade incomum detectada</li>
+                <li>Medida preventiva de segurança</li>
+            </ul>
+            
+            <h3>O que fazer agora?</h3>
+            <ol>
+                <li><strong>Se foi você:</strong> Digite o código que enviamos para confirmar sua identidade</li>
+                <li><strong>Se não foi você:</strong> Altere sua senha imediatamente e entre em contato conosco</li>
+            </ol>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{ site_url }}/accounts/change-password/" class="button">Alterar Senha</a>
+            </div>
+            
+            <div class="warning-box">
+                <strong>🔒 Dicas de Segurança:</strong>
+                <ul style="margin: 10px 0;">
+                    <li>Use senhas únicas e complexas</li>
+                    <li>Ative a autenticação em duas etapas quando disponível</li>
+                    <li>Não compartilhe suas credenciais</li>
+                    <li>Mantenha seus dispositivos seguros</li>
+                </ul>
+            </div>
+            
+            <p><strong>Precisa de ajuda?</strong><br>
+            Se você não reconhece esta atividade ou tem alguma dúvida, entre em contato conosco imediatamente em <a href="mailto:{{ support_email }}">{{ support_email }}</a></p>
+        </div>
+        
+        <div class="footer">
+            <p>Esta é uma notificação automática de segurança</p>
+            <p>{{ site_name }} - <a href="{{ site_url }}">{{ site_url }}</a></p>
+        </div>
+    </div>
+</body>
+</html>

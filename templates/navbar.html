@@ -6,10 +6,10 @@
                 {% if active_theme and active_theme.logo %}
                     <img src="{{ active_theme.logo.url }}" alt="Logo" height="30">
                 {% else %}
-                    E-commerce Template
+                    BRV Logistics - Template
                 {% endif %}
             </a>
-            <a class="navbar-localize" href="#">
+            <a class="navbar-localize" href="#" data-bind="click: $root.onAddress">
                 <div class="navbar-localize-container-title">
                     {% if user.is_authenticated %}
                         <span class="navbar-localize-title" data-i18n="navbar.localize-title"></span>
@@ -22,27 +22,44 @@
                     <i class="navbar-localize-icon fas fa-map-marker-alt"></i>
                     {% if user.is_authenticated %}
                         {% with user.addresses.all as addresses %}
-                            {% with False as encontrado %}
-                                {% for address in addresses %}
-                                    {% if not encontrado and address.is_default %}
-                                        {% if address.address_type == "shipping" or address.address_type == "both" %}
-                                            <p>{{ address.city }} {{ address.postal_code }}</p>
+                            {% if addresses %}
+                                {% with False as encontrado %}
+                                    {% for address in addresses %}
+                                        {% if not encontrado and address.is_default %}
+                                            {% if address.address_type == "shipping" or address.address_type == "both" %}
+                                                <p>{{ address.city }} {{ address.postal_code }}</p>
+                                                {% with True as encontrado %}{% endwith %}
+                                            {% endif %}
                                         {% endif %}
-                                        {% with True as encontrado %}{% endwith %}
-                                    {% endif %}
-                                {% endfor %}
-                            {% endwith %}
+                                    {% endfor %}
+                                    {% comment %} {% if not encontrado %}
+                                        <p data-i18n="navbar.localize-address-not-found"></p>
+                                    {% endif %} {% endcomment %}
+                                {% endwith %}
+                            {% else %}
+                                <p data-i18n="navbar.localize-address-not-found"></p>
+                            {% endif %}
                         {% endwith %}
                     {% else %}
                         <p data-i18n="navbar.localize-address-not-found"></p>
                     {% endif %}
                 </div>
+
             </a>
             <div class="navbar-search">
-                <form>
-                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Pesquisar em BRAVA.com.br">
+                <form action="{% url 'products:search' %}" method="GET">
+                    <input type="text" 
+                            name="q" 
+                            class="form-control" 
+                            placeholder="Buscar produtos, marcas..."
+                            autocomplete="off"
+                            id="navbarSearchInput"
+                            value="{{ request.GET.q|default:'' }}">
                     <button type="submit" class="btn btn-primary-darker"><i class="fas fa-search"></i></button>
                 </form>
+                <div id="searchSuggestions" class="search-suggestions position-absolute" style="top: 85%; z-index: 1050; display: none;margin-left: 20px;">
+                    <!-- Conteúdo será carregado via AJAX -->
+                </div>
             </div>
             <div class="navbar-settings" id="navOptions">
                 <ul class="navbar-nav">
@@ -56,12 +73,13 @@
                                     <span data-i18n="navbar.welcome-title-drop"></span>
                                 </div>
                             </a>
-                            <div class="dropdown-menu has-before" aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="{% url 'users:profile' %}">Meu Perfil</a>
-                                <a class="dropdown-item" href="{% url 'orders:order_list' %}">Meus Pedidos</a>
+                            <div class="dropdown-menu navbar-dropdown-settings" aria-labelledby="userDropdown">
+                                <div class="container-list-options login"></div>
+                                <a class="dropdown-item" href="{% url 'auth:profile' %}">Meu Perfil</a>
+                                {% comment %} <a class="dropdown-item" href="{% url 'orders:order_list' %}">Meus Pedidos</a>
                                 <a class="dropdown-item" href="{% url 'users:address_list' %}">Meus Endereços</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="{% url 'account_logout' %}">Sair</a>
+                                <div class="dropdown-divider"></div> {% endcomment %}
+                                <a class="dropdown-item" href="{% url 'auth:logout' %}">Sair</a>
                             </div>
                         </li>
                     {% else %}
@@ -74,24 +92,73 @@
                                     <span data-i18n="navbar.welcome-title-drop"></span>
                                 </div>
                             </a>
-                            <div class="dropdown-menu has-before" aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="{% url 'account_login' %}">Entrar</a>
-                                <a class="dropdown-item" href="{% url 'account_signup' %}">Cadastrar</a>
+                            <div class="dropdown-menu navbar-dropdown-settings" aria-labelledby="userDropdown">
+                                <div class="container-list-options login">
+                                    <a href="{% url 'auth:login' %}" class="btn btn-primary full" data-i18n="navbar.make-login"></a>
+                                    <div class="container-new-user">
+                                        <span class="new-client-msg" data-i18n="navbar.new-user-question"></span>
+                                        <a href="{% url 'auth:register' %}" class="new-client-link" data-i18n="navbar.make-register"></a>
+                                    </div>
+                                </div>
                             </div>
                         </li>
                     {% endif %}
                     <li class="nav-item cart">
-                        <a class="nav-link" href="{% url 'orders:cart_detail' %}">
-                            <i class="fas fa-shopping-cart"></i>
-                            <span data-i18n="navbar.cart"></span>
-                            <span class="badge badge-light" id="cart-count">
-                                {% if request.user.is_authenticated %}
-                                    {{ request.user.cart.item_count|default:"0" }}
-                                {% else %}
-                                    0
-                                {% endif %}
-                            </span>
-                        </a>
+                        <!-- Wishlist -->
+                        {% if user.is_authenticated %}
+                            {% comment %} <a href="{% url 'marketing:wishlist_count' %}" class="nav-link wish-link">
+                                <i class="fas fa-heart"></i>
+                                <span class="badge badge-light" id="wishListCount">
+                                    {{ wishlist_count|default:0 }}
+                                </span>
+                            </a> {% endcomment %}
+                        {% else %}
+                            <a href="{% url 'auth:login' %}" class="nav-link wish-link">
+                                <i class="fas fa-heart"></i>
+                                <span class="badge badge-light" id="wishListCount">0</span>
+                            </a>
+                        {% endif %}
+    
+                        <!-- Cart Dropdown -->
+                        {% if user.is_authenticated %}
+                            <div class="dropdown nav-cart">
+                                <a class="btn btn-primary position-relative dropdown-toggle nav-link" 
+                                        href="#" 
+                                        id="cartDropdown"
+                                        role="button" 
+                                        data-bs-toggle="dropdown" 
+                                        aria-haspopup="true"
+                                        aria-expanded="false">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <span class="badge badge-light" id="cartCount" data-bind="text: $root.cartCount({{ cart_count|default:0 }})"></span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end cart-dropdown p-0" style="width: 400px;">
+                                    <div class="dropdown-header bg-light d-flex justify-content-between align-items-center">
+                                        <h6 class="mb-0">Meu Carrinho</h6>
+                                        <small class="text-muted">
+                                            <span class="cart-count">{{ cart_count|default:0 }}</span> 
+                                            item<span class="cart-count-plural">{{ cart_count|default:0|pluralize:"ns" }}</span>
+                                        </small>
+                                    </div>
+                                    <div id="cartDropdownContent" class="cart-dropdown-content">
+                                        <!-- Cart content loaded via AJAX -->
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="dropdown nav-cart">
+                                <a class="btn btn-primary position-relative dropdown-toggle nav-link" 
+                                        href="{% url 'auth:login' %}" 
+                                        id="cartDropdown"
+                                        role="button" 
+                                        data-bs-toggle="dropdown" 
+                                        aria-haspopup="true"
+                                        aria-expanded="false">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <span class="badge badge-light" id="cartCount" data-bind="text: $root.cartCount({{ cart_count|default:0 }})"></span>
+                                </a>
+                            </div>
+                        {% endif %}
                     </li>
                 </ul>
             </div>
@@ -101,31 +168,61 @@
         <div id="subnav-controll" class="navbar-subnav">
             <div class="arrow left" id="subnav-scroll-arrow-left">&#10094;</div>
             <ul class="subnav-controll-list">
-                <li class="subnav-item">
-                    <a class="subnav-link" href="{% url 'products:product_list' %}" data-i18n="navbar.products"></a>
+                <!-- Categories Dropdown -->
+                <li class="nav-item dropdown mega-dropdown categories-dropdown-all">
+                    <a href="#" class="nav-link dropdown-toggle px-3 py-2" 
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-bars"></i>
+                        <span data-i18n="navbar.search-title-categories"></span>
+                    </a>
+                    <div class="dropdown-menu mega-menu p-0">
+                        <div class="container">
+                            {% for category in main_categories %}
+                                <div class="dropdown-content">
+                                    <a class="dropdown-header" href="{{ category.get_absolute_url }}" class="text-decoration-none" data-bs-toggle="tooltip" title="{{ category.name }}">
+                                        <span>{{ category.name }}</span>
+                                        <small class="text-muted">({{ category.product_count|default:0 }})</small>
+                                    </a>
+                                    {% if category.children.count > 0 %}
+                                        <div class="sub-categories-list">
+                                            {% for subcategory in category.children.all %}
+                                                <a class="sub-item" href="{{ subcategory.get_absolute_url }}" data-bs-toggle="tooltip" title="{{ subcategory.name }}">
+                                                    <i class="fas fa-chevron-right"></i>
+                                                    <span class="dropdown-item py-1">
+                                                        <span>{{ subcategory.name }}</span>
+                                                        {% comment %} <small class="text-muted">({{ subcategory.product_count|default:0 }})</small> {% endcomment %}
+                                                    </span>
+                                                </a>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        <div class="sub-categories-list"></div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
                 </li>
+
+                <!-- Offers -->
                 <li class="subnav-item">
-                    <a class="subnav-link" href="{% url 'products:product_list' %}">ERP Comercial</a>
+                    <a href="{% url 'products:offers' %}" class="subnav-link link-context">
+                        <i class="fas fa-tags me-2"></i>
+                        <span data-i18n="subnav.offers"></span>
+                        <span class="badge bg-danger ms-1" data-i18n="subnav.hot"></span>
+                    </a>
                 </li>
-                <li class="subnav-item">
-                    <a class="subnav-link" href="{% url 'products:product_list' %}">Landing Pages</a>
-                </li>
-                <li class="subnav-item">
-                    <a class="subnav-link" href="{% url 'products:product_list' %}">Sistemas Embarcados</a>
-                </li>
-                <li class="subnav-item">
-                    <a class="subnav-link" href="{% url 'products:product_list' %}">Automatizações Comerciais</a>
-                </li>
-                <li class="subnav-item">
-                    <a class="subnav-link" href="{% url 'products:product_list' %}">Plano de Suporte</a>
-                </li>
-                {% if active_theme and active_theme.show_categories_menu %}
-                    {% for category in categories %}
-                        <li class="subnav-item">
-                            <a class="subnav-link" href="{% url 'products:category_detail' category.slug %}">{{ category.name }}</a>
-                        </li>
-                    {% endfor %}
-                {% endif %}
+
+                <!-- Main Categories -->
+                {% for category in main_categories|slice:":4" %}
+                    <li class="subnav-item">
+                        <a href="{{ category.get_absolute_url }}" class="subnav-link">
+                            {{ category.name }}
+                        </a>
+                    </li>
+                {% endfor %}
+
+                <!-- Contact -->
                 <li class="subnav-item">
                     <a class="subnav-link" href="{% url 'core:contact' %}" data-i18n="navbar.contacts"></a>
                 </li>
@@ -134,5 +231,4 @@
         </div>
     </subnav>
 </header>
-<!-- Custom JavaScript -->
-<script src="{% static 'js/navbar.js' %}"></script>
+<module data-tag="{% static 'js/modules/navbar.js' %}"></module>

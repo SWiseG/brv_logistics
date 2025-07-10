@@ -1,14 +1,57 @@
 {
   "loading": "Carregando...",
+  "not-result-found": "Nenhum resultado encontrado",
+  "not-result-found-for": "Nenhum resultado encontrado para",
+  "error-result-found": "Erro ao buscar registros",
+  "notification": {
+    "neutral": "Mensagem do Sistema",
+    "info": "Mensagem do Sistema",
+    "success": "Operação Concluída",
+    "warning": "Aviso",
+    "error": "Erro",
+    "danger": "Erro"
+  },
   "navbar": {
     "welcome": "Olá",
     "make-login": "faça seu login",
+    "make-register": "Começe aqui",
+    "new-user-question": "Cliente Novo?",
     "update-cep": "Atualizar CEP",
     "welcome-title-drop": "Conta e Opções",
     "cart": "Carrinho",
     "localize-title": "Enviar para ",
     "localize-address-not-found": "Sem Localização",
     "products": "Catálogo",
-    "contacts": "Contatos"
+    "contacts": "Contatos",
+    "search-all-results": "Ver todos os resultados",
+    "search-title-products": "Produtos",
+    "search-title-categories": "Categorias"
+  },
+  "subnav": {
+    "offers": "Ofertas",
+    "hot": "Em Alta"
+  },
+  "login": {
+    "remember-me": "Lembrar de mim", 
+    "login": "Entrar", 
+    "or": "ou",
+    "loging": "Carregando...", 
+    "forgot-your-password": "Esqueceu sua senha?",
+    "make-register": "Começe aqui",
+    "new-user-question": "Cliente Novo?",
+    "in-development-state": "Login com {0} em desenvolvimento",
+    "error": "Erro no login",
+    "internal-server-error": "Erro interno. Tente novamente."
+  },
+  "register": {
+    "error": "Erro no cadastro",
+    "internal-server-error": "Erro interno. Tente novamente."
+  },
+  "form-feedback": {
+    "invalid": "Por favor, corrija os erros no formulário"
+  },
+  "field-feedback": {
+    "required": "Campo '{0}' é obrigatório",
+    "invalid": "Campo '{0}' é inválido"
   }
 }

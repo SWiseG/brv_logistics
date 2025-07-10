@@ -1,0 +1,41 @@
+{{ site_name }} - Conta Ativada
+
+✅ SUA CONTA FOI ATIVADA!
+
+Olá, {{ user.first_name }}!
+
+Excelente notícia! Sua conta foi ativada com sucesso e você já pode aproveitar todos os recursos da nossa loja.
+
+O QUE VOCÊ PODE FAZER AGORA:
+- Explorar nosso catálogo completo de produtos
+- Fazer pedidos e acompanhar entregas
+- Criar listas de desejos
+- Receber ofertas personalizadas
+- Participar de promoções exclusivas
+
+FAZER LOGIN: {{ site_url }}/accounts/login/
+
+RECURSOS DISPONÍVEIS:
+✓ Catálogo completo de produtos
+✓ Carrinho de compras persistente
+✓ Sistema de avaliações
+✓ Histórico de pedidos
+✓ Suporte ao cliente
+✓ Ofertas personalizadas
+
+COMPLETAR PERFIL:
+Para uma experiência mais personalizada, complete seu perfil com:
+- Foto de perfil
+- Endereços de entrega
+- Preferências de produtos
+- Dados de contato
+
+PERFIL: {{ site_url }}/accounts/profile/
+
+PRECISA DE AJUDA?
+Nossa equipe está pronta para ajudá-lo. Entre em contato em {{ support_email }}
+
+Bem-vindo à família {{ site_name }}!
+
+{{ site_name }}
+{{ site_url }}

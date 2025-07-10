@@ -1,0 +1,56 @@
+/* Estilos: Alertas */
+
+.alert,
+.info-alert {
+    transition: all .2s ease-in-out;
+    
+    font-weight: 500;
+    font-size: 14px;
+    
+    word-wrap: break-word !important;
+    overflow-wrap: break-word;
+    hyphens: auto;
+
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 8px;
+
+    background: var(--neutral-border);
+    color: var(--neutral-darkest);
+    border-color: var(--neutral);
+    
+    border-left: 5px solid;
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+
+    &:focus,
+    &:hover {
+        border-left: 1px solid !important;
+    }
+
+    &.info {
+        background: var(--fb-info-border);
+        color: var(--fb-info-darkest);
+        border-color: var(--fb-info);
+        border-left-color: var(--fb-info);
+    }
+    &.error {
+        background: var(--fb-danger-border);
+        color: var(--fb-danger-darkest);
+        border-color: var(--fb-danger);
+        border-left-color: var(--fb-danger);
+    }
+    &.warning {
+        background: var(--fb-warning-border);
+        color: var(--fb-warning-darkest);
+        border-color: var(--fb-warning);
+        border-left-color: var(--fb-warning);
+    }
+    &.success {
+        background: var(--fb-success-border);
+        color: var(--fb-success-darkest);
+        border-color: var(--fb-success); 
+        border-left-color: var(--fb-success);
+    }
+}

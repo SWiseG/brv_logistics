@@ -1,0 +1,116 @@
+{% extends 'base_auth.html' %}
+{% load static %}
+
+{% block title %}
+    {% if sys_config %} 
+        {% if title %} 
+            {{ sys_config.site_name }} - {{ title }}
+        {% else %}
+            {{ sys_config.site_name }}
+        {% endif %}
+    {% elif title %}
+        {{ title }}
+    {% else %}
+        -
+    {% endif %}
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center auth">
+        <div class="col-lg-5 col-md-7">
+            <div class="card auth-card">
+                <!-- Header -->
+                <div class="card-header auth-header verification-header text-center py-4">
+                    <div class="verification-icon pulse">
+                        <i class="fas fa-shield-alt fa-2x"></i>
+                    </div>
+                    <h4 class="mb-2">Verificar Identidade</h4>
+                    <p class="mb-0 opacity-75">Digite o código que enviamos para seu e-mail</p>
+                </div>
+                
+                <div class="card-body p-4">
+                    <!-- Email Info -->
+                    <div class="text-center mb-4">
+                        <p class="mb-2">Código enviado para:</p>
+                        <strong class="text-primary">{{ masked_email }}</strong>
+                    </div>
+                    
+                    <!-- Security Note -->
+                    <div class="info-alert info">
+                        <i class="fas fa-info-circle me-2 security-message-icon"></i>
+                        <small class="security-message">Por segurança, verifique sua identidade antes de redefinir a senha.</small>
+                    </div>
+                    
+                    <!-- Verification Form -->
+                    <form class="form-floating" id="verificationForm" method="post" novalidate>
+                        {% csrf_token %}
+
+                        <div class="editor-form-field mb-4">
+                            <div class="editor-form-label">
+                                <label for="verification_code" class="editor-form-label-text form-label">Código de Verificação</label>
+                            </div>
+                            <div class="editor-form-input">
+                                <input type="text" 
+                                    data-bind="value: $root.verificationCode"
+                                    class="form-control code-input" 
+                                    id="verification_code" 
+                                    name="verification_code" 
+                                    placeholder="000000"
+                                    maxlength="6"
+                                    autocomplete="off"
+                                    required>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted msg-field-code-input mt-2 mb-2">
+                            Digite o código de 6 dígitos que enviamos para seu e-mail
+                        </small>
+                        
+                        <!-- Submit Button -->
+                        <div class="d-grid mb-3 mt-3">
+                            <button type="submit" class="btn btn-info btn-lg align-center full verification-button" id="verifyBtn">
+                                <span class="btn-text">
+                                    <i class="fas fa-check me-2"></i>Verificar Código
+                                </span>
+                                <span class="btn-loading d-none">
+                                    <i class="fas fa-spinner fa-spin me-2"></i>Verificando...
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <!-- Resend Section -->
+                    <div class="text-center">
+                        <p class="mb-2">Não recebeu o código?</p>
+                        <div class="resend-section">
+                            <button type="button" class="resend-button" id="resendBtn" disabled data-bind="click: $root.resendCode">
+                                Reenviar código
+                            </button>
+                            <div class="resend-timer mt-1" id="resendTimer">
+                                Você pode solicitar um novo código em <span id="countdown">60</span>s
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Back Link -->
+                    <div class="text-center mt-4">
+                        <a href="{% url 'auth:password_reset' %}" class="text-decoration-none">
+                            <i class="fas fa-arrow-left me-2"></i>Voltar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    <script module="data-url" type="resend-code" data-url-bind='{% url "auth:resend_reset_code" %}'></script>
+    <module data-tag="{% static 'js/modules/authentication/verify.reset.code.js' %}"></module>
+{% endblock %}
