@@ -56,6 +56,7 @@
                             </div>
                             <div class="editor-form-input">
                                 <input type="text" 
+                                    data-bind="value: $root.verificationCode"
                                     class="form-control code-input" 
                                     id="verification_code" 
                                     name="verification_code" 
@@ -87,7 +88,7 @@
                     <div class="text-center">
                         <p class="mb-2">Não recebeu o código?</p>
                         <div class="resend-section">
-                            <button type="button" class="resend-button" id="resendBtn" disabled>
+                            <button type="button" class="resend-button" id="resendBtn" disabled data-bind="click: $root.resendCode">
                                 Reenviar código
                             </button>
                             <div class="resend-timer mt-1" id="resendTimer">
@@ -110,172 +111,6 @@
 {% endblock %}
 
 {% block extra_js %}
-<script>
-$(document).ready(function() {
-    let resendTimer = 60;
-    let resendInterval;
-    
-    // ================================
-    // COUNTDOWN TIMER
-    // ================================
-    function startResendTimer() {
-        resendTimer = 60;
-        $('#resendBtn').prop('disabled', true);
-        $('#resendTimer').show();
-        
-        resendInterval = setInterval(() => {
-            resendTimer--;
-            $('#countdown').text(resendTimer);
-            
-            if (resendTimer <= 0) {
-                clearInterval(resendInterval);
-                $('#resendBtn').prop('disabled', false);
-                $('#resendTimer').hide();
-            }
-        }, 1000);
-    }
-    
-    // Start initial timer
-    startResendTimer();
-    
-    // ================================
-    // CODE INPUT FORMATTING
-    // ================================
-    $('#verification_code').on('input', function() {
-        let value = $(this).val().replace(/\D/g, ''); // Only digits
-        $(this).val(value);
-        
-        // Auto-submit when 6 digits are entered
-        if (value.length === 6) {
-            setTimeout(() => {
-                $('#verificationForm').submit();
-            }, 500);
-        }
-        
-        // Clear error state
-        $(this).removeClass('is-invalid');
-        $(this).siblings('.invalid-feedback').text('');
-    });
-    
-    // Prevent non-numeric input
-    $('#verification_code').on('keypress', function(e) {
-        if (!/\d/.test(String.fromCharCode(e.which)) && e.which !== 8) {
-            e.preventDefault();
-        }
-    });
-    
-    // Auto-focus and select on page load
-    $('#verification_code').focus().select();
-    
-    // ================================
-    // FORM SUBMISSION
-    // ================================
-    $('#verificationForm').on('submit', function(e) {
-        e.preventDefault();
-        
-        const form = $(this);
-        const code = $('#verification_code').val().trim();
-        const submitBtn = $('#verifyBtn');
-        const btnText = submitBtn.find('.btn-text');
-        const btnLoading = submitBtn.find('.btn-loading');
-        
-        // Validate code
-        if (!code || code.length !== 6) {
-            $('#verification_code').addClass('is-invalid');
-            $('#verification_code').siblings('.invalid-feedback').text('Digite um código de 6 dígitos');
-            return;
-        }
-        
-        // Show loading
-        btnText.addClass('d-none');
-        btnLoading.removeClass('d-none');
-        submitBtn.prop('disabled', true);
-        
-        // Submit via AJAX
-        $.ajax({
-            url: form.attr('action') || window.location.href,
-            method: 'POST',
-            data: form.serialize(),
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            success: function(response) {
-                if (response.success) {
-                    // Show success
-                    notify.show(response.message, 'success');
-                    
-                    // Clear timer
-                    clearInterval(resendInterval);
-                    
-                    // Redirect after delay
-                    setTimeout(() => {
-                        window.location.href = response.redirect_url;
-                    }, 1500);
-                } else {
-                    // Show error
-                    $('#verification_code').addClass('is-invalid');
-                    $('#verification_code').siblings('.invalid-feedback').text(response.message);
-                    
-                    // Shake animation and focus
-                    $('#verification_code').focus().select();
-                    
-                    notify.show(response.message, 'error');
-                }
-            },
-            error: function(xhr) {
-                console.error('Erro na verificação:', xhr);
-                notify.show('Erro interno. Tente novamente.', 'error');
-            },
-            complete: function() {
-                // Hide loading
-                btnText.removeClass('d-none');
-                btnLoading.addClass('d-none');
-                submitBtn.prop('disabled', false);
-            }
-        });
-    });
-    
-    // ================================
-    // RESEND CODE
-    // ================================
-    $('#resendBtn').on('click', function() {
-        const button = $(this);
-        
-        if (button.prop('disabled')) return;
-        
-        // Show loading
-        button.prop('disabled', true).text('Enviando...');
-        
-        $.ajax({
-            url: '{% url "auth:resend_reset_code" %}',
-            method: 'POST',
-            data: {
-                'csrfmiddlewaretoken': $('[name=csrfmiddlewaretoken]').val()
-            },
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            success: function(response) {
-                if (response.success) {
-                    notify.show(response.message, 'success');
-                    
-                    // Reset timer
-                    startResendTimer();
-                    
-                    // Clear and focus input
-                    $('#verification_code').val('').focus();
-                } else {
-                    notify.show(response.message, 'error');
-                    button.prop('disabled', false).text('Reenviar código');
-                }
-            },
-            error: function(xhr) {
-                console.error('Erro ao reenviar:', xhr);
-                notify.show('Erro ao reenviar código.', 'error');
-                button.prop('disabled', false).text('Reenviar código');
-            }
-        });
-    });
-});
-</script>
+    <script module="data-url" type="resend-code" data-url-bind='{% url "auth:resend_reset_code" %}'></script>
+    <module data-tag="{% static 'js/modules/authentication/verify.reset.code.js' %}"></module>
 {% endblock %}

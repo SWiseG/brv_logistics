@@ -1,11 +1,17 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView, View
-from django.db.models import Q, Count
-from products.models import Product, ProductCategory
+from django.db.models import Q, Count, Avg
 from django.http import JsonResponse
 
 import os
 from django.conf import settings
+from django.core.cache import cache
+
+from django.utils import timezone
+from datetime import timedelta
+
+from products.models import Product, ProductCategory, ProductBrand
+from orders.models import OrderItem
 
 class HomeView(TemplateView):
     template_name = 'modules/core/home.html'

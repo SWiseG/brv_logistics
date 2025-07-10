@@ -3,7 +3,9 @@ function Global() {
     return {
         modules: [],
         translations: {},
-        options: {},
+        options: {
+            noTreatedOptions: []
+        },
         messages: [],
         currentLang: 'pt-BR',
         cart: {
@@ -13,7 +15,7 @@ function Global() {
         config: {
             currency: 'BRL',
             currencySymbol: 'R$',
-            apiUrl: '/api/',
+            apiUrl: '/api/v1/',
             csrfToken: document.querySelector('[name=csrfmiddlewaretoken]')?.value || ''
         },
         initHtml: () => {
@@ -77,6 +79,7 @@ function Global() {
             return await require(name);
         },
         registerModule: async (name, path, dependencies, callback, partial, params) => {
+            debugger;
             var registeredModule = null;
             var moduleLoaded = callback();
             if(moduleLoaded.hasOwnProperty('init') && typeof moduleLoaded['init'] === 'function') 
@@ -110,6 +113,10 @@ function Global() {
                     started: false,
                     createdAt: new Date()
                 };
+
+                const isAlreadyLoadedModule = global.modules.find(x => x.name === module.name);
+                if(isAlreadyLoadedModule && isAlreadyLoadedModule.started) return false;
+
                 if(window['logger']) 
                     logger.log(
                         `[Module Binding]%c Name: ${module.name} | Assigned Module: ${module.ctor}`,
@@ -134,12 +141,14 @@ function Global() {
                         moduleLoaded = global.mixinMergeStrategy(moduleLoaded, mdFounded.ctor);
                     });
                     registeredModule = await register(name, path, loadedDependencies, moduleLoaded, params);
+                    if(!registeredModule) return;
                     finallyThen();
                     return global.modules.push(registeredModule);
                 });
             }
             else {
                 registeredModule = await register(name, path, dependencies, moduleLoaded, params);
+                if(!registeredModule) return;
                 finallyThen();
                 return global.modules.push(registeredModule);
             };
@@ -176,13 +185,36 @@ function Global() {
             return cookieValue;
         },
 
+        getCsrfToken() {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                const [name, value] = cookie.trim().split('=');
+                if (name === 'csrftoken') {
+                    return value;
+                }
+            }
+            
+            // Fallback to meta tag
+            const metaTag = document.querySelector('meta[name="csrf-token"]');
+            return metaTag ? metaTag.getAttribute('content') : '';
+        },
+
         applyHashProperties: () => {
+            // First try find CsrfToken
+            if(!global.config.csrfToken || global.config.csrfToken === "") global.config.csrfToken = global.getCsrfToken();
             var $hashOptions = $('datahash');
             if($hashOptions?.length > 0) {
-                var options = JSON.parse($hashOptions.attr('val'));
-                Object.keys(options).forEach((key) => {
-                    var res = options[key] === 'true' || options[key] === 'false' ? Boolean(options[key]) : options[key];
-                    global.options[key] = res;
+                $hashOptions.each((i, e) => {
+                    var $hash = $(e);
+                    var $hashVal = $hash.attr('val');
+                    if(JSON.tryParse($hashVal)) {
+                        var options = JSON.parse($hashVal);
+                        Object.keys(options).forEach((key) => {
+                            var res = options[key] === 'true' || options[key] === 'false' ? Boolean(options[key]) : options[key];
+                            global.options[key] = res;
+                        });
+                    }
+                    else global.options.noTreatedOptions.push($hashVal);
                 });
                 $hashOptions.remove();
             };

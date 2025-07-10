@@ -1,4 +1,4 @@
-define(`/static/js/modules/navbar.js`, '/static/js/mixins/components.js', 
+define(`/static/js/modules/navbar.js`, null, 
     function Navbar() {
         return {
             name: `NavBar`,
@@ -8,10 +8,11 @@ define(`/static/js/modules/navbar.js`, '/static/js/mixins/components.js',
             searchMinLength: bindings.observable(2),
             isSearching: bindings.observable(false),
             currentSuggestionIndex: bindings.observable(-1),
+            cartDropdownLoaded: bindings.observable(false),
             cartCount: bindings.observable(0),
             compositionComplete: (name, path, dependencies, callback, params) => {
                 ctor.initSearch();
-                ctor.initCartDropdown();
+                ctor.initializeCartDropdown();
                 ctor.subscribeChanges();
                 return ctor.loadSubNavbarRow();
             },
@@ -317,15 +318,16 @@ define(`/static/js/modules/navbar.js`, '/static/js/mixins/components.js',
             // ================================
             // Cart
             // ================================
-            initCartDropdown() {
+            initializeCartDropdown() {
                 const cartDropdown = document.getElementById('cartDropdown');
-                
-                if (!cartDropdown) return;
-                
-                // Carregar conteúdo quando abrir o dropdown
-                cartDropdown.addEventListener('show.bs.dropdown', () => {
-                    ctor.loadCartDropdown();
-                });
+                if (cartDropdown) {
+                    // Load cart when dropdown is opened
+                    cartDropdown.addEventListener('show.bs.dropdown', () => {
+                        if (!ctor.cartDropdownLoaded()) {
+                            ctor.loadCartDropdown();
+                        }
+                    });
+                }
             },
 
             subscribeChanges: () => {
@@ -334,37 +336,48 @@ define(`/static/js/modules/navbar.js`, '/static/js/mixins/components.js',
                 });
             },
             
-            async loadCartDropdown() {
-                debugger;
+            loadCartDropdown: async () => {
                 const cartDropdownContent = document.getElementById('cartDropdownContent');
                 
                 if (!cartDropdownContent) return;
                 
                 try {
-                    // Mostrar loading
                     cartDropdownContent.innerHTML = `
                         <div class="text-center p-3">
-                            <div class="spinner-border spinner-border-sm text-primary" role="status">
-                                <span class="visually-hidden">${translate._translate('loading')}</span>
-                            </div>
+                            <div class="spinner-border spinner-border-sm text-primary"></div>
+                            <div class="mt-2">Carregando carrinho...</div>
                         </div>
                     `;
                     
-                    const response = await fetch('/pedidos/cart/dropdown/');
+                    const response = await fetch(`/pedidos/cart/dropdown/`);
                     const data = await response.json();
                     
-                    if (data.html) {
+                    if (data) {
                         cartDropdownContent.innerHTML = data.html;
+                        ctor.cartDropdownLoaded(true);
+                        
+                        // Update counts
                         ctor.cartCount(data.total_items);
-                    };
+                        // ctor.updateCartQuickActions(data);
+                        
+                        // Initialize cart item actions
+                        ctor.initializeCartItemActions();
+                    } else {
+                        throw new Error(data.message || 'Erro ao carregar carrinho');
+                    }
+                    
                 } catch (error) {
-                    console.error('Erro ao carregar carrinho:', error);
+                    console.error('Error loading cart dropdown:', error);
                     cartDropdownContent.innerHTML = `
                         <div class="text-center p-3 text-muted">
-                            <i class="fas fa-exclamation-triangle me-2"></i>
-                            Erro ao carregar carrinho
+                            <i class="fas fa-exclamation-triangle mb-2"></i>
+                            <div>Erro ao carregar carrinho</div>
+                            <button class="btn btn-sm btn-outline-primary mt-2" data-bind="click: $root.loadCartDropdown()">
+                                Tentar novamente
+                            </button>
                         </div>
                     `;
+                    bindings.reload();
                 }
             },
 
@@ -376,7 +389,44 @@ define(`/static/js/modules/navbar.js`, '/static/js/mixins/components.js',
                         element.classList.remove('animate-bounce');
                     }, 600);
                 });
-            }
+            },
+
+            initializeCartItemActions() {
+                // Handle cart item quantity changes
+                document.addEventListener('click', (e) => {
+                    if (e.target.closest('.btn-cart-qty')) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        const button = e.target.closest('.btn-cart-qty');
+                        const action = button.dataset.action;
+                        const itemId = button.dataset.itemId;
+                        
+                        ctor.cartCount(itemId, action);
+                    }
+                    
+                    if (e.target.closest('.btn-cart-remove')) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        const button = e.target.closest('.btn-cart-remove');
+                        const itemId = button.dataset.itemId;
+                        
+                        ctor.removeCartItem(itemId);
+                    }
+                });
+                
+                // Handle manual quantity input
+                document.addEventListener('change', (e) => {
+                    if (e.target.classList.contains('cart-qty-input')) {
+                        const input = e.target;
+                        const itemId = input.dataset.itemId;
+                        const quantity = parseInt(input.value) || 1;
+                        
+                        ctor.setCartItemQuantity(itemId, quantity);
+                    }
+                });
+            },
         }
     }
 )

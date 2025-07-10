@@ -46,7 +46,7 @@
                     </div>
                     
                     <!-- Register Form -->
-                    <form id="registerForm" method="post" novalidate>
+                    <form id="registerForm" method="post" class="form-floating" novalidate>
                         {% csrf_token %}
                         
                         <!-- Step 1: Basic Info -->
@@ -54,39 +54,51 @@
                             <h5 class="mb-3">Informações Básicas</h5>
                             
                             <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-floating mb-3">
+                                <div class="editor-form-field col-md-6">
+                                    <div class="editor-form-label">
+                                        <label for="{{ form.first_name.id_for_label }}" class="editor-form-label-text form-label">{{ form.first_name.label }}</label>
+                                    </div>
+                                    <div class="editor-form-input">
                                         {{ form.first_name }}
-                                        <label for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
                                         <div class="invalid-feedback"></div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-floating mb-3">
+                                <div class="editor-form-field col-md-6">
+                                    <div class="editor-form-label">
+                                        <label for="{{ form.last_name.id_for_label }}" class="editor-form-label-text form-label">{{ form.last_name.label }}</label>
+                                    </div>
+                                    <div class="editor-form-input">
                                         {{ form.last_name }}
-                                        <label for="{{ form.last_name.id_for_label }}">{{ form.last_name.label }}</label>
                                         <div class="invalid-feedback"></div>
                                     </div>
                                 </div>
                             </div>
                             
                             <!-- Email with availability check -->
-                            <div class="form-floating mb-3 position-relative">
-                                {{ form.email }}
-                                <label for="{{ form.email.id_for_label }}" data-bind="value: $root.emailField('{{ form.email.id_for_label }}')">{{ form.email.label }}</label>
-                                <div class="email-check">
-                                    <i class="fas fa-spinner fa-spin d-none" id="emailLoader"></i>
-                                    <i class="fas fa-check text-success d-none" id="emailAvailable"></i>
-                                    <i class="fas fa-times text-danger d-none" id="emailTaken"></i>
+                            <div class="editor-form-field mb-3 position-relative">
+                                <div class="editor-form-label">
+                                    <label for="{{ form.email.id_for_label }}" class="editor-form-label-text form-label" data-bind="value: $root.emailField('{{ form.email.id_for_label }}')">{{ form.email.label }}</label>
                                 </div>
-                                <div class="invalid-feedback"></div>
+                                <div class="editor-form-input">
+                                    {{ form.email }}
+                                    <div class="email-check">
+                                        <i class="fas fa-spinner fa-spin d-none" id="emailLoader"></i>
+                                        <i class="fas fa-check text-success d-none" id="emailAvailable"></i>
+                                        <i class="fas fa-times text-danger d-none" id="emailTaken"></i>
+                                    </div>
+                                    <div class="invalid-feedback"></div>
+                                </div>
                             </div>
                             
                             <!-- Phone -->
-                            <div class="form-floating mb-3">
-                                {{ form.phone }}
-                                <label for="{{ form.phone.id_for_label }}" data-bind="value: $root.phoneField('{{ form.phone.id_for_label }}')">{{ form.phone.label }} (opcional)</label>
-                                <div class="invalid-feedback"></div>
+                            <div class="editor-form-field mb-3 position-relative">
+                                <div class="editor-form-label">
+                                    <label for="{{ form.phone.id_for_label }}" class="editor-form-label-text form-label" data-bind="value: $root.phoneField('{{ form.phone.id_for_label }}')">{{ form.phone.label }} (opcional)</label>
+                                </div>
+                                <div class="editor-form-input">
+                                    {{ form.phone }}
+                                    <div class="invalid-feedback"></div>
+                                </div>
                             </div>
                             
                             <div class="d-grid">
@@ -101,26 +113,43 @@
                             <h5 class="mb-3">Criar Senha</h5>
                             
                             <!-- Password -->
-                            <div class="form-floating mb-3">
-                                {{ form.password1 }}
-                                <label for="{{ form.password1.id_for_label }}" data-bind="value: $root.passwordPrimaryField('{{ form.password1.id_for_label }}')">{{ form.password1.label }}</label>
-                                <div class="invalid-feedback"></div>
-                                <div class="password-strength mt-2"></div>
-                                <small class="text-muted">Mínimo 8 caracteres, inclua letras e números</small>
+                            <div class="editor-form-field mb-3">
+                                <div class="editor-form-label">
+                                    <label for="{{ form.password1.id_for_label }}" class="editor-form-label-text form-label" data-bind="value: $root.passwordPrimaryField('{{ form.password1.id_for_label }}')">{{ form.password1.label }}</label>
+                                </div>
+                                <div class="editor-form-input password-field">
+                                    {{ form.password1 }}
+                                    <button type="button" class="password-toggle" id="togglePassword1" data-bind="click: $root.togglePasswordVisualization">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <div class="invalid-feedback"></div>
+                                    <div class="password-strength mt-2 mb-2"></div>
+                                </div>
                             </div>
                             
                             <!-- Confirm Password -->
-                            <div class="form-floating mb-3">
-                                {{ form.password2 }}
-                                <label for="{{ form.password2.id_for_label }}" data-bind="value: $root.passwordSecondaryField('{{ form.password2.id_for_label }}')">{{ form.password2.label }}</label>
-                                <div class="invalid-feedback"></div>
+                            <div class="editor-form-field mb-3">
+                                <div class="editor-form-label">
+                                    <label for="{{ form.password2.id_for_label }}" class="editor-form-label-text form-label" data-bind="value: $root.passwordSecondaryField('{{ form.password2.id_for_label }}')">{{ form.password2.label }}</label>
+                                </div>
+                                <div class="editor-form-input password-field">
+                                    {{ form.password2 }}
+                                    <button type="button" class="password-toggle" id="togglePassword2" data-bind="click: $root.togglePasswordVisualization">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <div class="invalid-feedback"></div>
+                                </div>
                             </div>
                             
                             <!-- Date of Birth -->
-                            <div class="form-floating mb-4">
-                                {{ form.date_of_birth }}
-                                <label for="{{ form.date_of_birth.id_for_label }}">{{ form.date_of_birth.label }} (opcional)</label>
-                                <div class="invalid-feedback"></div>
+                            <div class="editor-form-field mb-4">
+                                <div class="editor-form-label">
+                                    <label for="{{ form.date_of_birth.id_for_label }}" class="editor-form-label-text form-label">{{ form.date_of_birth.label }} (opcional)</label>
+                                </div>
+                                <div class="editor-form-input date-field">
+                                    {{ form.date_of_birth }}
+                                    <div class="invalid-feedback"></div>
+                                </div>
                             </div>
                             
                             <div class="d-flex gap-2">

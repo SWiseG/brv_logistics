@@ -1,18 +1,17 @@
-define(`/static/js/modules/core/home.js`, '/static/js/mixins/components.js', 
+define(`/static/js/modules/core/home.js`, ['/static/js/mixins/components.js', `/static/js/modules/navbar.js`], 
     function Home() {
         return {
             name: `Home`,
             kind: bindings.observable(`module`),
             modules: bindings.observable([]),
-            
             heroCarouselPrevClass: 'carousel-control-prev',
             heroCarouselNextClass: 'carousel-control-next',
-            compositionComplete: (name, path, dependencies, callback, params) => {
+            compositionComplete: async (name, path, dependencies, callback, params) => {
                 ctor.carrouselInit();
-                ctor.newsLetterFormSend();
+                await ctor.loadCategories();
+                await ctor.loadFeaturedProducts();
                 ctor.applyLazyLoadingImages();
-                ctor.applyOptionsProducts();
-                return true;
+                return bindings.reload();
             },
 
             carrouselInit: () => {
@@ -54,26 +53,6 @@ define(`/static/js/modules/core/home.js`, '/static/js/mixins/components.js',
                 };
             },
 
-            newsLetterFormSend: () => {
-                // Newsletter form submission
-                const newsletterForm = document.querySelector('.newsletter-form');
-                if (newsletterForm) {
-                    newsletterForm.addEventListener('submit', function(e) {
-                        e.preventDefault();
-                        const email = this.querySelector('input[name="email"]').value;
-                        
-                        // Simple validation
-                        if (validateEmail(email)) {
-                            // Here you would send to your backend
-                            showToast('Email cadastrado com sucesso!', 'success');
-                            this.reset();
-                        } else {
-                            showToast('Por favor, insira um email válido.', 'error');
-                        }
-                    });
-                }
-            },
-
             applyLazyLoadingImages: () => {
                 // Lazy loading for images
                 if ('IntersectionObserver' in window) {
@@ -94,433 +73,319 @@ define(`/static/js/modules/core/home.js`, '/static/js/mixins/components.js',
                 }
             },
 
-            applyOptionsProducts: () => {
-                // Product card animations on scroll
-                const observerOptions = {
-                    threshold: 0.1,
-                    rootMargin: '0px 0px -50px 0px'
-                };
-
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('fade-in');
-                        }
-                    });
-                }, observerOptions);
-
-                // Observe all product cards
-                document.querySelectorAll('.product-card, .category-card, .offer-card').forEach(card => {
-                    observer.observe(card);
-                });
+            // ================================
+            // CONTENT LOADING METHODS
+            // ================================
+            
+            loadCategories: async () => {
+                try {
+                    const response = await fetch(`${global.config.apiUrl}categories/`);
+                    const categories = await response.json();
+                    
+                    const grid = document.getElementById('categoriesGrid');
+                    grid.innerHTML = '';
+                    
+                    if (categories.results.length !== 0) {
+                        categories.results.forEach(category => {
+                            const categoryCard = ctor.createCategoryCard(category);
+                            grid.appendChild(categoryCard);
+                        });
+                    }
+                    else return grid.innerHTML = '<div class="no-content-drop col-12 text-center"><p>Nenhuma categoria encontrada</p></div>';
+                } catch (error) {
+                    console.error('Error loading categories:', error);
+                    notify.show('Erro ao carregar categorias', 'error');
+                }
             },
 
-            // Add to Cart Function
-            addToCart: (productId, quantity = 1) => {
-                // Show loading state
-                const button = event.target.closest('button');
-                const originalText = button.innerHTML;
-                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-                button.disabled = true;
+            loadFeaturedProducts: async () => {
+                try {
+                    const response = await fetch(`${global.config.apiUrl}products/featured/`);
+                    const products = await response.json();
+                    
+                    const grid = document.getElementById('featuredGrid');
+                    grid.innerHTML = '';
+                    
+                    if (products.length !== 0) {
+                        products.forEach(product => {
+                            const productCard = ctor.createProductCard(product);
+                            grid.appendChild(productCard);
+                        });
+                    }
+                    else return grid.innerHTML = '<div class="no-content-drop col-12 text-center"><p>Nenhuma produto em destaque encontrado</p></div>';
+                } catch (error) {
+                    console.error('Error loading featured products:', error);
+                    ctor.showError('Erro ao carregar produtos em destaque');
+                }
+            },
 
-                // AJAX request to add to cart
-                fetch('/api/cart/add/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': global.getCookie('csrftoken')
-                    },
-                    body: JSON.stringify({
-                        product_id: productId,
-                        quantity: quantity
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
+            // ================================
+            // CARD CREATION METHODS
+            // ================================
+            
+            createCategoryCard: (category) => {
+                const col = document.createElement('div');
+                col.className = 'category-item col-lg-2 col-md-3 col-sm-4 col-6 mb-4';
+                col.name = `category_${category.id}`;
+                col.id = `${category.id}`;
+
+                $(col).attr("id", col.id);
+                $(col).attr("name", col.name);
+
+                col.innerHTML = `
+                    <a href="/produtos/categoria/${category.slug}/" class="text-decoration-none">
+                        <div class="category-card">
+                            ${ category.image ? `<img src="${category.image}" class="category-image"></img>` : "" } 
+                            <div class="category-overlay">
+                                <div>
+                                    <h3 class="category-title">${category.name}</h3>
+                                    <p class="category-count">${category.product_count || 0} produtos</p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                `;
+                
+                return col;
+            },
+
+            createProductCard: (product, isDeal = false, isNew = false) => {
+                const col = document.createElement('div');
+                col.className = 'product-item col-lg-3 col-md-4 col-sm-6 mb-4';
+
+                col.name = `product_${product.id}`;
+                col.id = `${product.id}`;
+
+                $(col).attr("id", col.id);
+                $(col).attr("name", col.name);
+                
+                // Calculate discount percentage
+                const discountPercent = product.compare_at_price && product.compare_at_price > product.price 
+                    ? Math.round(((product.compare_at_price - product.price) / product.compare_at_price) * 100)
+                    : 0;
+                
+                // Generate stars
+                const stars = ctor.generateStars(product.avg_rating || 0);
+                
+                // Badge logic
+                let badge = '';
+                if (isNew) badge = '<span class="product-badge new">Novo</span>';
+                else if (isDeal && discountPercent > 0) badge = '<span class="product-badge sale">Oferta</span>';
+                
+                const productImage = product.images.find(x => x.is_primary === true);
+
+                col.innerHTML = `
+                    <div class="product-card" data-product-id="${product.id}">
+                        <div class="product-image">
+                            ${ productImage && productImage?.image ? 
+                                `<img src="${productImage.image}" class="product-image" loading="lazy"></img>` : 
+                                `<img src="/media/error/no_image.png" class="product-image" loading="lazy"></img>` 
+                            } 
+                            ${badge}
+                            <button class="product-wishlist" 
+                                    data-product-id="${product.id}" 
+                                    data-bind="click: $root.toggleWishlist" 
+                                    title="Adicionar à lista de desejos">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="product-info">
+                            <div class="product-category" data-category-id="${product.category}">${product.category_name || 'Sem categoria'}</div>
+                            <h3 class="product-title">
+                                <a href="/produtos/produto/${product.slug}/" class="text-decoration-none">
+                                    ${product.name}
+                                </a>
+                            </h3>
+                            <div class="product-rating">
+                                <div class="stars">${stars}</div>
+                                <span class="rating-count">(${product.review_count || 0})</span>
+                            </div>
+                            <div class="product-price">
+                                ${discountPercent && discountPercent < 0 ?
+                                    `<span class="price-current">R$ ${ctor.formatPrice(product.compare_at_price)}</span>
+                                        ${product.compare_at_price && product.compare_at_price > product.price ? 
+                                            `<span class="price-old">R$ ${ctor.formatPrice(product.price)}</span>
+                                            <span class="price-discount">${discountPercent}%</span>` : ''}
+                                    `
+                                    :
+                                    `<span class="price-current">R$ ${ctor.formatPrice(product.price)}</span>`
+                                }
+                            
+                            </div>
+                            <div class="product-actions">
+                                <button class="btn btn-primary full btn-cart" 
+                                        data-product-id="${product.id}"
+                                        data-bind="click: $root.addToCart">
+                                    <i class="fas fa-shopping-cart me-2"></i>
+                                    Comprar
+                                </button>
+                                <button class="btn btn-outline-primary btn-quick-view" 
+                                        data-product-id="${product.id}"
+                                        onclick="ctor.quickView(${product.id})">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                return col;
+            },
+
+            // ================================
+            // PRODUCT INTERACTION METHODS
+            // ================================
+            
+            async addToCart(params) {
+                var productId = params.$element.attr('data-product-id');
+
+                if(!productId) return;
+                
+                utils.loading();
+
+                try {
+                    const response = await fetch('/pedidos/carrinho/adicionar/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': global.options.csrfToken
+                        },
+                        body: JSON.stringify({
+                            product_id: productId,
+                            quantity: 1
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
                     if (data.success) {
-                        // Update cart count in header
-                        updateCartCount(data.cart_count);
-                        showToast('Produto adicionado ao carrinho!', 'success');
+                        // Update cart count
+                        if (window.navbarManager) {
+                            window.navbarManager.updateCartCount(data.cart_count);
+                        }
+                        
+                        // Show success message
+                        ctor.showNotification('Produto adicionado ao carrinho!', 'success');
                         
                         // Animate button
-                        button.innerHTML = '<i class="fas fa-check"></i>';
-                        setTimeout(() => {
-                            button.innerHTML = originalText;
-                            button.disabled = false;
-                        }, 1500);
+                        const button = document.querySelector(`[data-product-id="${productId}"].btn-cart`);
+                        if (button) {
+                            ctor.animateAddToCart(button);
+                        }
+                        
                     } else {
-                        showToast(data.message || 'Erro ao adicionar produto', 'error');
-                        button.innerHTML = originalText;
-                        button.disabled = false;
+                        throw new Error(data.message || 'Erro ao adicionar ao carrinho');
                     }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showToast('Erro ao adicionar produto ao carrinho', 'error');
-                    button.innerHTML = originalText;
-                    button.disabled = false;
-                });
+                    
+                } catch (error) {
+                    console.error('Error adding to cart:', error);
+                    ctor.showNotification('Erro ao adicionar produto ao carrinho', 'error');
+                } finally {
+                    utils.loading(false);
+                }
+            },
+            
+            toggleWishlist: async (params) => {
+                debugger;
+                var button, productId;
+                
+                if (params.$element.is(`button`) && params.$element.hasClass('product-wishlist')) {
+                    button = params.$element;
+                    productId = button.data().productId;
+                };
+
+                if (!button || !productId) return;
+
+                utils.loading();
+                
+                try {
+                    const response = await fetch(`${global.config.apiUrl}marketing/lista-desejos/toggle/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': global.config.csrfToken
+                        },
+                        body: JSON.stringify({
+                            product_id: productId
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        // Update wishlist count
+                        if (window.navbarManager) {
+                            window.navbarManager.updateWishlistCount(data.wishlist_count);
+                        }
+                        
+                        // Update button state
+                        const icon = button.querySelector('i');
+                        if (data.added) {
+                            icon.style.color = '#e74c3c';
+                            button.style.background = 'rgba(231, 76, 60, 0.1)';
+                            ctor.showNotification('Produto adicionado à lista de desejos!', 'success');
+                        } else {
+                            icon.style.color = '#666';
+                            button.style.background = 'rgba(255, 255, 255, 0.9)';
+                            ctor.showNotification('Produto removido da lista de desejos!', 'info');
+                        }
+                        
+                        // Animate button
+                        ctor.animateWishlist(button);
+                        
+                    } else {
+                        throw new Error(data.message || 'Erro ao atualizar lista de desejos');
+                    }
+                    
+                } catch (error) {
+                    console.error('Error toggling wishlist:', error);
+                    ctor.showNotification('Erro ao atualizar lista de desejos', 'error');
+                } finally {
+                    utils.loading(false);
+                }
+            },
+            
+            quickView(productId) {
+                // Open quick view modal
+                // This would integrate with a modal system
+                console.log('Quick view for product:', productId);
+                
+                // For now, redirect to product page
+                window.location.href = `/produtos/produto/${productId}/`;
             },
 
-            // Add to Wishlist Function
-            addToWishlist: (productId) => {
-                const button = event.target.closest('button');
-                const icon = button.querySelector('i');
+            // ================================
+            // UTILITY METHODS
+            // ================================
+            
+            formatPrice(price) {
+                return parseFloat(price).toFixed(2).replace('.', ',');
+            },
+            
+            generateStars(rating) {
+                const fullStars = Math.floor(rating);
+                const hasHalfStar = rating % 1 !== 0;
+                const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
                 
-                fetch('/api/wishlist/add/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': global.getCookie('csrftoken')
-                    },
-                    body: JSON.stringify({
-                        product_id: productId
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Toggle heart icon
-                        if (data.added) {
-                            icon.classList.remove('far');
-                            icon.classList.add('fas');
-                            button.classList.remove('btn-outline-secondary');
-                            button.classList.add('btn-danger');
-                            showToast('Produto adicionado aos favoritos!', 'success');
-                        } else {
-                            icon.classList.remove('fas');
-                            icon.classList.add('far');
-                            button.classList.remove('btn-danger');
-                            button.classList.add('btn-outline-secondary');
-                            showToast('Produto removido dos favoritos', 'info');
-                        }
-                    } else {
-                        showToast(data.message || 'Erro ao processar favorito', 'error');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showToast('Erro ao processar favorito', 'error');
-                });
-            }
-
+                let stars = '';
+                
+                // Full stars
+                for (let i = 0; i < fullStars; i++) {
+                    stars += '<i class="fas fa-star"></i>';
+                }
+                
+                // Half star
+                if (hasHalfStar) {
+                    stars += '<i class="fas fa-star-half-alt"></i>';
+                }
+                
+                // Empty stars
+                for (let i = 0; i < emptyStars; i++) {
+                    stars += '<i class="far fa-star"></i>';
+                }
+                
+                return stars;
+            },
         }
     }
 )
-
-
-// // Quick View Function
-// function quickView(productId) {
-//     // Show loading modal
-//     showLoadingModal();
-    
-//     fetch(`/api/products/${productId}/quick-view/`)
-//     .then(response => response.text())
-//     .then(html => {
-//         // Create and show modal with product details
-//         const modal = document.createElement('div');
-//         modal.innerHTML = html;
-//         document.body.appendChild(modal);
-        
-//         const quickViewModal = new bootstrap.Modal(modal.querySelector('.modal'));
-//         quickViewModal.show();
-        
-//         // Remove modal from DOM when closed
-//         modal.addEventListener('hidden.bs.modal', () => {
-//             document.body.removeChild(modal);
-//         });
-//     })
-//     .catch(error => {
-//         console.error('Error:', error);
-//         showToast('Erro ao carregar produto', 'error');
-//     });
-// }
-
-// // Update Cart Count in Header
-// function updateCartCount(count) {
-//     const cartBadge = document.querySelector('.fa-shopping-cart + .badge');
-//     if (cartBadge) {
-//         cartBadge.textContent = count;
-        
-//         // Animate badge
-//         cartBadge.classList.add('animate-pulse');
-//         setTimeout(() => {
-//             cartBadge.classList.remove('animate-pulse');
-//         }, 1000);
-//     }
-// }
-
-// // Email Validation
-// function validateEmail(email) {
-//     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-//     return re.test(email);
-// }
-
-
-// // Search functionality
-// function initializeSearch() {
-//     const searchForm = document.querySelector('.search-form');
-//     const searchInput = searchForm.querySelector('input[type="search"]');
-    
-//     // Add search suggestions
-//     let searchTimeout;
-//     searchInput.addEventListener('input', function() {
-//         clearTimeout(searchTimeout);
-//         const query = this.value.trim();
-        
-//         if (query.length > 2) {
-//             searchTimeout = setTimeout(() => {
-//                 fetchSearchSuggestions(query);
-//             }, 300);
-//         } else {
-//             hideSearchSuggestions();
-//         }
-//     });
-    
-//     // Handle search form submission
-//     searchForm.addEventListener('submit', function(e) {
-//         e.preventDefault();
-//         const query = searchInput.value.trim();
-//         if (query) {
-//             window.location.href = `/produtos/?q=${encodeURIComponent(query)}`;
-//         }
-//     });
-// }
-
-// // Fetch Search Suggestions
-// function fetchSearchSuggestions(query) {
-//     fetch(`/api/search/suggestions/?q=${encodeURIComponent(query)}`)
-//     .then(response => response.json())
-//     .then(data => {
-//         showSearchSuggestions(data.suggestions);
-//     })
-//     .catch(error => {
-//         console.error('Search error:', error);
-//     });
-// }
-
-// // Show Search Suggestions
-// function showSearchSuggestions(suggestions) {
-//     // Remove existing suggestions
-//     const existingSuggestions = document.querySelector('.search-suggestions');
-//     if (existingSuggestions) {
-//         existingSuggestions.remove();
-//     }
-    
-//     if (suggestions.length === 0) return;
-    
-//     const searchForm = document.querySelector('.search-form');
-//     const suggestionsDiv = document.createElement('div');
-//     suggestionsDiv.className = 'search-suggestions';
-//     suggestionsDiv.style.cssText = `
-//         position: absolute;
-//         top: 100%;
-//         left: 0;
-//         right: 0;
-//         background: white;
-//         border: 1px solid #ddd;
-//         border-top: none;
-//         max-height: 300px;
-//         overflow-y: auto;
-//         z-index: 1000;
-//         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-//     `;
-    
-//     suggestions.forEach(suggestion => {
-//         const item = document.createElement('div');
-//         item.className = 'suggestion-item';
-//         item.style.cssText = `
-//             padding: 10px 15px;
-//             cursor: pointer;
-//             border-bottom: 1px solid #eee;
-//         `;
-//         item.textContent = suggestion.name;
-//         item.addEventListener('click', () => {
-//             window.location.href = `/produto/${suggestion.slug}/`;
-//         });
-//         item.addEventListener('mouseenter', () => {
-//             item.style.backgroundColor = '#f8f9fa';
-//         });
-//         item.addEventListener('mouseleave', () => {
-//             item.style.backgroundColor = 'white';
-//         });
-        
-//         suggestionsDiv.appendChild(item);
-//     });
-    
-//     searchForm.style.position = 'relative';
-//     searchForm.appendChild(suggestionsDiv);
-// }
-
-// // Hide Search Suggestions
-// function hideSearchSuggestions() {
-//     const suggestions = document.querySelector('.search-suggestions');
-//     if (suggestions) {
-//         suggestions.remove();
-//     }
-// }
-
-// // Initialize search when page loads
-// document.addEventListener('DOMContentLoaded', initializeSearch);
-
-// // Close search suggestions when clicking outside
-// document.addEventListener('click', function(e) {
-//     if (!e.target.closest('.search-form')) {
-//         hideSearchSuggestions();
-//     }
-// });
-
-// // Add CSS animations
-// const style = document.createElement('style');
-// style.textContent = `
-//     @keyframes slideInRight {
-//         from {
-//             transform: translateX(100%);
-//             opacity: 0;
-//         }
-//         to {
-//             transform: translateX(0);
-//             opacity: 1;
-//         }
-//     }
-    
-//     @keyframes fadeOut {
-//         from {
-//             opacity: 1;
-//         }
-//         to {
-//             opacity: 0;
-//         }
-//     }
-    
-//     .fade-out {
-//         animation: fadeOut 0.3s ease-out forwards;
-//     }
-    
-//     .animate-pulse {
-//         animation: pulse 1s ease-in-out;
-//     }
-    
-//     @keyframes pulse {
-//         0% { transform: scale(1); }
-//         50% { transform: scale(1.2); }
-//         100% { transform: scale(1); }
-//     }
-// `;
-// document.head.appendChild(style);
-
-
-// fields
-// var field1 = ctor.createField({
-//     type: 'multi-select',
-//     id: 'category-combobox',
-//     label: 'Categoria',
-//     placeholder: 'Selecione a categoria...',
-//     multiple: true,
-//     comboboxOptions: {
-//         endPoint: 'categories',
-//         textField: 'name',
-//         valField: 'id'
-//     }
-// });
-// var field2 = ctor.createField({
-//     type: 'combobox',
-//     id: 'category-combobox-2',
-//     label: 'Categoria 2',
-//     placeholder: 'Selecione a categoria 2...',
-//     comboboxOptions: {
-//         endPoint: 'categories',
-//         textField: 'name',
-//         valField: 'id'
-//     },
-//     cascadeFrom: ['category-combobox']
-// });
-// $('.block-elem').append(field1);
-// $('.block-elem').append(field2);
-// var textField = ctor.createField({label: 'Nome', placeholder: 'Digite seu nome...'});
-// var textField2 = ctor.createField({label: 'Sobrenome', placeholder: 'Digite seu sobrenome...'});
-// var textField3 = ctor.createField({type: 'cpf', label: 'CPF', placeholder: 'Digite seu CPF...'});
-// var textField4 = ctor.createField({
-//     type: 'numeric',
-//     label: 'Numeric Field',
-//     placeholder: 'Enter a number',
-//     container: '.block-elem'
-// });
-// var textField5 = ctor.createField({
-//     type: 'email',
-//     label: 'Email Field',
-//     placeholder: 'Digite um email...',
-//     container: '.block-elem'
-// });
-// var textField5 = ctor.createField({
-//     type: 'currency',
-//     label: 'Currency Field',
-//     placeholder: 'R$ 0,00',
-//     container: '.block-elem'
-// });
-// var textField6 = ctor.createField({
-//     type: 'time',
-//     label: 'Time Field',
-//     placeholder: 'HH:MM',
-//     container: '.block-elem'
-// });
-// var textField7 = ctor.createField({
-//     type: 'date',
-//     label: 'Date Field',
-//     container: '.block-elem'
-// });
-// var textField8 = ctor.createField({
-//     type: 'datetime',
-//     label: 'DateTime Field',
-//     container: '.block-elem'
-// });
-// var textField10 = ctor.createField({
-//     type: 'betweenDates',
-//     id: 'between_dates_field',
-//     label: 'Between Dates',
-//     container: '.block-elem'
-// });
-// var textField11 = ctor.createField({
-//     type: 'dropdown',
-//     id: 'estadoCivilDropdown',
-//     label: 'Estado Civil',
-//     placeholder: 'Selecione...',
-//     options: [
-//         { label: 'Solteiro', value: 'solteiro' },
-//         { label: 'Casado', value: 'casado' },
-//         { label: 'Divorciado', value: 'divorciado' }
-//     ],
-//     useBindings: true
-// });
-// var textField12 = ctor.createField({
-//     type: 'combobox',
-//     id: 'categoriaCombobox',
-//     label: 'Categoria',
-//     placeholder: 'Digite o nome da categoria...',
-//     minSearchLenght: 2,
-//     debounceDelay: 300,
-//     fetchOptions: (query, dropdown, input) => {
-//         return new Promise((resolve, reject) => {
-//             const url = query && query.length > 0
-//                 ? `/api/v1/categories/?format=json&search=${encodeURIComponent(query)}`
-//                 : `/api/v1/categories/?format=json`;
-
-//             $.ajax({
-//                 url: url,
-//                 method: 'GET',
-//                 dataType: 'json',
-//                 success: function(response) {
-//                     const items = (response.results || []).map(categoria => ({
-//                         label: categoria.name,
-//                         value: categoria.id
-//                     }));
-//                     resolve(items);
-//                 },
-//                 error: function() {
-//                     reject();
-//                 }
-//             });
-//         });
-//     },
-//     useBindings: true
-// });

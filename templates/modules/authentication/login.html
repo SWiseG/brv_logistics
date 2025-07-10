@@ -37,7 +37,7 @@
                 
                 <div class="card-body p-4">                    
                     <!-- Login Form -->
-                    <form id="loginForm" method="post" novalidate>
+                    <form id="loginForm" class="form-floating" method="post" novalidate>
                         {% csrf_token %}
                         
                         {% if next %}
@@ -45,20 +45,28 @@
                         {% endif %}
                         
                         <!-- Email -->
-                        <div class="form-floating mb-3">
-                            {{ form.username }}
-                            <label for="{{ form.username.id_for_label }}" data-bind="value: $root.emailField('{{ form.username.id_for_label }}')">{{ form.username.label }}</label>
-                            <div class="invalid-feedback"></div>
+                        <div class="editor-form-field mb-3 position-relative">
+                            <div class="editor-form-label">
+                                <label for="{{ form.username.id_for_label }}" class="editor-form-label-text form-label" data-bind="value: $root.emailField('{{ form.username.id_for_label }}')">{{ form.username.label }}</label>
+                            </div>
+                            <div class="editor-form-input">
+                                {{ form.username }}
+                                <div class="invalid-feedback"></div>
+                            </div>
                         </div>
                         
                         <!-- Password -->
-                        <div class="form-floating mb-3 position-relative">
-                            {{ form.password }}
-                            <label for="{{ form.password.id_for_label }}" data-bind="value: $root.passwordField('{{ form.password.id_for_label }}')">{{ form.password.label }}</label>
-                            <button type="button" class="password-toggle position-absolute top-50 end-0 translate-middle-y me-3" id="togglePassword" data-bind="click: $root.togglePassword">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <div class="invalid-feedback"></div>
+                        <div class="editor-form-field mb-3 position-relative">
+                            <div class="editor-form-label">
+                                <label for="{{ form.password.id_for_label }}" class="editor-form-label-text form-label" data-bind="value: $root.passwordField('{{ form.password.id_for_label }}')">{{ form.password.label }}</label>
+                            </div>
+                            <div class="editor-form-input password-field">
+                                {{ form.password }}
+                                <button type="button" class="password-toggle" id="togglePassword" data-bind="click: $root.togglePassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <div class="invalid-feedback"></div>
+                            </div>
                         </div>
                         
                         <!-- Remember Me & Forgot Password -->

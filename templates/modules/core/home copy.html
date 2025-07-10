@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    {% if sys_config %} 
+        {% if title %} 
+            {{ sys_config.site_name }} - {{ title }}
+        {% else %}
+            {{ sys_config.site_name }}
+        {% endif %}
+    {% elif title %}
+        {{ title }}
+    {% else %}
+        -
+    {% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+
+/* Features Section */
+.features-section {
+    background: #f8f9fa;
+    padding: 4rem 0;
+    margin: 4rem 0;
+    border-radius: 15px;
+}
+
+.feature-item {
+    text-align: center;
+    padding: 2rem;
+}
+
+.feature-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    color: white;
+    font-size: 2rem;
+}
+
+.feature-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.feature-description {
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Newsletter Section */
+.newsletter-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4rem 0;
+    border-radius: 15px;
+    text-align: center;
+}
+
+.newsletter-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.newsletter-subtitle {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.newsletter-form {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.newsletter-input {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 1rem;
+    border-radius: 50px;
+    font-size: 1rem;
+}
+
+.newsletter-input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.newsletter-btn {
+    background: white;
+    color: #667eea;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.newsletter-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+    
+    .hero-nav {
+        display: none;
+    }
+    
+    .product-card {
+        margin-bottom: 2rem;
+    }
+    
+    .newsletter-title {
+        font-size: 2rem;
+    }
+}
+
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="home-page">
+    <!-- Deals Section -->
+    <section class="home-section" id="deals">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Ofertas do Dia</h2>
+                <p class="section-subtitle">Aproveite os melhores preços por tempo limitado</p>
+            </div>
+            
+            <div class="row" id="dealsGrid">
+                <!-- Deals will be loaded here -->
+                {% for i in "1234"|make_list %}
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="loading-skeleton" style="height: 400px; border-radius: 15px;"></div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- New Arrivals Section -->
+    <section class="home-section" id="new-arrivals">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Novidades</h2>
+                <p class="section-subtitle">Produtos recém-chegados em nossa loja</p>
+            </div>
+            
+            <div class="row" id="newArrivalsGrid">
+                <!-- New arrivals will be loaded here -->
+                {% for i in "1234"|make_list %}
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="loading-skeleton" style="height: 400px; border-radius: 15px;"></div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-shipping-fast"></i>
+                        </div>
+                        <h3 class="feature-title">Entrega Rápida</h3>
+                        <p class="feature-description">Receba seus produtos com rapidez e segurança</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3 class="feature-title">Compra Segura</h3>
+                        <p class="feature-description">Seus dados protegidos com certificação SSL</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-undo-alt"></i>
+                        </div>
+                        <h3 class="feature-title">Devolução Grátis</h3>
+                        <p class="feature-description">30 dias para troca ou devolução</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <h3 class="feature-title">Suporte 24/7</h3>
+                        <p class="feature-description">Atendimento sempre disponível</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter-section">
+        <div class="container">
+            <h2 class="newsletter-title">Fique por Dentro</h2>
+            <p class="newsletter-subtitle">Receba as melhores ofertas e novidades em primeira mão</p>
+            
+            <form class="newsletter-form" id="newsletterForm">
+                <div class="input-group">
+                    <input type="email" 
+                           class="form-control newsletter-input" 
+                           placeholder="Digite seu e-mail"
+                           name="email"
+                           required>
+                    <button class="btn newsletter-btn" type="submit">
+                        <i class="fas fa-paper-plane me-2"></i>Cadastrar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    <module data-tag="{% static 'js/modules/home/home.script.js' %}"></module>
+{% endblock %}

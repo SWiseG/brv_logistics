@@ -240,7 +240,7 @@ AUTH_USER_MODEL = 'users.User'
 # Revisar depois
 SITE_NAME = lazy(lambda: config_service('site_name', 'BRAVA'), str)()
 SITE_URL = lazy(lambda: config_service('site_url', 'http://localhost:8000'), str)()
-SUPPORT_EMAIL = lazy(lambda: config_service('contact_email', 'rafaelvargaspereira@gmail.com'), str)()
+SUPPORT_EMAIL = lazy(lambda: config_service('contact_email', 'notifybravasyssolutions@gmail.com'), str)()
 
 # Configurações de segurança
 SECURITY_EMAIL_ENABLED = True
@@ -257,9 +257,9 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = lazy(lambda: config_service('contact_email', 'rafaelvargaspereira@gmail.com'), str)()
-EMAIL_HOST_PASSWORD = lazy(lambda: config_service('corp_email_token', 'vcis kxad yvdj vcdl'), str)()
-DEFAULT_FROM_EMAIL = lazy(lambda: config_service('corp_email', 'rafaelvargaspereira@gmail.com'), str)()
+EMAIL_HOST_USER = lazy(lambda: config_service('contact_email', 'notifybravasyssolutions@gmail.com'), str)()
+EMAIL_HOST_PASSWORD = lazy(lambda: config_service('corp_email_token', 'jqmy ddom cccq ohpt'), str)()
+DEFAULT_FROM_EMAIL = lazy(lambda: config_service('corp_email', 'notifybravasyssolutions@gmail.com'), str)()
 # DEFAULT_FROM_EMAIL = f'{SITE_NAME} <noreply@minhaloja.com>'
 
 # Para desenvolvimento, use console backend

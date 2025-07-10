@@ -1048,7 +1048,7 @@ define(`/static/js/mixins/components.js`, null,
             // ================================
             _multiSelectResults: (endPoint, textField, valField, parentTag=null) => {
                 return new Promise((resolve, reject) => {
-                    $.getJSON(`/api/v1/${endPoint}/?format=json`)
+                    $.getJSON(`${global.config.apiUrl}${endPoint}/?format=json`)
                         .then(response => {
                             var results = response.results || [];
                             if(results.length > 0) results = results.filter(x => x[parentTag || 'parent'] === null);
@@ -1069,7 +1069,7 @@ define(`/static/js/mixins/components.js`, null,
 
             _results: (query, dropdown, input, textField, valField, endPoint) => {
                 return new Promise((resolve, reject) => {
-                    const baseUrl = `/api/v1/${endPoint}/?format=json`;
+                    const baseUrl = `${global.config.apiUrl}${endPoint}/?format=json`;
                     const url = query && query.length > 0
                         ? `${baseUrl}&search=${encodeURIComponent(query)}`
                         : baseUrl;

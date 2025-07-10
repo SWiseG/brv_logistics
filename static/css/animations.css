@@ -46,6 +46,15 @@
     75% { transform: translateX(5px); }
 }
 
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
 .animate-bounce {
     animation: bounce 1s infinite;
 }
@@ -61,4 +70,9 @@
 }
 .fade-custom.show {
   opacity: 1;
+}
+.loading-skeleton {
+    background: linear-gradient(90deg, var(--white-darker) 25%, var(--white-border) 50%, var(--white-darker) 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
 }

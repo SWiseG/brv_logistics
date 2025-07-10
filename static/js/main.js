@@ -91,7 +91,17 @@ document.addEventListener('DOMContentLoaded', async function() {
         notify.global();
         global.initHtml();
         utils.loading(false);
-
     });
+
+    // Extending custom methods
+    JSON['tryParse'] = (str) => {
+        try {
+            return JSON.parse(str);
+        } catch (error) {
+            if(window['logger']) logger.log("JSON parser has problemns. Error: " + error, 'warn');
+            return null;
+        };
+    }
+
     return ctor;
 });

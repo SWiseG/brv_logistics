@@ -61,7 +61,7 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
     
     queryset = Product.objects.filter(is_active=True).select_related(
         'category', 'brand'
-    ).prefetch_related('images', 'variants', 'attributes', 'reviews')
+    ).prefetch_related('images', 'variants', 'attribute_values', 'reviews')
     
     serializer_class = ProductSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]

@@ -43,6 +43,23 @@
 }
 
 @media (max-width: 576px) {
+    .base-auth {
+        main {
+            padding: 0 !important;
+            .container {
+                .auth {
+                    div.col-lg-5.col-md-7 {
+                        height: 100%;
+                        padding: 0 !important;
+                        .card {
+                            min-height: 100%;
+                            max-width: 100%;
+                        }
+                    }
+                }
+            }
+        }
+    }
     .container {
         padding-left: 15px;
         padding-right: 15px;

@@ -24,6 +24,23 @@ define(`/static/js/modules/register.js`, null,
             },
 
             // ================================
+            // PASSWORD TOGGLES
+            // ================================
+            togglePasswordVisualization: (params) => {
+                debugger;
+                const passwordField = params.$element.is(`input`) ? params.$element : params.$element.siblings(`input`);
+                const icon = passwordField.find('i');
+                
+                if (passwordField.attr('type') === 'password') {
+                    passwordField.attr('type', 'text');
+                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    passwordField.attr('type', 'password');
+                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+            },
+
+            // ================================
             // STEP NAVIGATION
             // ================================
             nextStep: () => {
@@ -266,7 +283,8 @@ define(`/static/js/modules/register.js`, null,
             // FORM VALIDATION
             // ================================
             applyRegisterValidations: () => {
-                return $('#registerForm').on('submit', ctor.validateRegister);
+                $('#registerForm').on('submit', ctor.validateRegister);
+                return bindings.reload();
             },
         
             validateRegister: (e) => {

@@ -120,11 +120,12 @@
                             }
                             
                             .email-check {
-                                position: absolute;
-                                right: 10px;
-                                top: 50%;
-                                transform: translateY(-50%);
+                                position: relative;
+                                height: 100%;
                                 z-index: 5;
+                                right: 15px;
+                                top: -30px;
+                                float: inline-end;
                             }
                         }
 

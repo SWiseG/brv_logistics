@@ -105,42 +105,60 @@
                     {% endif %}
                     <li class="nav-item cart">
                         <!-- Wishlist -->
-                        <a href="{% url 'auth:register' %}" 
-                            {% if not user.is_authenticated %}
-                                href="{% url 'auth:login' %}?next={% url 'auth:register' %}"
-                            {% endif %} 
-                            class="nav-link wish-link">
-                        
-                            <i class="fas fa-heart"></i>
-                            <span class="badge badge-light" id="wishListCount">
-                                {{ wishlist_count|default:0 }}
-                            </span>
-                        </a>
-
-                        <!-- Cart Dropdown -->
-                        <div class="dropdown nav-cart">
-                            <a class="btn btn-primary position-relative dropdown-toggle nav-link" 
-                                    href="#" 
-                                    id="cartDropdown"
-                                    role="button" 
-                                    data-bs-toggle="dropdown" 
-                                    aria-haspopup="true"
-                                    aria-expanded="false">
-                                <i class="fas fa-shopping-cart"></i>
-                                {% comment %} <span data-i18n="navbar.cart"></span> {% endcomment %}
-                                <span class="badge badge-light" id="cartCount" data-bind="text: $root.cartCount({{ cart_count|default:0 }})"></span>
+                        {% if user.is_authenticated %}
+                            {% comment %} <a href="{% url 'marketing:wishlist_count' %}" class="nav-link wish-link">
+                                <i class="fas fa-heart"></i>
+                                <span class="badge badge-light" id="wishListCount">
+                                    {{ wishlist_count|default:0 }}
+                                </span>
+                            </a> {% endcomment %}
+                        {% else %}
+                            <a href="{% url 'auth:login' %}" class="nav-link wish-link">
+                                <i class="fas fa-heart"></i>
+                                <span class="badge badge-light" id="wishListCount">0</span>
                             </a>
-                            
-                            <div class="dropdown-menu dropdown-menu-end cart-dropdown p-0" aria-labelledby="cartDropdown" style="width: 350px; max-width: 90vw;">
-                                <div class="dropdown-header bg-light">
-                                    <h6 class="mb-0">Meu Carrinho</h6>
-                                </div>
-                                <div id="cartDropdownContent" class="cart-dropdown-content">
-                                    <!-- Conteúdo será carregado via AJAX -->
-                                    {% include 'context-loader.html' %}
+                        {% endif %}
+    
+                        <!-- Cart Dropdown -->
+                        {% if user.is_authenticated %}
+                            <div class="dropdown nav-cart">
+                                <a class="btn btn-primary position-relative dropdown-toggle nav-link" 
+                                        href="#" 
+                                        id="cartDropdown"
+                                        role="button" 
+                                        data-bs-toggle="dropdown" 
+                                        aria-haspopup="true"
+                                        aria-expanded="false">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <span class="badge badge-light" id="cartCount" data-bind="text: $root.cartCount({{ cart_count|default:0 }})"></span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end cart-dropdown p-0" style="width: 400px;">
+                                    <div class="dropdown-header bg-light d-flex justify-content-between align-items-center">
+                                        <h6 class="mb-0">Meu Carrinho</h6>
+                                        <small class="text-muted">
+                                            <span class="cart-count">{{ cart_count|default:0 }}</span> 
+                                            item<span class="cart-count-plural">{{ cart_count|default:0|pluralize:"ns" }}</span>
+                                        </small>
+                                    </div>
+                                    <div id="cartDropdownContent" class="cart-dropdown-content">
+                                        <!-- Cart content loaded via AJAX -->
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        {% else %}
+                            <div class="dropdown nav-cart">
+                                <a class="btn btn-primary position-relative dropdown-toggle nav-link" 
+                                        href="{% url 'auth:login' %}" 
+                                        id="cartDropdown"
+                                        role="button" 
+                                        data-bs-toggle="dropdown" 
+                                        aria-haspopup="true"
+                                        aria-expanded="false">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <span class="badge badge-light" id="cartCount" data-bind="text: $root.cartCount({{ cart_count|default:0 }})"></span>
+                                </a>
+                            </div>
+                        {% endif %}
                     </li>
                 </ul>
             </div>

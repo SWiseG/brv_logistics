@@ -96,6 +96,22 @@ a:hover {
     display: none !important;
 }
 
+.no-content-drop {
+    background: var(--neutral-lightest);
+    color: var(--white-text);
+    font-size: 0.8rem;
+    font-weight: 500;
+    border-radius: 8px;
+    
+    p, span, i {
+        text-align: center;
+        height: 100%;
+        width: 100%;
+        align-content: center;
+        padding: 12px 24px;
+    }
+}
+
 /* Badges */
 .badge {
     font-size: 0.75rem;

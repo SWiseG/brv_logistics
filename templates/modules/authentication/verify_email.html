@@ -138,6 +138,6 @@
 {% endblock %}
 
 {% block extra_js %}
-    <script module="data-url" type="resend-email" data-url-bind='{% url "auth:resend_verification" %}'></script>
+    <script module="data-url" type="check-email" data-url-bind='{% url "auth:resend_verification" %}'></script>
     <module data-tag="{% static 'js/modules/authentication/verify.email.js' %}"></module>
 {% endblock %}
