@@ -3,6 +3,13 @@
 import os
 import sys
 
+# ⬇️ Coloque isso logo no início
+if "--debug" in sys.argv:
+    import debugpy
+    debugpy.listen(("0.0.0.0", 5678))
+    print("🛑 Aguardando debugger conectar na porta 5678...")
+    debugpy.wait_for_client()  # Use se quiser travar até conectar
+    sys.argv.remove("--debug")
 
 def main():
     """Run administrative tasks."""
@@ -16,7 +23,6 @@ def main():
             "forget to activate a virtual environment?"
         ) from exc
     execute_from_command_line(sys.argv)
-
 
 if __name__ == '__main__':
     main()

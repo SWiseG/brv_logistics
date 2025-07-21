@@ -27,7 +27,6 @@ define(`/static/js/modules/register.js`, null,
             // PASSWORD TOGGLES
             // ================================
             togglePasswordVisualization: (params) => {
-                debugger;
                 const passwordField = params.$element.is(`input`) ? params.$element : params.$element.siblings(`input`);
                 const icon = passwordField.find('i');
                 

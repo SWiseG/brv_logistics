@@ -85,7 +85,7 @@ window.notify = (function () {
     }
 
     function global() {
-        console.log('Looking for server messages');
+        if(window['logger']) logger.log('Looking for server messages', 'info');
         let messages = [];
 
         for (let i = 0; i < localStorage.length; i++) {
@@ -99,10 +99,10 @@ window.notify = (function () {
         };
 
         messages.forEach(msg => {
-            console.log(msg);
+            if(window['logger']) logger.log(msg, 'info');
         });
 
-        console.log('Server messages were cleaned successfuly');
+        if(window['logger']) logger.log('Server messages were cleaned successfuly', 'success');
     }
 
     setInterval(global, 100000);

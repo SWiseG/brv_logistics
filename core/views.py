@@ -168,3 +168,29 @@ def static_modals(request):
                 })
 
     return JsonResponse(resultado, safe=False)
+
+# View para limpar cache (apenas para desenvolvimento)
+class ClearCacheView(View):
+    """View para limpar cache - apenas para desenvolvimento"""
+    
+    def get(self, request):
+        if not request.user.is_superuser:
+            return JsonResponse({'error': 'Acesso negado'}, status=403)
+        
+        cache_keys = [
+            'site_settings',
+            'hero_sections',
+            'main_categories_with_count',
+            'featured_products',
+            'popular_products',
+            'special_offers',
+            'new_products',
+            'featured_brands',
+            'site_statistics',
+            'promotional_banners'
+        ]
+        
+        for key in cache_keys:
+            cache.delete(key)
+        
+        return JsonResponse({'message': 'Cache limpo com sucesso'})

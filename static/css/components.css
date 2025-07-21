@@ -195,4 +195,41 @@
             }
         }
     }
+
+    /* Estilos: with actions */
+    &.with-actions {
+        .editor-form-input {
+            button.custom-action {
+                width: 15%;
+                height: 100%;
+                max-width: 50px;
+                margin-left: 10px;
+
+                i {
+                    width: 100%;
+                }
+            }
+        }
+        &[actions="1"] {
+            .editor-form-input {
+                input {
+                    width: 80%;
+                }
+            }
+        }
+        &[actions="2"] {
+            .editor-form-input {
+                input {
+                    width: 70%;
+                }
+            }
+        }
+        &[actions="3"] {
+            .editor-form-input {
+                input {
+                    width: 60%;
+                }
+            }
+        }
+    }
 }

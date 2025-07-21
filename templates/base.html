@@ -75,7 +75,7 @@
         <link rel="icon" href="{% static 'images/favicon.ico' %}">
     {% endif %}
 </head>
-<body>
+<body class="base">
     {% if user %}<span id="data-lang">en-US</span>{% endif %}
     {% if not user %}<span id="data-lang">en-US</span>{% endif %}
     <!-- Navbar -->
@@ -121,6 +121,7 @@
     <!-- Custom JavaScript -->
     <script src="{% static 'js/main.js' %}"></script>
     <datahash val='{{ sys_is_debugging }}'></datahash>
+    <script tag="auth">window.auth = {{ user.is_authenticated|yesno:"true,false" }};</script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

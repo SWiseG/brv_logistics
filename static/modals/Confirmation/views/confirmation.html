@@ -1,0 +1,16 @@
+<div class="modal-container confimation-modal">
+    <div class="modal-content p-4">
+        <div class="modal-header border-0">
+            <span class="modal-title" data-bind="text: $root.msgModalTitle" data-modal-title></span>
+        </div>
+
+        <div class="modal-body" data-modal-body>
+            <span data-bind="text: $root.msgModalConfirmation"></span>
+        </div>
+
+        <div class="modal-footer border-0 mt-3" data-modal-footer>
+            <button type="button" id="confimation-send" class="btn btn-primary" data-bind="click: $root.send, text: $root.msgModalSend"></button>
+            <button type="button" id="confimation-cancel" class="btn btn-danger" data-bind="click: $root.cancel, text: $root.msgModalCancel"></button>
+        </div>
+    </div>
+</div>

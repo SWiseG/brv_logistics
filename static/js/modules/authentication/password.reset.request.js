@@ -9,7 +9,6 @@ define(`/static/js/modules/password.reset.request.js`, null,
             },
 
             subscribeEmail: (e) => {
-                debugger
                 const $email = $(e.currentTarget);
                 const email = $email.val().trim();
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

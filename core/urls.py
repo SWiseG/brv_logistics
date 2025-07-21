@@ -11,6 +11,7 @@ urlpatterns = [
     
     # Search
     path('search/suggestions/', SearchSuggestionsView.as_view(), name='search_suggestions'),
+    path('clear-cache/', ClearCacheView.as_view(), name='clear_cache'),
     
     # Static Modals
     path('modals/', static_modals, name='modals')

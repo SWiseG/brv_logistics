@@ -25,7 +25,10 @@ window.modal = (function () {
     function animateShow(modal) {
         return new Promise(resolve => {
             modal.modal({ backdrop: 'static', keyboard: false });
-            modal.on('shown.bs.modal', resolve);
+            modal.on('shown.bs.modal', () => {
+                resolve();
+            });
+            modal.modal('show');
         });
     }
 
@@ -44,6 +47,36 @@ window.modal = (function () {
         return global.messages.find(x => x.name === view);
     }
 
+    function $getModalView($triggerdElement) {
+        if($triggerdElement && $triggerdElement?.length > 0) {
+            if($triggerdElement.hasClass('modal') && $triggerdElement.attr('role') === "dialog") return $triggerdElement;
+            const $modal = $triggerdElement.closest('[role="dialog"].modal');
+            if($modal && $modal?.length > 0) return $modal;
+        }
+        return null;
+    }
+
+    async function deactivate(params, result) {
+        const $modal = $getModalView(params?.$element);
+        if(!$modal) return;
+        await animateHide($modal);
+        const modalConfig = modalStack.pop();
+        if (modalStack.length) {
+            modalStack[modalStack.length - 1].$modal.modal('show');
+        }
+        modalStack[modalStack.length - 1]?.resolve?.(result);
+        window.ctor = parent;
+        return modalConfig.resolve(result); 
+    }
+
+    async function send(params, result=null) {
+        return deactivate(params, { status: 'ok', "result": result}); 
+    }
+
+    async function cancel(params, result=null) {
+        return deactivate(params, { status: 'cancel', "result": result}); 
+    }
+
     async function open({ view, params = {} }) {
         const modalSet = modalSettings(view);
         if(!modalSet) throw Error('Could not found the modal configuration. Modal:' + view);
@@ -58,23 +91,9 @@ window.modal = (function () {
                 const extensions = {
                     activate: () => {},
                     deactivate: async () => { return await ctor.cancel() },
-                    send: async () => {
-                        await animateHide(modalEl);
-                        modalStack.pop();
-                        if (modalStack.length) {
-                            modalStack[modalStack.length - 1].modalEl.modal('show');
-                        }
-                        modalStack[modalStack.length - 1]?.resolve?.(result)
-                        resolve(result); 
+                    send: async (params) => {
                     },
-                    cancel: async () => {
-                        await animateHide(modalEl);
-                        modalStack.pop();
-                        if (modalStack.length) {
-                            modalStack[modalStack.length - 1].modalEl.modal('show');
-                        }
-                        modalStack[modalStack.length - 1]?.resolve?.('cancel')
-                        resolve('cancel');
+                    cancel: async (params) => {
                     },
                     compositionComplete: () => {},
                 };
@@ -99,5 +118,5 @@ window.modal = (function () {
 
     }
     
-    return { open };
+    return { open, send, cancel };
 })();

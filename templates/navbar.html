@@ -6,7 +6,7 @@
                 {% if active_theme and active_theme.logo %}
                     <img src="{{ active_theme.logo.url }}" alt="Logo" height="30">
                 {% else %}
-                    BRV Logistics - Template
+                    {{ sys_config.site_name|default:"BRV Logistics" }}
                 {% endif %}
             </a>
             <a class="navbar-localize" href="#" data-bind="click: $root.onAddress">
@@ -48,23 +48,26 @@
             </a>
             <div class="navbar-search">
                 <form action="{% url 'products:search' %}" method="GET">
-                    <input type="text" 
-                            name="q" 
-                            class="form-control" 
-                            placeholder="Buscar produtos, marcas..."
-                            autocomplete="off"
-                            id="navbarSearchInput"
-                            value="{{ request.GET.q|default:'' }}">
-                    <button type="submit" class="btn btn-primary-darker"><i class="fas fa-search"></i></button>
+                    <div class="editor-form-field with-actions" actions="1" style="margin: 0;">
+                        <div class="editor-form-input">
+                            <input type="text" 
+                                    name="q" 
+                                    class="form-control" 
+                                    autocomplete="off"
+                                    id="navbarSearchInput"
+                                    value="{{ request.GET.q|default:'' }}">
+                            <button type="submit" class="btn btn-primary-darker custom-action"><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
                 </form>
-                <div id="searchSuggestions" class="search-suggestions position-absolute" style="top: 85%; z-index: 1050; display: none;margin-left: 20px;">
+                <div id="searchSuggestions" class="search-suggestions position-absolute" style="top: 85%; z-index: 1050; display: none">
                     <!-- Conteúdo será carregado via AJAX -->
                 </div>
             </div>
             <div class="navbar-settings" id="navOptions">
-                <ul class="navbar-nav">
-                    {% if user.is_authenticated %}
-                        <li class="nav-item dropdown">
+                <div class="navbar-nav">
+                    <div class="nav-item user dropdown">
+                        {% if user.is_authenticated %}
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <div class="navbar-settings-container-welcome">
                                     <span data-i18n="navbar.welcome"></span>, {{ user.get_short_name|default:user.username }}
@@ -73,18 +76,24 @@
                                     <span data-i18n="navbar.welcome-title-drop"></span>
                                 </div>
                             </a>
-                            <div class="dropdown-menu navbar-dropdown-settings" aria-labelledby="userDropdown">
-                                <div class="container-list-options login"></div>
-                                <a class="dropdown-item" href="{% url 'auth:profile' %}">Meu Perfil</a>
-                                {% comment %} <a class="dropdown-item" href="{% url 'orders:order_list' %}">Meus Pedidos</a>
-                                <a class="dropdown-item" href="{% url 'users:address_list' %}">Meus Endereços</a>
-                                <div class="dropdown-divider"></div> {% endcomment %}
-                                <a class="dropdown-item" href="{% url 'auth:logout' %}">Sair</a>
+                            <div class="dropdown-menu navbar-dropdown-settings" role="dropdown-menu" aria-labelledby="userDropdown">
+                                <div class="dropdown-header">
+                                    <strong>{{ user.get_full_name|default:user.username }}</strong>
+                                    <small>{{ user.email }}</small>
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{% url 'auth:profile' %}">
+                                    <i class="fas fa-user-circle me-2"></i>
+                                    <span data-i18n="navbar.my-profile"></span>
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{% url 'auth:logout' %}">
+                                    <i class="fas fa-sign-out-alt me-2"></i>
+                                    <span data-i18n="navbar.logout"></span>
+                                </a>
                             </div>
-                        </li>
-                    {% else %}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {% else %}
+                            <a class="nav-link dropdown-toggle" href="{% url 'auth:login' %}" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <div class="navbar-settings-container-welcome">
                                     <span data-i18n="navbar.welcome"></span>,<span data-i18n="navbar.make-login"></span>,
                                 </div>
@@ -92,75 +101,48 @@
                                     <span data-i18n="navbar.welcome-title-drop"></span>
                                 </div>
                             </a>
-                            <div class="dropdown-menu navbar-dropdown-settings" aria-labelledby="userDropdown">
-                                <div class="container-list-options login">
-                                    <a href="{% url 'auth:login' %}" class="btn btn-primary full" data-i18n="navbar.make-login"></a>
-                                    <div class="container-new-user">
-                                        <span class="new-client-msg" data-i18n="navbar.new-user-question"></span>
-                                        <a href="{% url 'auth:register' %}" class="new-client-link" data-i18n="navbar.make-register"></a>
+                            <div class="dropdown-menu navbar-dropdown-settings" role="dropdown-menu" aria-labelledby="userDropdown"></div>
+                        {% endif %}
+                    </div>
+                    <div class="nav-item actions">
+                        <!-- Wishlist -->
+                        <div class="wishlist-container">
+                            <div class="dropdown nav-wishlist" data-bs-auto-close="outside">
+                                <a class="nav-link cart-trigger" href="#" data-bs-toggle="dropdown" id="wishlistDropdown">
+                                    <div class="cart-icon-container">
+                                        <i class="fas fa-heart"></i>
+                                        <span class="cart-count badge" data-bind="text: $root.wishlistCount">0</span>
                                     </div>
+                                </a>
+                                
+                                <div class="dropdown-menu wishlist-dropdown" role="dropdown-menu" aria-labelledby="wishlistDropdown" id="wishlistDropdownMenu">
+                                    <!-- Content será criado dinamicamente pelo JavaScript -->
                                 </div>
                             </div>
-                        </li>
-                    {% endif %}
-                    <li class="nav-item cart">
-                        <!-- Wishlist -->
-                        {% if user.is_authenticated %}
-                            {% comment %} <a href="{% url 'marketing:wishlist_count' %}" class="nav-link wish-link">
-                                <i class="fas fa-heart"></i>
-                                <span class="badge badge-light" id="wishListCount">
-                                    {{ wishlist_count|default:0 }}
-                                </span>
-                            </a> {% endcomment %}
-                        {% else %}
-                            <a href="{% url 'auth:login' %}" class="nav-link wish-link">
-                                <i class="fas fa-heart"></i>
-                                <span class="badge badge-light" id="wishListCount">0</span>
-                            </a>
-                        {% endif %}
+                        </div>
     
                         <!-- Cart Dropdown -->
-                        {% if user.is_authenticated %}
-                            <div class="dropdown nav-cart">
-                                <a class="btn btn-primary position-relative dropdown-toggle nav-link" 
-                                        href="#" 
-                                        id="cartDropdown"
-                                        role="button" 
-                                        data-bs-toggle="dropdown" 
-                                        aria-haspopup="true"
-                                        aria-expanded="false">
-                                    <i class="fas fa-shopping-cart"></i>
-                                    <span class="badge badge-light" id="cartCount" data-bind="text: $root.cartCount({{ cart_count|default:0 }})"></span>
+                        <div class="cart-container">
+                            <div class="dropdown nav-cart" data-bs-auto-close="outside">
+                                <a class="nav-link cart-trigger" href="#" data-bs-toggle="dropdown" id="cartDropdown">
+                                    <div class="cart-icon-container">
+                                        <i class="fas fa-shopping-cart"></i>
+                                        <span class="cart-count badge" data-bind="text: $root.cartCount">0</span>
+                                    </div>
+                                    <div class="cart-text">
+                                        <div class="cart-total">
+                                            <span data-bind="text: $root.cartTotal">0,00</span>
+                                        </div>
+                                    </div>
                                 </a>
-                                <div class="dropdown-menu dropdown-menu-end cart-dropdown p-0" style="width: 400px;">
-                                    <div class="dropdown-header bg-light d-flex justify-content-between align-items-center">
-                                        <h6 class="mb-0">Meu Carrinho</h6>
-                                        <small class="text-muted">
-                                            <span class="cart-count">{{ cart_count|default:0 }}</span> 
-                                            item<span class="cart-count-plural">{{ cart_count|default:0|pluralize:"ns" }}</span>
-                                        </small>
-                                    </div>
-                                    <div id="cartDropdownContent" class="cart-dropdown-content">
-                                        <!-- Cart content loaded via AJAX -->
-                                    </div>
+                                
+                                <div class="dropdown-menu cart-dropdown" role="dropdown-menu" aria-labelledby="cartDropdown" id="cartDropdownMenu">
+                                    <!-- Content será criado dinamicamente pelo JavaScript -->
                                 </div>
                             </div>
-                        {% else %}
-                            <div class="dropdown nav-cart">
-                                <a class="btn btn-primary position-relative dropdown-toggle nav-link" 
-                                        href="{% url 'auth:login' %}" 
-                                        id="cartDropdown"
-                                        role="button" 
-                                        data-bs-toggle="dropdown" 
-                                        aria-haspopup="true"
-                                        aria-expanded="false">
-                                    <i class="fas fa-shopping-cart"></i>
-                                    <span class="badge badge-light" id="cartCount" data-bind="text: $root.cartCount({{ cart_count|default:0 }})"></span>
-                                </a>
-                            </div>
-                        {% endif %}
-                    </li>
-                </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
@@ -175,7 +157,7 @@
                         <i class="fas fa-bars"></i>
                         <span data-i18n="navbar.search-title-categories"></span>
                     </a>
-                    <div class="dropdown-menu mega-menu p-0">
+                    <div class="dropdown-menu mega-menu p-0" role="dropdown-menu">
                         <div class="container">
                             {% for category in main_categories %}
                                 <div class="dropdown-content">

@@ -62,7 +62,7 @@ window.require = (scripts, callback, partial=false) => {
 document.addEventListener('DOMContentLoaded', async function() {
     // Inicializar módulos
     var ctor = {};
-    await require('global, utils, message, notify, bindings, themes, translation, enchancer', async (res) => {
+    await require('logger, global, utils, message, notify, bindings, themes, translation, enchancer', async (res) => {
         // Global
         window.global = new Global();
         global.applyHashProperties();
@@ -102,6 +102,33 @@ document.addEventListener('DOMContentLoaded', async function() {
             return null;
         };
     }
+
+    jQuery.fn.appendAfter = function($selector) {
+        return this.each(function() {
+            $(`#${$selector.attr('id')}`).after(this);
+        });
+    };
+    
+    function bindDropdownBlocker() {
+        document.querySelectorAll('.dropdown[data-bs-auto-close="outside"]').forEach(dropdown => {
+            if (!dropdown.hasAttribute('data-bs-listener-bound')) {
+                dropdown.addEventListener('hide.bs.dropdown', function (e) {
+                    const clickTarget = e.clickEvent?.target;
+                    if (!clickTarget) return;
+
+                    const isClickInsideMenu = dropdown.querySelector('.dropdown-menu')?.contains(clickTarget);
+                    if (isClickInsideMenu) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                });
+
+                dropdown.setAttribute('data-bs-listener-bound', 'true');
+            }
+        });
+    };
+
+    bindDropdownBlocker();
 
     return ctor;
 });

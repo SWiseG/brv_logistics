@@ -1142,14 +1142,12 @@ define(`/static/js/mixins/components.js`, null,
                             .text(opt.label || opt.value)
                             .on('mousedown', (e) => {
                                 e.preventDefault(); 
-                                debugger;
                                 input.val(opt.label || opt.value).trigger('input').trigger('change');
                                 dropdown.find('.dropdown-item').removeClass('selected');
                                 item.addClass('selected');
                                 ctor.animateComboDropdown(dropdown, false);
                             });
 
-                            debugger;
                             if ((opt.label || opt.value) === input.val()) {
                                 item.addClass('selected');
                             }

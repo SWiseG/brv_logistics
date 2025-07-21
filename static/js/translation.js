@@ -39,7 +39,14 @@ function Translations() {
             if (text) el.textContent = text;
         },
 
+        _translationsAvaliable: () => {
+            try {
+                if(translations && window.translations) return true;
+            } catch { return false };
+        },
+
         _translate(message, params = []) {
+            if(!translate._translationsAvaliable()) return message;
             const text = message.split('.').reduce((o, i) => o?.[i], translations);
             let result = !!text && text !== '' ? text : message;
 

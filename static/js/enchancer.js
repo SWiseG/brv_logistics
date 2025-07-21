@@ -8,10 +8,6 @@
             this.handleTabs();
         },
 
-        log: function (message, data) {
-            if (window.DEBUG_MODE) console.log(`[Enchancer]: ${message}`, data);
-        },
-
         handleDropdowns: function () {
             document.addEventListener('show.bs.dropdown', (e) => {
                 const currentDropdown = e.target;

@@ -1,6 +1,5 @@
 window.logger = (function () {
     function log(message, type = 'info') {
-        debugger;
         if(allowLog()) {
             switch (type) {
                 case 'error':
@@ -10,7 +9,7 @@ window.logger = (function () {
                 case 'warn':
                     console.warn('[WARN] ' + message);
                     break;
-                case 'succeess':
+                case 'success':
                     console.log('[SUCCESS] ' + message);
                     break;
                 default:
@@ -18,12 +17,17 @@ window.logger = (function () {
                     break;
             }
         }
-        else return console.log('[LOG] Logger module not allowed yet');
+        else if(allowLog() === false) return console.log('[INFO] Logger module not allowed yet. The message tried to sent is: ' + message);
     }
 
     function allowLog() {
-        debugger;
-        return window['global'] && !!global && global.hasOwnProperty('options') && global.options['debug'];
+        var hasGlobal = window.hasOwnProperty('global');
+        if(!hasGlobal) return false;
+
+        var validateDebugMode = !!global && global.hasOwnProperty('options') && global.options['debug'];
+        if(validateDebugMode === false) return;
+
+        return true;
     }
 
     return {

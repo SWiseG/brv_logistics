@@ -1,3 +1,4 @@
+from datetime import timezone
 from django.db import models
 from django.db.models import JSONField
 from django.contrib.postgres.indexes import GinIndex
@@ -149,3 +150,28 @@ class CustomerSegment(BaseModel):
     
     def __str__(self):
         return self.name
+    
+class NewsletterSubscription(BaseModel):
+    """Inscrições da newsletter"""
+    email = models.EmailField('Email', unique=True)
+    is_active = models.BooleanField('Ativo', default=True)
+    subscribed_at = models.DateTimeField('Inscrito em', auto_now_add=True)
+    unsubscribed_at = models.DateTimeField('Desinscrito em', null=True, blank=True)
+    
+    # Campos de segmentação
+    source = models.CharField('Origem', max_length=100, blank=True)  # 'home', 'product', 'cart', etc.
+    interests = models.JSONField('Interesses', default=list, blank=True)
+    
+    class Meta:
+        verbose_name = 'Inscrição Newsletter'
+        verbose_name_plural = 'Inscrições Newsletter'
+        ordering = ['-subscribed_at']
+    
+    def __str__(self):
+        return f"{self.email} - {'Ativo' if self.is_active else 'Inativo'}"
+    
+    def unsubscribe(self):
+        """Cancelar inscrição"""
+        self.is_active = False
+        self.unsubscribed_at = timezone.now()
+        self.save()

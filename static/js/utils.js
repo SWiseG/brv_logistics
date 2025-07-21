@@ -2,11 +2,26 @@
 function Utils() {
     return {
         // Formatar preço
-        formatPrice: function(price) {
-            return new Intl.NumberFormat(global.currentLang, {
-                style: 'currency',
-                currency: 'BRL'
-            }).format(price);
+        formatPrice: function(price, currency = 'BRL', locale = global?.currentLang || 'pt-BR') {
+            if (typeof price !== 'number' || isNaN(price)) {
+                if(window['logger']) logger.log('Invalid price:', price, 'warn');
+                if(window['logger']) logger.log('Trying to parse price', 'warn');
+                price = parseFloat(price);
+                if (typeof price !== 'number' || isNaN(price)) return 'R$ 0,00';
+                if(window['logger']) logger.log('Price parsed successfuly', 'success');
+            }
+
+            try {
+                return new Intl.NumberFormat(locale, {
+                    style: 'currency',
+                    currency: currency,
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(price);
+            } catch (e) {
+                console.error('Erro ao formatar preço:', e);
+                return price.toString();
+            }
         },
 
         // Formatar CEP
@@ -56,6 +71,51 @@ function Utils() {
                 element.innerHTML = originalContent;
                 element.disabled = false;
             };
-        }
+        },
+
+        // Confirmation Modal
+        onConfirmationModal: (params, callbackSuccess, e=null) => {
+            if(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            };
+            return modal.open({ view: 'Confirmation', params})
+                    .then(result => {
+                        if(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                        };
+                        return callbackSuccess(result, params, e);
+                    }).catch(err => {
+                        if(window['logger']) logger.log('Confirmation modal resolve with errors: ' + err, 'error');
+                        return false;
+                    });
+        },
+
+        // Aux. Dropdown
+        openCloseDropdown: (dropdownId, status=true) => {
+            const $dropdown = $(`#${dropdownId}`);
+            if($dropdown && $dropdown.length > 0) {
+                const dropdownConfig = bootstrap.Dropdown.getInstance($dropdown[0]);
+                if(dropdownConfig) {
+                    if(status) dropdownConfig.show();
+                    else dropdownConfig.hide();
+                    return true;
+                };
+            }; 
+            return false;
+        },
+
+        isDropdownOpened: (dropdownId) => {
+            const $dropdown = $(`#${dropdownId}`);
+            if($dropdown && $dropdown.length > 0) {
+                const dropdownConfig = bootstrap.Dropdown.getInstance($dropdown[0]);
+                if(dropdownConfig) {
+                    const $dropdownMenu = $dropdown.siblings('[role="dropdown-menu"]');
+                    if($dropdownMenu && $dropdownMenu.length > 0 && $dropdownMenu.hasClass('show')) return true;
+                };
+            }; 
+            return false;
+        },
     };
 }

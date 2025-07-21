@@ -1,48 +1,33 @@
 /* Responsive Design */
+/* Tablet */
 @media (max-width: 768px) {
-    .search-form {
-        margin: 1rem 0;
-    }
-    
-    .navbar-nav {
-        text-align: center;
-    }
-    
-    .btn {
-        width: 100%;
-        margin-bottom: 0.5rem;
-    }
-    
-    .card-columns {
-        column-count: 1;
-    }
+    .home {
+        .hero-slide {
+            min-height: 400px !important;
 
-    .hero-slide {
-        min-height: 400px;
-        text-align: center;
-    }
-    
-    .hero-slide .display-4 {
-        font-size: 2rem;
-    }
-    
-    .category-card {
-        margin-bottom: 1rem;
-    }
-    
-    .product-actions {
-        opacity: 1;
+            .container {
+                h1 {
+                    font-size: 2.5rem !important;
+                }
+
+                p {
+                    font-size: 1.1rem !important;
+                }
+            }
+        }
+
+        .category-card {
+            height: 200px !important;
+        }
+
+        .product-card {
+            margin-bottom: var(--spacing-lg) !important;
+        }
     }
 }
 
-@media (max-width: 990px) {
-    .navbar-search {
-        transition: all .25s linear;
-        min-width: 200px !important;
-    }
-}
-
-@media (max-width: 576px) {
+/* Mobile */
+@media (max-width: 480px) {
     .base-auth {
         main {
             padding: 0 !important;
@@ -60,24 +45,44 @@
             }
         }
     }
-    .container {
-        padding-left: 15px;
-        padding-right: 15px;
-    }
-    
-    .display-4 {
-        font-size: 2rem;
+    .home {
+        .home-common-section {
+            padding: 0 var(--spacing-xs) !important;
+        }
+
+        .hero-slide {
+            min-height: 300px !important;
+
+            .container {
+                padding: 0 var(--spacing-sm);
+
+                h1 {
+                    font-size: 2rem !important;
+                }
+
+                p {
+                    font-size: 1rem !important;
+                }
+            }
+        }
+
+        .section-header .section-title {
+            font-size: 1.8rem !important;
+        }
+
+        .category-card {
+            height: 150px !important;
+
+            .category-title {
+                font-size: 1.4rem !important;
+            }
+        }
+
+        .product-card {
+            .product-image {
+                height: 200px !important;
+            }
+        }
     }
 
-    .hero-slide {
-        min-height: 300px;
-    }
-    
-    .newsletter-form .input-group {
-        flex-direction: column;
-    }
-    
-    .newsletter-form .btn {
-        margin-top: 10px;
-    }
 }

@@ -12,6 +12,9 @@ function Global() {
             items: [],
             total: 0
         },
+        user: {
+            isAuthenticated: false
+        },
         config: {
             currency: 'BRL',
             currencySymbol: 'R$',
@@ -56,7 +59,7 @@ function Global() {
                 if (val1 === undefined) {
                     result[key] = val2;
                 } else if (typeof val1 === 'object' && typeof val2 === 'object' && val1 !== null && val2 !== null) {
-                    result[key] = mergeRespectingFirst(val1, val2); // recursão para objetos aninhados
+                    result[key] = $.extend(val1, val2); // recursão para objetos aninhados
                 } else if (val1 !== val2) {
                     result[key] = val1;
                 };
@@ -75,11 +78,39 @@ function Global() {
             if(!module) throw Error(`Could not load constructor from ${name}`); 
             return ctor = module;
         },
+        getModule: (name) => {
+            const hasLogger = window.hasOwnProperty('logger');
+            
+            function isInConstructor(name) { return window.ctor && window.ctor.hasOwnProperty('name') && window.ctor.name === name; };
+            function isInParent(name) { return window.parent && window.parent.hasOwnProperty('name') && window.parent.name === name; };
+            
+            logger.log(`Trying to find custom module constructor ${name}`, 'warn');
+
+            if(isInConstructor(name)) {
+                logger.log(`Module constructor was in ctor`, 'warn');
+                return window.ctor;
+            }
+            else if(isInParent(name)) {
+                logger.log(`Module constructor was in parent. Maybe any custom partial view is opened`, 'warn');
+                return window.parent;
+            }
+            else {
+                const module = global.modules.find(md => md.name === name);
+                if(hasLogger) {
+                    if(!module) logger.log(`Could not found custom module constructor ${name}`, 'warn');
+                    else {
+                        logger.log(`Module constructor ${name} founded`, 'warn');
+                        return module.ctor;
+                    };
+                };
+            };
+
+            return null;
+        },
         createModule: async (name) => {
             return await require(name);
         },
         registerModule: async (name, path, dependencies, callback, partial, params) => {
-            debugger;
             var registeredModule = null;
             var moduleLoaded = callback();
             if(moduleLoaded.hasOwnProperty('init') && typeof moduleLoaded['init'] === 'function') 
@@ -217,6 +248,13 @@ function Global() {
                     else global.options.noTreatedOptions.push($hashVal);
                 });
                 $hashOptions.remove();
+            };
+
+            // Check user auth
+            $("script[tag='auth']").remove();
+            if(window.hasOwnProperty('auth')) {
+                global.user.isAuthenticated = window.auth;
+                delete window.auth;
             };
         }
     }

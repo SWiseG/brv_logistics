@@ -60,3 +60,11 @@ class OrderAdmin(admin.ModelAdmin):
         )
         self.message_user(request, f'{updated} pedidos marcados como enviados.')
     mark_as_shipped.short_description = 'Marcar como enviado'
+    
+@admin.register(Cart)
+class CartAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(CartItem)
+class CartItemAdmin(admin.ModelAdmin):
+    pass
