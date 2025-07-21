@@ -5,6 +5,13 @@ from django.utils.html import format_html
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 # Marketing
+@admin.register(Wishlist)
+class WishlistAdmin(admin.ModelAdmin):
+    pass
+@admin.register(WishlistItem)
+class WishlistItemAdmin(admin.ModelAdmin):
+    pass
+
 @admin.register(Coupon)
 class CouponAdmin(admin.ModelAdmin):
     list_display = [

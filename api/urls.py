@@ -16,7 +16,6 @@ router.register(r'coupons', views.CouponViewSet, basename='coupon')
 # Register new viewsets
 router.register(r'home', views.HomeAPIViewSet, basename='home')
 router.register(r'wishlist', views.WishlistAPIViewSet, basename='wishlist')
-router.register(r'cart-api', views.CartAPIViewSet, basename='cart-api')
 router.register(r'newsletter', views.NewsletterAPIViewSet, basename='newsletter')
 
 

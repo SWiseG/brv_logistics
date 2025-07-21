@@ -1,5 +1,5 @@
-/* Header e Navegação */
-@import './header.css';
+/* Header, Navegação e Footer */
+@import './static-page.css';
     
 .home {
     box-sizing: border-box;

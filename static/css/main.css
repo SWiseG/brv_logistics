@@ -371,34 +371,6 @@ a:hover {
     color: var(--fb-info);
 }
 
-/* Footer */
-.footer {
-    background-color: var(--primary-darker);
-    border-top: 1px solid var(--primary-border);
-    color: var(--primary-text);
-    margin-top: 3rem;
-}
-
-.footer h5 {
-    font-weight: 600;
-    margin-bottom: 1rem;
-}
-
-.footer a {
-    transition: color 0.3s ease;
-}
-
-.footer a:hover {
-    color: var(--primary-color);
-}
-
-.sub-footer {
-    display: flex;
-    background-color: var(--primary-darkest);
-    color: var(--primary-text);
-    padding: 2rem !important;
-}
-
 /* Formulários */
 .form-control {
     border-radius: 8px;

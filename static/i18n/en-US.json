@@ -60,6 +60,7 @@
     "remove-from-favorites": "Remove from favorites",
     "loading-cart": "Loading cart...",
     "cart-load-error": "Error loading cart",
+    "wishlist-load-error": "Error loading wishlist",
     "try-again": "Try again",
     "empty-cart": "Your cart is empty",
     "start-shopping": "Start shopping",
@@ -79,7 +80,9 @@
     "cart-updated": "Cart updated!",
     "cart-update-error": "Error updating cart",
     "confirm-remove-cart-item": "Do you really want to remove this item from cart?",
+    "confirm-remove-wishlist-item": "Do you really want to remove this item from wishlist?",
     "item-removed-cart": "Item removed from cart!",
+    "item-removed-wishlist": "Item removed from wishlist!",
     "remove-item-error": "Error removing item",
     "added-to-cart": "Product added to cart!",
     "add-cart-error": "Error adding to cart",
@@ -92,6 +95,9 @@
   "subnav": {
     "offers": "Offers",
     "hot": "Hot"
+  },
+  "footer": {
+    "comeback-top": "Comeback top"
   },
   "login": {
     "remember-me": "Remember me", 

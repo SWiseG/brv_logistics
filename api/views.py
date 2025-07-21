@@ -509,10 +509,10 @@ class HomeAPIViewSet(viewsets.ViewSet):
         """Categorias para home page"""
         categories = ProductCategory.objects.filter(
             is_active=True, 
-            parent__isnull=True
+            # parent__isnull=True
         ).annotate(
             product_count=Count('products', filter=Q(products__is_active=True))
-        ).order_by('sort_order')[:6]
+        ).order_by('-product_count', 'sort_order')[:6]
         
         serializer = ProductCategorySerializer(categories, many=True, context={'request': request})
         return Response({
@@ -734,118 +734,6 @@ class WishlistAPIViewSet(viewsets.ViewSet):
                 'success': False,
                 'message': 'Item não encontrado'
             }, status=status.HTTP_404_NOT_FOUND)
-
-class CartAPIViewSet(viewsets.ViewSet):
-    """APIs para Carrinho"""
-    permission_classes = [permissions.IsAuthenticated]
-    
-    @action(detail=False, methods=['post'])
-    def add(self, request):
-        """Adicionar produto ao carrinho"""
-        product_id = request.data.get('product_id')
-        quantity = int(request.data.get('quantity', 1))
-        variant_id = request.data.get('variant_id')
-        
-        if not product_id:
-            return Response({
-                'success': False,
-                'message': 'ID do produto é obrigatório'
-            }, status=status.HTTP_400_BAD_REQUEST)
-        
-        try:
-            product = Product.objects.get(id=product_id, is_active=True)
-        except Product.DoesNotExist:
-            return Response({
-                'success': False,
-                'message': 'Produto não encontrado'
-            }, status=status.HTTP_404_NOT_FOUND)
-        
-        # Get or create cart
-        cart, created = Cart.objects.get_or_create(
-            user=request.user,
-            defaults={'currency': 'BRL'}
-        )
-        
-        # Check if item already exists in cart
-        cart_item, created = CartItem.objects.get_or_create(
-            cart=cart,
-            product=product,
-            variant_id=variant_id,
-            defaults={
-                'quantity': quantity,
-                'unit_price': product.price
-            }
-        )
-        
-        if not created:
-            # Update quantity
-            cart_item.quantity += quantity
-            cart_item.save()
-        
-        # Count total cart items
-        cart_count = CartItem.objects.filter(cart__user=request.user).count()
-        
-        return Response({
-            'success': True,
-            'cart_count': cart_count,
-            'message': 'Produto adicionado ao carrinho!'
-        })
-    
-    @action(detail=False, methods=['get'])
-    def count(self, request):
-        """Contador do carrinho"""
-        if not request.user.is_authenticated:
-            return Response({'count': 0})
-        
-        cart_count = CartItem.objects.filter(
-            cart__user=request.user
-        ).count()
-        
-        return Response({'count': cart_count})
-
-    @action(detail=False, methods=['get'])
-    def dropdown(self, request):
-        """Dados do dropdown do carrinho"""
-        if not request.user.is_authenticated:
-            return Response({'success': False, 'message': 'Usuário não autenticado'})
-        
-        try:
-            cart = Cart.objects.get(user=request.user)
-            cart_items = cart.items.select_related('product').prefetch_related('product__images')
-            
-            items_data = []
-            for item in cart_items:
-                items_data.append({
-                    'id': item.id,
-                    'product': {
-                        'id': item.product.id,
-                        'name': item.product.name,
-                        'primary_image': item.product.get_primary_image(),
-                        'price': float(item.product.price)
-                    },
-                    'quantity': item.quantity,
-                    'unit_price': float(item.unit_price),
-                    'total_price': float(item.total_price)
-                })
-            
-            return Response({
-                'success': True,
-                'cart': {
-                    'items': items_data,
-                    'total': float(cart.total_amount),
-                    'count': cart_items.count()
-                }
-            })
-            
-        except Cart.DoesNotExist:
-            return Response({
-                'success': True,
-                'cart': {
-                    'items': [],
-                    'total': 0,
-                    'count': 0
-                }
-            })
 
 class NewsletterAPIViewSet(viewsets.ViewSet):
     """APIs para Newsletter"""

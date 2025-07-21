@@ -107,11 +107,11 @@
                     <div class="nav-item actions">
                         <!-- Wishlist -->
                         <div class="wishlist-container">
-                            <div class="dropdown nav-wishlist" data-bs-auto-close="outside">
-                                <a class="nav-link cart-trigger" href="#" data-bs-toggle="dropdown" id="wishlistDropdown">
-                                    <div class="cart-icon-container">
+                            <div class="{% if user.is_authenticated %}dropdown{% endif %} nav-wishlist" data-bs-auto-close="outside">
+                                <a class="nav-link wishlist-trigger" href="#" data-bs-toggle="dropdown" id="wishlistDropdown">
+                                    <div class="wishlist-icon-container">
                                         <i class="fas fa-heart"></i>
-                                        <span class="cart-count badge" data-bind="text: $root.wishlistCount">0</span>
+                                        <span class="wishlist-count badge {% if user.is_authenticated == False %}hidden{% endif %}" data-bind="text: $root.wishlistCount">0</span>
                                     </div>
                                 </a>
                                 
@@ -123,11 +123,11 @@
     
                         <!-- Cart Dropdown -->
                         <div class="cart-container">
-                            <div class="dropdown nav-cart" data-bs-auto-close="outside">
+                            <div class="{% if user.is_authenticated %}dropdown{% endif %} nav-cart" data-bs-auto-close="outside">
                                 <a class="nav-link cart-trigger" href="#" data-bs-toggle="dropdown" id="cartDropdown">
                                     <div class="cart-icon-container">
                                         <i class="fas fa-shopping-cart"></i>
-                                        <span class="cart-count badge" data-bind="text: $root.cartCount">0</span>
+                                        <span class="cart-count badge {% if user.is_authenticated == False %}hidden{% endif %}" data-bind="text: $root.cartCount">0</span>
                                     </div>
                                     <div class="cart-text">
                                         <div class="cart-total">

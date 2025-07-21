@@ -24,4 +24,3 @@ def address_edit(request, pk):
 @login_required
 def address_delete(request, pk):
     return redirect('users:address_list')
-

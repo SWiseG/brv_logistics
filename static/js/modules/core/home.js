@@ -217,7 +217,13 @@ define(`/static/js/modules/core/home.js`, ['/static/js/mixins/components.js', `/
                     grid.innerHTML = '';
                     
                     if (categories.results.length !== 0) {
-                        categories.results.forEach(category => {
+                        const results = categories.results.sort((a, b) => {
+                            if (a.sort_order !== b.sort_order) {
+                                return a.sort_order - b.sort_order;
+                            }
+                            return b.product_count - a.product_count;
+                        });
+                        results.forEach(category => {
                             const categoryCard = ctor.createCategoryCard(category);
                             grid.appendChild(categoryCard);
                         });
@@ -596,7 +602,7 @@ define(`/static/js/modules/core/home.js`, ['/static/js/mixins/components.js', `/
 
                 utils.loading();
                 try {
-                    const response = await fetch(`${global.config.apiUrl}cart-api/add/`, {
+                    const response = await fetch(`${global.config.apiUrl}cart/add_item/`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

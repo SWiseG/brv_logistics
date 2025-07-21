@@ -7,6 +7,10 @@ define(`/static/js/modules/footer.js`, null,
             compositionComplete: (name, path, dependencies, callback, params) => {
                 return true;
             },
+
+            comebackToTop: () => {
+                return window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         }
     }
 )

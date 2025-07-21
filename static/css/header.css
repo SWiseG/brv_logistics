@@ -1,3 +1,5 @@
+/* Header e Navegação */
+
 /* ======================= NAVBAR ======================= */
 .navbar {
     background-color: var(--primary) !important;
@@ -217,7 +219,8 @@
                         align-content: center;
                     }
 
-                    .dropdown {
+                    .nav-wishlist,
+                    .nav-cart {
                         .dropdown-menu {
                             padding: 22px;
                             width: 300px;
@@ -271,7 +274,8 @@
 
                         .cart-container,
                         .wishlist-container {
-                            .dropdown {
+                            .nav-wishlist,
+                            .nav-cart {
                                 .nav-link {
                                     display: flex;
                                     gap: 24px;

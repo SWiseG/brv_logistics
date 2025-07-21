@@ -59,6 +59,7 @@
     "remove-from-favorites": "Remover dos favoritos",
     "loading-cart": "Carregando carrinho...",
     "cart-load-error": "Erro ao carregar carrinho",
+    "wishlist-load-error": "Erro ao carregar lista de desejos",
     "try-again": "Tentar novamente",
     "empty-cart": "Seu carrinho está vazio",
     "start-shopping": "Começar a comprar",
@@ -78,10 +79,13 @@
     "cart-updated": "Carrinho atualizado!",
     "cart-update-error": "Erro ao atualizar carrinho",
     "confirm-remove-cart-item": "Deseja realmente remover este item do carrinho?",
+    "confirm-remove-wishlist-item": "Deseja realmente remover este item da lista de desejos?",
     "item-removed-cart": "Item removido do carrinho!",
+    "item-removed-wishlist": "Item removido da lista de desejos!",
     "remove-item-error": "Erro ao remover item",
     "added-to-cart": "Produto adicionado ao carrinho!",
     "add-cart-error": "Erro ao adicionar ao carrinho",
+    "add-item-cart": "Adicionar ao carrinho",
     "confirm-remove-favorite": "Deseja realmente remover este item dos favoritos?",
     "removed-from-favorites": "Item removido dos favoritos!",
     "remove-favorite-error": "Erro ao remover dos favoritos",
@@ -91,6 +95,9 @@
   "subnav": {
     "offers": "Ofertas",
     "hot": "Em Alta"
+  },
+  "footer": {
+    "comeback-top": "Voltar ao ínicio"
   },
   "login": {
     "remember-me": "Lembrar de mim", 

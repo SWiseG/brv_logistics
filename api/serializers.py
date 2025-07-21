@@ -17,6 +17,7 @@ class ProductCategorySerializer(serializers.ModelSerializer):
     
     children = serializers.SerializerMethodField()
     parent_name = serializers.CharField(source='parent.name', read_only=True)
+    product_count = serializers.IntegerField(read_only=True)
     
     class Meta:
         model = ProductCategory
@@ -26,7 +27,7 @@ class ProductCategorySerializer(serializers.ModelSerializer):
         """Get category children"""
         if obj.children.exists():
             return ProductCategorySerializer(obj.children.all(), many=True).data
-        return []
+        return []    
 
 class ProductBrandSerializer(serializers.ModelSerializer):
     """Product brand serializer"""
