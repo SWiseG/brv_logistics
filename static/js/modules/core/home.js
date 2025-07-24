@@ -31,8 +31,9 @@ define(`/static/js/modules/core/home.js`, ['/static/js/mixins/components.js', `/
             // Main composition
             compositionComplete: async (name, path, dependencies, callback, params) => {
                 try {
+                    debugger
                     // Initialize components
-                    await ctor.initializeComponents();
+                    await ctor.initializeHomeComponents();
                     
                     // Load content
                     await ctor.loadInitialContent();
@@ -47,7 +48,6 @@ define(`/static/js/modules/core/home.js`, ['/static/js/mixins/components.js', `/
                     //     return true;
                     // });
                     
-                    if(window['logger']) logger.log('Home module initialized successfully', 'info');
                     return bindings.reload();
                 } catch (error) {
                     console.error('Error initializing Home module:', error);
@@ -59,7 +59,7 @@ define(`/static/js/modules/core/home.js`, ['/static/js/mixins/components.js', `/
             // INITIALIZATION METHODS
             // ================================
             
-            initializeComponents: async () => {
+            initializeHomeComponents: async () => {
                 // Initialize carousel
                 ctor.initializeCarousel();
                 

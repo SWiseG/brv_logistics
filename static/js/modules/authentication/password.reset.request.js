@@ -1,4 +1,4 @@
-define(`/static/js/modules/password.reset.request.js`, null, 
+define(`/static/js/modules/password.reset.request.js`, [], 
     function PasswordResetRequest() {
         return {
             name: `PasswordResetRequest`,

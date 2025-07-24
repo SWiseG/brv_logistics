@@ -151,7 +151,7 @@
             text-align: left;
 
             .section-title {
-                font-size: 1.5rem;
+                font-size: 1.3rem;
                 font-weight: 700;
                 color: var(--off-white-text);
                 margin-bottom: 2rem;
@@ -226,7 +226,7 @@
                             }
 
                             .category-title {
-                                font-size: 1.5rem;
+                                font-size: 1.3rem;
                                 font-weight: 600;
                                 margin-bottom: 0.5rem;
                                 text-shadow: 2px 2px 4px var(--black-half-alpha);
@@ -327,7 +327,7 @@
                 }
 
                 .product-info {
-                    padding: 1.5rem;
+                    padding: 1.3rem;
                     height: calc(100% - 250px);
                     box-sizing: border-box;
 
@@ -377,13 +377,13 @@
                     flex-direction: column;
 
                     .price-current {
-                        font-size: 1.4rem;
-                        font-weight: 700;
-                        color: var(--fb-success);
+                        font-size: 1.2rem;
+                        font-weight: 500;
+                        color: var(--white-text);
                     }
 
                     .price-old {
-                        font-size: 1rem;
+                        font-size: 0.9rem;
                         color: var(--neutral-lighter);
                         text-decoration: line-through;
                     }

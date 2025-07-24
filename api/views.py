@@ -500,8 +500,7 @@ class CouponViewSet(viewsets.ReadOnlyModelViewSet):
                 'message': 'Cupom inválido.'
             }, status=status.HTTP_404_NOT_FOUND)
             
-            
-class HomeAPIViewSet(viewsets.ViewSet):
+class HomeViewSet(viewsets.ViewSet):
     """APIs específicas para Home Page"""
     
     @action(detail=False, methods=['get'])
@@ -588,145 +587,74 @@ class HomeAPIViewSet(viewsets.ViewSet):
         return Response({
             'results': serializer.data
         })
-
-
-class WishlistAPIViewSet(viewsets.ViewSet):
+class WishlistViewSet(viewsets.ModelViewSet):
     """APIs para Wishlist"""
+    serializer_class = WishlistSerializer
     permission_classes = [permissions.IsAuthenticated]
     
-    @action(detail=False, methods=['post'])
-    def toggle(self, request):
-        """Toggle produto na wishlist"""
+    def get_queryset(self):
+        return Wishlist.objects.filter(user=self.request.user).prefetch_related('items__product')
+    
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+    
+    @action(detail=True, methods=['post'])
+    def add_item(self, request, pk=None):
+        """Adicionar item à wishlist"""
+        wishlist = self.get_object()
         product_id = request.data.get('product_id')
-        
-        if not product_id:
-            return Response({
-                'success': False,
-                'message': 'ID do produto é obrigatório'
-            }, status=status.HTTP_400_BAD_REQUEST)
+        variant_id = request.data.get('variant_id')
+        note = request.data.get('note', '')
+        priority = request.data.get('priority', 1)
         
         try:
             product = Product.objects.get(id=product_id, is_active=True)
+            variant = None
+            if variant_id:
+                variant = ProductVariant.objects.get(id=variant_id, product=product, is_active=True)
+                
+            item, created = WishlistItem.objects.get_or_create(
+                wishlist=wishlist,
+                product=product,
+                variant=variant,
+                defaults={'note': note, 'priority': priority}
+            )
+            
+            if created:
+                return Response({
+                    'success': True,
+                    'message': 'Item adicionado à lista de desejos',
+                    'item': WishlistItemSerializer(item).data
+                })
+            else:
+                return Response({
+                    'success': False,
+                    'message': 'Item já está na lista de desejos'
+                })
+                
         except Product.DoesNotExist:
             return Response({
                 'success': False,
                 'message': 'Produto não encontrado'
             }, status=status.HTTP_404_NOT_FOUND)
-        
-        # Get or create default wishlist
-        wishlist, created = Wishlist.objects.get_or_create(
-            user=request.user,
-            is_default=True,
-            defaults={'name': 'Minha Lista de Desejos'}
-        )
-        
-        # Check if product is already in wishlist
-        wishlist_item, created = WishlistItem.objects.get_or_create(
-            wishlist=wishlist,
-            product=product
-        )
-        
-        if not created:
-            # Remove from wishlist
-            wishlist_item.delete()
-            added = False
-        else:
-            added = True
-        
-        # Count total wishlist items
-        wishlist_count = WishlistItem.objects.filter(
-            wishlist__user=request.user,
-            wishlist__is_default=True
-        ).count()
-        
-        return Response({
-            'success': True,
-            'added': added,
-            'wishlist_count': wishlist_count,
-            'message': 'Produto adicionado aos favoritos!' if added else 'Produto removido dos favoritos!'
-        })
     
-    @action(detail=False, methods=['get'])
-    def count(self, request):
-        """Contador da wishlist"""
-        if not request.user.is_authenticated:
-            return Response({'count': 0})
-        
-        wishlist_count = WishlistItem.objects.filter(
-            wishlist__user=request.user,
-            wishlist__is_default=True
-        ).count()
-        
-        return Response({'count': wishlist_count})
-
-    @action(detail=False, methods=['get'])
-    def dropdown(self, request):
-        """Dados do dropdown da wishlist"""
-        if not request.user.is_authenticated:
-            return Response({'success': False, 'message': 'Usuário não autenticado'})
-        
-        try:
-            wishlist = Wishlist.objects.get(user=request.user, is_default=True)
-            wishlist_items = wishlist.items.select_related('product').prefetch_related('product__images')
-            
-            items_data = []
-            for item in wishlist_items:
-                items_data.append({
-                    'id': item.id,
-                    'product': {
-                        'id': item.product.id,
-                        'name': item.product.name,
-                        'primary_image': item.product.get_primary_image(),
-                        'price': float(item.product.price)
-                    },
-                    'added_at': item.added_at.isoformat()
-                })
-            
-            return Response({
-                'success': True,
-                'wishlist': {
-                    'items': items_data,
-                    'count': wishlist_items.count()
-                }
-            })
-            
-        except Wishlist.DoesNotExist:
-            return Response({
-                'success': True,
-                'wishlist': {
-                    'items': [],
-                    'count': 0
-                }
-            })
-
-    @action(detail=False, methods=['post'])
-    def remove(self, request):
+    @action(detail=True, methods=['delete'])
+    def remove_item(self, request, pk=None):
         """Remover item da wishlist"""
+        wishlist = self.get_object()
         item_id = request.data.get('item_id')
         
-        if not item_id:
-            return Response({
-                'success': False,
-                'message': 'ID do item é obrigatório'
-            }, status=status.HTTP_400_BAD_REQUEST)
-        
         try:
-            wishlist_item = WishlistItem.objects.get(
-                id=item_id,
-                wishlist__user=request.user
-            )
-            wishlist_item.delete()
+            item = WishlistItem.objects.get(id=item_id, wishlist=wishlist)
+            item.delete()
             
-            # Contar itens restantes
-            wishlist_count = WishlistItem.objects.filter(
-                wishlist__user=request.user,
-                wishlist__is_default=True
-            ).count()
+            # Recarregar wishlist com contagem
+            wishlist_data = self.get_wishlist_data(wishlist)
             
             return Response({
                 'success': True,
-                'wishlist_count': wishlist_count,
-                'message': 'Item removido dos favoritos!'
+                'message': 'Item removido da lista de desejos',
+                'wishlist': wishlist_data
             })
             
         except WishlistItem.DoesNotExist:
@@ -734,8 +662,51 @@ class WishlistAPIViewSet(viewsets.ViewSet):
                 'success': False,
                 'message': 'Item não encontrado'
             }, status=status.HTTP_404_NOT_FOUND)
+    
+    @action(detail=True, methods=['post'])
+    def share(self, request, pk=None):
+        """Compartilhar wishlist"""
+        wishlist = self.get_object()
+        share_with_emails = request.data.get('share_with', [])
+        is_public = request.data.get('is_public', False)
+        
+        wishlist.is_shared = True
+        wishlist.is_public = is_public
+        
+        if share_with_emails:
+            users = User.objects.filter(email__in=share_with_emails)
+            wishlist.shared_with.set(users)
+        
+        wishlist.save()
+        
+        return Response({
+            'success': True,
+            'message': 'Lista compartilhada com sucesso',
+            'share_url': request.build_absolute_uri(wishlist.get_share_url()),
+            'share_token': wishlist.share_token
+        })
+    
+    def get_wishlist_data(self, wishlist):
+        """Helper para dados da wishlist"""
+        items = wishlist.items.select_related('product', 'variant').all()
+        return {
+            'id': wishlist.id,
+            'name': wishlist.name,
+            'total_items': len(items),
+            'items': [{
+                'id': item.id,
+                'product': item.product.id,
+                'product_name': item.product.name,
+                'product_image': item.product.get_primary_image(),
+                'unit_price': float(item.product.price),
+                'variant_id': item.variant.id if item.variant else None,
+                'note': item.note,
+                'priority': item.priority,
+                'added_at': item.added_at.isoformat()
+            } for item in items]
+        }
 
-class NewsletterAPIViewSet(viewsets.ViewSet):
+class NewsletterViewSet(viewsets.ViewSet):
     """APIs para Newsletter"""
     
     @action(detail=False, methods=['post'])

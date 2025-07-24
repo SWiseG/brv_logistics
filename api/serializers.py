@@ -230,3 +230,43 @@ class CouponSerializer(serializers.ModelSerializer):
         if obj.usage_limit:
             return max(0, obj.usage_limit - obj.used_count)
         return None
+    
+class WishlistItemSerializer(serializers.ModelSerializer):
+    product = ProductSerializer(read_only=True)
+    product_name = serializers.CharField(source='product.name', read_only=True)
+    product_image = serializers.SerializerMethodField()
+    unit_price = serializers.DecimalField(source='product.price', max_digits=10, decimal_places=2, read_only=True)
+    
+    class Meta:
+        model = WishlistItem
+        fields = [
+            'id', 'product', 'product_name', 'product_image', 'unit_price',
+            'variant', 'note', 'priority', 'added_at'
+        ]
+    
+    def get_product_image(self, obj):
+        return obj.product.get_primary_image()
+
+
+class WishlistSerializer(serializers.ModelSerializer):
+    items = WishlistItemSerializer(many=True, read_only=True)
+    total_items = serializers.SerializerMethodField()
+    share_url = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Wishlist
+        fields = [
+            'id', 'name', 'description', 'is_default', 'is_public', 'is_shared',
+            'share_token', 'total_items', 'items', 'share_url', 'created_at'
+        ]
+        read_only_fields = ['share_token', 'created_at']
+    
+    def get_total_items(self, obj):
+        return obj.items.count()
+    
+    def get_share_url(self, obj):
+        if obj.is_shared or obj.is_public:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.get_share_url())
+        return None

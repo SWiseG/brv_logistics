@@ -1,4 +1,4 @@
-define(`/static/js/modules/login.js`, null, 
+define(`/static/js/modules/login.js`, [], 
     function Login() {
         return {
             name: `Login`,

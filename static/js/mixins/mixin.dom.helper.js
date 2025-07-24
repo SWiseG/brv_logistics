@@ -1,4 +1,4 @@
-define(`/static/js/mixins/mixin.dom.helper.js`, null, 
+define(`/static/js/mixins/mixin.dom.helper.js`, [], 
     function DomHelper() {
         return {
             name: `DomHelper`,

@@ -1,9 +1,10 @@
-define(`/static/js/modules/navbar.js`, null, 
+define(`/static/js/modules/navbar.js`, [`/static/js/mixins/data.source.js`], 
     function Navbar() {
         return {
             name: `NavBar`,
             kind: bindings.observable(`module`),
             modules: bindings.observable(null),
+            
             searchTimeout: bindings.observable(null),
             searchMinLength: bindings.observable(2),
             isSearching: bindings.observable(false),
@@ -33,11 +34,11 @@ define(`/static/js/modules/navbar.js`, null,
 
             compositionComplete: async (name, path, dependencies, callback, params) => {
                 try {
-                    await ctor.initializeComponents();
+                    await ctor.initializeNavComponents();
                     setTimeout(async () => {
                         await ctor.loadInitialData();
                     }, 100);
-                    ctor.setupEventListeners();
+                    ctor.setupEventNavListeners();
                     ctor.applySubscribers();
                     
                     return bindings.reload();
@@ -53,6 +54,7 @@ define(`/static/js/modules/navbar.js`, null,
             },
 
             applySubscribers: () => {
+                debugger
                 ctor.cartCount.subscribe((newCount) => {
                     ctor.animateCounter('cart');
                 });
@@ -70,7 +72,7 @@ define(`/static/js/modules/navbar.js`, null,
                 });
             },
 
-            initializeComponents: async () => {
+            initializeNavComponents: async () => {
                 // Inicializar busca
                 ctor.initSearch();
                 
@@ -89,12 +91,12 @@ define(`/static/js/modules/navbar.js`, null,
                     // Carregar dados iniciais em paralelo
                     await Promise.allSettled([
                         ctor.loadCart(true),
-                        ctor.loadWishlistCount()
+                        ctor.loadWishlist(true)
                     ]);
                 }
             },
 
-            setupEventListeners: () => {
+            setupEventNavListeners: () => {
                 // // Global click handler
                 // document.addEventListener('click', ctor.handleGlobalClick);
                 
@@ -107,18 +109,18 @@ define(`/static/js/modules/navbar.js`, null,
                 // // Page visibility para atualizar contadores
                 document.addEventListener('visibilitychange', () => {
                     if (!document.hidden) {
-                        ctor.refreshCounters();
+                        ctor.reloadModules();
                     }
                 });
             },
 
-            refreshCounters: async () => {
+            reloadModules: async () => {
                 if (!global.user.isAuthenticated) return;
                 
                 try {
                     await Promise.all([
                         ctor.loadCart(true),
-                        ctor.loadWishlistCount()
+                        ctor.loadWishlist(true)
                     ]);
                     
                     ctor.cartDropdownLoaded(false);
@@ -564,6 +566,12 @@ define(`/static/js/modules/navbar.js`, null,
                     html += ctor.createCartItem(item);
                 });
                 
+                html += `
+                    <div class="cart-items-list-total">
+                        <span class="cart-items-list-total-msg">${translate._translate('navbar.total')}</span>
+                        <span class="cart-items-list-total-digits">${ctor.cartTotal()}</span>
+                    </div>
+                `;
                 html += '</div>';
                 cartContent.innerHTML = html;
                 

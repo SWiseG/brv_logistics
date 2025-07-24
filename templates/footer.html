@@ -8,7 +8,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-4 mb-4">
-                <h5>Sobre Nós</h5>
+                <h6>Sobre Nós</h6>
                 <p>{{ settings.site_description }}</p>
                 <p>
                     {% if settings.facebook_url %}
@@ -34,7 +34,7 @@
                 </p>
             </div>
             <div class="col-md-4 mb-4">
-                <h5>Links Úteis</h5>
+                <h6>Links Úteis</h6>
                 <ul class="list-unstyled">
                     <li><a href="{% url 'core:home' %}">Home</a></li>
                     {% comment %} <li><a href="{% url 'products:product_list' %}">Produtos</a></li>
@@ -44,7 +44,7 @@
                 </ul>
             </div>
             <div class="col-md-4 mb-4">
-                <h5>Contato</h5>
+                <h6>Contato</h6>
                 <address>
                     {% if settings.address %}
                     <p>{{ settings.address|linebreaks }}</p>
@@ -63,7 +63,7 @@
 <subfooter class="py-5 sub-footer">
     <div class="row">
         <div class="col-md-12 text-center">
-            <p>&copy; {% now "Y" %} Equipe BRAVA: BRV Logistics. Todos os direitos reservados.</p>
+            <span>&copy; {% now "Y" %} Equipe BRAVA: BRV Logistics. Todos os direitos reservados.</span>
         </div>
     </div>
 <subfooter />

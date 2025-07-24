@@ -1,4 +1,4 @@
-define(`/static/js/modules/verify.email.js`, null, 
+define(`/static/js/modules/verify.email.js`, [], 
     function VerifyEmail() {
         return {
             name: `VerifyEmail`,

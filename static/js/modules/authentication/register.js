@@ -1,4 +1,4 @@
-define(`/static/js/modules/register.js`, null, 
+define(`/static/js/modules/register.js`, [], 
     function Register() {
         return {
             name: `Register`,

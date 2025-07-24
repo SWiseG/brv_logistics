@@ -1,4 +1,4 @@
-define(`/static/js/mixins/components.js`, null, 
+define(`/static/js/mixins/components.js`, [], 
     function Components() {
         return {
             name: `Components`,
@@ -1453,7 +1453,7 @@ define(`/static/js/mixins/components.js`, null,
                     throw new Error('createElement é obrigatório para tipos de campo');
                 }
                 
-                ctor.fieldTypes.set(type, definition);
+                ctor.fieldTypes[type] = definition;
             },
 
             applyBindings: (input, config) => {

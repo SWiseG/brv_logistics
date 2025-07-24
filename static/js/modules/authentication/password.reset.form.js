@@ -1,4 +1,4 @@
-define(`/static/js/modules/password.reset.form.js`, null, 
+define(`/static/js/modules/password.reset.form.js`, [], 
     function PasswordResetForm() {
         return {
             name: `PasswordResetForm`,

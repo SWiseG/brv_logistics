@@ -288,6 +288,151 @@
                             }
                         }
 
+                        .wishlist-container {
+                            .wishlist-total {
+                                font-size: 14px;
+                                font-weight: 600;
+                                display: flex;
+                                color: var(--primary-text) !important;
+                                align-items: center;
+                                gap: 0px;
+                            }
+
+                            .dropdown-menu {
+                                width: 400px;
+                                max-height: 400px;
+
+                                overflow-y: auto;
+                                overflow-x: hidden;
+
+                                .wishlist-empty {
+                                    .wishlist-empty-details {
+                                        padding: 24px;
+                                        text-align: center;
+                                        color: var(--white-text);
+                                    }
+                                }
+
+                                .wishlist-error {
+                                    .wishlist-error-details {
+                                        padding: 24px;
+                                        text-align: center;
+                                        color: var(--white-text);
+                                    }
+                                }
+
+                                .wishlist-loading {
+                                    padding: 24px;
+                                    text-align: center;
+                                    color: var(--white-text);
+                                }
+
+                                .wishlist-items-list {
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: 20px;
+
+                                    .wishlist-item {
+                                        display: flex;
+                                        gap: 20px;
+
+                                        .wishlist-item-image-container {
+                                            display: block;
+                                            border-radius: 8px;
+                                            border: 1px solid var(--neutral-border);
+                                            width: 60px;
+                                            height: 60px;
+
+                                            img {
+                                                width: 100%;
+                                                height: 100%;
+                                                object-fit: cover;
+                                                transition: transform 0.3s ease;
+                                                border-radius: 8px;
+                                            }
+                                        }
+                                        .wishlist-item-details {
+                                            display: flex;
+                                            flex-direction: column;
+                                            flex: 5;
+                                            .wishlist-item-name {
+                                                font-size: 0.9rem;
+                                                font-weight: 600;
+                                                color: var(--white-text);
+                                            }
+                                            .wishlist-item-price {
+                                                font-size: 0.8rem;
+                                                font-weight: 400;
+                                                color: var(--neutral-lighter);
+                                            }
+
+                                        }
+                                        .wishlist-item-currency {
+                                            display: flex;
+                                            flex-direction: column;
+                                            flex: 5;
+                                            gap: 8px;
+                                            text-align-last: right;
+
+                                            .wishlist-item-total {
+                                                font-size: 0.8rem;
+                                                font-weight: 500;
+                                                color: var(--white-text);
+                                            }
+                                            .wishlist-item-actions {
+                                                display: flex;
+                                                justify-content: right;
+                                                gap: 10px;
+                                                font-size: 14px;
+
+                                                .quantity-controls {
+                                                    height: 25px;
+                                                    align-items: center;
+                                                    gap: 4px;
+                                                    
+                                                    button {
+                                                        padding: 4px;
+                                                        font-size: 12px;
+                                                    }
+
+                                                    .quantity-display {
+                                                        cursor: default;
+                                                        border: 1px solid var(--neutral-border);
+                                                        padding: 4px;
+                                                        border-radius: 8px;
+                                                        padding-inline: 8px;
+                                                        height: 25px;
+                                                        color: var(--white-text);
+                                                        padding-block: 0;
+                                                    }
+
+                                                    .quantity-edit-inplace {
+                                                        width: 36px !important;
+                                                    }
+                                                }
+
+                                                .btn-remove {
+                                                    padding: 4px;
+                                                    font-size: 12px;
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    .wishlist-items-list-total {
+                                        height: 25px;
+                                        display: flex;
+                                        font-size: 0.9rem;
+                                        font-weight: 600;
+                                        
+                                        .wishlist-items-list-total-digits {
+                                            margin-left: auto;
+                                        }                                       
+                                    }
+                                }
+                            }
+                        }
+
                         .cart-container {
                             .cart-total {
                                 font-size: 14px;
@@ -375,9 +520,9 @@
                                             text-align-last: right;
 
                                             .cart-item-total {
-                                                font-size: 1rem;
-                                                color: var(--fb-success);
-                                                font-weight: 600;
+                                                font-size: 0.8rem;
+                                                font-weight: 500;
+                                                color: var(--white-text);
                                             }
                                             .cart-item-actions {
                                                 display: flex;
@@ -386,6 +531,10 @@
                                                 font-size: 14px;
 
                                                 .quantity-controls {
+                                                    gap: 4px;
+                                                    height: 20px;
+                                                    display: flex;
+                                                    
                                                     button {
                                                         padding: 4px;
                                                         font-size: 12px;
@@ -398,6 +547,8 @@
                                                         border-radius: 8px;
                                                         padding-inline: 8px;
                                                         color: var(--white-text);
+                                                        padding-block: 0;
+                                                        align-self: anchor-center;
                                                     }
 
                                                     .quantity-edit-inplace {
@@ -411,6 +562,17 @@
                                                 }
                                             }
                                         }
+                                    }
+
+                                    .cart-items-list-total {
+                                        height: 25px;
+                                        display: flex;
+                                        font-size: 0.9rem;
+                                        font-weight: 600;
+                                        
+                                        .cart-items-list-total-digits {
+                                            margin-left: auto;
+                                        }                                       
                                     }
                                 }
                             }

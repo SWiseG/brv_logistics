@@ -4,11 +4,11 @@ function Utils() {
         // Formatar preço
         formatPrice: function(price, currency = 'BRL', locale = global?.currentLang || 'pt-BR') {
             if (typeof price !== 'number' || isNaN(price)) {
-                if(window['logger']) logger.log('Invalid price:', price, 'warn');
-                if(window['logger']) logger.log('Trying to parse price', 'warn');
+                // if(window['logger']) logger.log('Invalid price:', price, 'warn');
+                // if(window['logger']) logger.log('Trying to parse price', 'warn');
                 price = parseFloat(price);
                 if (typeof price !== 'number' || isNaN(price)) return 'R$ 0,00';
-                if(window['logger']) logger.log('Price parsed successfuly', 'success');
+                // if(window['logger']) logger.log('Price parsed successfuly', 'success');
             }
 
             try {

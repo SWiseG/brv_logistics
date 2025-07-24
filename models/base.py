@@ -6,15 +6,15 @@ from .managers import SoftDeleteManager
 
 class TimestampMixin(models.Model):
     """Mixin para timestamps automáticos"""
-    created_at = models.DateTimeField('Criado em', default=timezone.now)
-    updated_at = models.DateTimeField('Atualizado em', auto_now=True)
+    created_at = models.DateTimeField('Criado em', default=timezone.now, editable=False)
+    updated_at = models.DateTimeField('Atualizado em', auto_now=True, editable=False)
     
     class Meta:
         abstract = True
 
 class UUIDMixin(models.Model):
     """Mixin para UUID público"""
-    uuid = models.UUIDField('UUID Público', default=uuid.uuid4, unique=True)
+    uuid = models.UUIDField('UUID Público', default=uuid.uuid4, unique=True, editable=False)
     
     class Meta:
         abstract = True
@@ -26,11 +26,11 @@ class SoftDeleteManager(models.Manager):
 
 class SoftDeleteMixin(models.Model):
     """Mixin para soft delete"""
-    is_deleted = models.BooleanField('Deletado', default=False)
-    deleted_at = models.DateTimeField('Deletado em', null=True, blank=True)
+    is_deleted = models.BooleanField('Deletado', default=False, editable=False)
+    deleted_at = models.DateTimeField('Deletado em', null=True, blank=True, editable=False)
     deleted_by = models.ForeignKey(
         'users.User', on_delete=models.SET_NULL, 
-        null=True, blank=True, related_name='deleted_%(class)s'
+        null=True, blank=True, related_name='deleted_%(class)s', editable=False
     )
     
     objects = SoftDeleteManager()

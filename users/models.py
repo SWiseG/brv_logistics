@@ -324,3 +324,70 @@ class UserLoginAttempt(models.Model):
     def __str__(self):
         status = "Sucesso" if self.success else "Falha"
         return f"{self.email} - {status} - {self.attempted_at}"
+    
+class Wishlist(BaseModel):
+    """Lista de desejos do usuário (privada ou compartilhada)"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wishlists', verbose_name='Usuário')
+    name = models.CharField(max_length=100, default='Minha Lista de Desejos', verbose_name='Nome da Lista')
+    description = models.TextField(blank=True, verbose_name='Descrição')
+    is_default = models.BooleanField(default=True, verbose_name='Lista Padrão')
+    is_public = models.BooleanField(default=False, verbose_name='Lista Pública')
+    is_shared = models.BooleanField(default=False, verbose_name='Lista Compartilhada')
+    share_token = models.CharField(max_length=32, unique=True, blank=True, verbose_name='Token de Compartilhamento')
+    shared_with = models.ManyToManyField(User, related_name='shared_wishlists', blank=True, verbose_name='Compartilhada com')
+    
+    class Meta:
+        verbose_name = 'Lista de Desejos'
+        verbose_name_plural = 'Listas de Desejos'
+        unique_together = ['user', 'name']
+        indexes = [
+            models.Index(fields=['user', 'is_default']),
+            models.Index(fields=['share_token']),
+            models.Index(fields=['is_public']),
+        ]
+    
+    def save(self, *args, **kwargs):
+        # Gerar token de compartilhamento se necessário
+        if not self.share_token:
+            import secrets
+            self.share_token = secrets.token_urlsafe(16)
+        
+        # Garantir apenas uma lista padrão por usuário
+        if self.is_default:
+            Wishlist.objects.filter(user=self.user, is_default=True).update(is_default=False)
+        
+        super().save(*args, **kwargs)
+    
+    def get_share_url(self):
+        from django.urls import reverse
+        return reverse('users:wishlist_shared', kwargs={'token': self.share_token})
+    
+    def __str__(self):
+        return f"{self.user.get_full_name()} - {self.name}"
+
+class WishlistItem(BaseModel):
+    """Itens da lista de desejos"""
+    wishlist = models.ForeignKey(Wishlist, on_delete=models.CASCADE, related_name='items', verbose_name='Lista')
+    product = models.ForeignKey('products.Product', on_delete=models.CASCADE, verbose_name='Produto')
+    variant = models.ForeignKey('products.ProductVariant', on_delete=models.CASCADE, null=True, blank=True, verbose_name='Variante')
+    added_at = models.DateTimeField(auto_now_add=True, verbose_name='Adicionado em')
+    note = models.TextField(blank=True, verbose_name='Observação')
+    priority = models.IntegerField(default=1, choices=[
+        (1, 'Baixa'),
+        (2, 'Média'), 
+        (3, 'Alta'),
+        (4, 'Urgente')
+    ], verbose_name='Prioridade')
+    
+    class Meta:
+        verbose_name = 'Item da Lista de Desejos'
+        verbose_name_plural = 'Itens das Listas de Desejos'
+        unique_together = ['wishlist', 'product', 'variant']
+        ordering = ['-priority', '-added_at']
+        indexes = [
+            models.Index(fields=['wishlist', 'added_at']),
+            models.Index(fields=['product']),
+        ]
+    
+    def __str__(self):
+        return f"{self.wishlist.name} - {self.product.name}"

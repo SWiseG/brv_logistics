@@ -1,4 +1,4 @@
-define(`/static/js/modules/verify.reset.code.js`, `/static/js/mixins/mixin.dom.helper.js`, 
+define(`/static/js/modules/verify.reset.code.js`, [`/static/js/mixins/mixin.dom.helper.js`], 
     function VerifyResetCode() {
         return {
             name: `VerifyResetCode`,

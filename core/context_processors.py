@@ -79,7 +79,7 @@ def navbar_context(request):
         )['total_items'] or 0
         
         # Contador da wishlist
-        from marketing.models import WishlistItem
+        from users.models import WishlistItem
         wishlist_count = WishlistItem.objects.filter(
             wishlist__user=request.user,
             wishlist__is_default=True

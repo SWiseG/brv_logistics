@@ -48,3 +48,11 @@ class UserPreferencesAdmin(admin.ModelAdmin):
             'fields': ('user', 'type', 'value',),
         }),
     )
+
+@admin.register(Wishlist)
+class WishlistAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(WishlistItem)
+class WishlistItemAdmin(admin.ModelAdmin):
+    pass

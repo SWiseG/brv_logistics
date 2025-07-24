@@ -1,13 +1,20 @@
 /* Footer */
 
 .top-footer {
+    transition: background-color 0.3s ease;
     border-top: 1px solid var(--primary-border);
     cursor: pointer;
     margin-top: 1rem;
     display: flex;
-    background-color: var(--primary-darkest);
+    background-color: var(--primary);
     color: var(--primary-text);
     padding: 1rem !important;
+    max-width: calc(100% + 12px);
+    box-sizing: border-box;
+
+    &:hover {
+        background-color: var(--primary-darker);
+    }
 }
 .footer {
     background-color: var(--primary-darker);
@@ -31,5 +38,18 @@
     display: flex;
     background-color: var(--primary-darkest);
     color: var(--primary-text);
-    padding: 2rem !important;
+    padding: 1.5rem !important;
+    font-size: 1rem;
+    font-weight: 400;
+    place-content: center;
+
+    .row {
+        .col-md-12 {
+            span {
+                font-weight: 400;
+                font-size: 0.8rem;
+            }
+        }
+    }
+
 }

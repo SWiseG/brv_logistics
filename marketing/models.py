@@ -73,45 +73,6 @@ class Coupon(BaseModel):
     
     def __str__(self):
         return self.code
-    
-    
-class Wishlist(BaseModel):
-    """Lista de desejos"""
-    user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='wishlists', verbose_name='Usuário')
-    name = models.CharField(max_length=200, default='Minha Lista de Desejos', verbose_name='Nome')
-    is_public = models.BooleanField(default=False, verbose_name='Pública')
-    is_default = models.BooleanField(default=True, verbose_name='Padrão')
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Criado em')
-    updated_at = models.DateTimeField(auto_now=True, verbose_name='Atualizado em')
-
-    class Meta:
-        verbose_name = 'Lista de Desejos'
-        verbose_name_plural = 'Listas de Desejos'
-        ordering = ['-is_default', '-updated_at']
-
-    def __str__(self):
-        return f"{self.name} - {self.user.get_full_name() or self.user.username}"
-
-    @property
-    def total_items(self):
-        return self.items.count()
-
-class WishlistItem(BaseModel):
-    """Itens da wishlist"""
-    wishlist = models.ForeignKey(Wishlist, on_delete=models.CASCADE, related_name='items', verbose_name='Lista de Desejos')
-    product = models.ForeignKey('products.Product', on_delete=models.CASCADE, verbose_name='Produto')
-    variant = models.ForeignKey('products.ProductVariant', on_delete=models.CASCADE, null=True, blank=True, verbose_name='Variante')
-    added_at = models.DateTimeField(auto_now_add=True, verbose_name='Adicionado em')
-
-    class Meta:
-        verbose_name = 'Item da Lista de Desejos'
-        verbose_name_plural = 'Itens da Lista de Desejos'
-        unique_together = ['wishlist', 'product', 'variant']
-        ordering = ['-added_at']
-
-    def __str__(self):
-        product_name = self.variant.product.name if self.variant else self.product.name
-        return f"{product_name} - {self.wishlist.name}"
 
 class RecentlyViewedProduct(BaseModel):
     """Produtos visitados recentemente"""
