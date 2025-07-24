@@ -137,11 +137,8 @@ function Global() {
                 
                 // Hook global no ctor final
                 if (window.ctor && typeof window.ctor.allModulesLoaded === 'function') {
-                    if(window['logger']) logger.log('Executing global allModulesLoaded on final ctor', 'info');
                     await window.ctor.allModulesLoaded(modules);
                 }
-                
-                if(window['logger']) logger.log('All post-load hooks executed successfully', 'success');
                 
             } catch (error) {
                 if(window['logger']) logger.log('Error in global post-load hooks:', error, 'error');

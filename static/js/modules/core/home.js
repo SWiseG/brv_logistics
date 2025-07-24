@@ -31,7 +31,6 @@ define(`/static/js/modules/core/home.js`, ['/static/js/mixins/components.js', `/
             // Main composition
             compositionComplete: async (name, path, dependencies, callback, params) => {
                 try {
-                    debugger
                     // Initialize components
                     await ctor.initializeHomeComponents();
                     

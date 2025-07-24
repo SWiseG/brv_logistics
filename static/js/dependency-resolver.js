@@ -74,7 +74,7 @@ function DependencyResolver() {
                 const finalCtor = this._applyFinalMerge(baseCtor, moduleInstance);
                 
                 // 7. Bind métodos
-                this._bindCtorMethods(finalCtor);
+                // this._bindCtorMethods(finalCtor);
                 
                 // 8. Executar lifecycle hooks
                 await this._executeLifecycleHooks(finalCtor, modulePath, moduleInfo.dependencies);
@@ -100,7 +100,6 @@ function DependencyResolver() {
             }
         },
         
-        // ✅ NOVA VERSÃO: Resolver dependências SEQUENCIALMENTE
         async _resolveDependenciesSequentially(dependencies, parentPath) {
             if (!dependencies || dependencies.length === 0) {
                 return [];
@@ -284,50 +283,62 @@ function DependencyResolver() {
             ];
             return skipKeys.includes(key);
         },
+
+        _getFunctionLocation(fn) {
+            try { fn(); }
+            catch (e) {
+                const stack = e.stack.split('\n');
+                for (const line of stack) {
+                    if (line.includes(fn.name)) return line.trim();
+                }
+            }
+            return null;
+        },
         
         _getMergeStrategy(key, existingValue, newValue) {
             // Detectar observables do bindings
             if (typeof newValue === 'function') {
-                // Verificar se é observable
-                if (newValue.name && newValue.name.includes('observable')) {
-                    return this.mergeStrategies.observable;
-                }
-                
                 // Verificar se é observableArray 
                 if (newValue.toString().includes('observableArray') || 
-                    (newValue.push && typeof newValue.push === 'function')) {
+                    (newValue.push && typeof newValue.push === 'function' && newValue.name.includes('obs'))) {
                     return this.mergeStrategies.observableArray;
+                }
+
+                // Verificar se é observable
+                if (newValue.name && newValue.name.includes('observable') && newValue.name.includes('obs')) {
+                    return this.mergeStrategies.observable;
                 }
                 
                 return this.mergeStrategies.function;
             }
             
-            if (typeof newValue === 'object' && newValue !== null && !Array.isArray(newValue)) {
+            if (typeof newValue === 'object' && newValue !== null && !Array.isArray(newValue) && !newValue.set) {
                 return this.mergeStrategies.object;
             }
             
             return this.mergeStrategies.default;
         },
         
-        _bindCtorMethods(ctor) {
-            // Bind todas as funções para usar ctor como contexto
-            Object.keys(ctor).forEach(key => {
-                if (typeof ctor[key] === 'function') {
-                    // Preservar função original mas fazer bind
-                    const originalFunction = ctor[key];
+        // _bindCtorMethods(ctor) {
+        //     // Bind todas as funções para usar ctor como contexto
+        //     Object.keys(ctor).forEach(key => {
+        //         if (typeof ctor[key] === 'function') {
+        //             // Preservar função original mas fazer bind
+        //             const originalFunction = ctor[key];
                     
-                    // Verificar se não é observable ou constructor
-                    if (!originalFunction.name.includes('observable') && 
-                        key !== 'constructor' &&
-                        !key.startsWith('_')) {
+        //             // Verificar se não é observable ou constructor
+        //             if (!originalFunction.name.includes('observable') && 
+        //                 !originalFunction.name.includes('obs') &&
+        //                 key !== 'constructor' &&
+        //                 !key.startsWith('_')) {
                         
-                        ctor[key] = function(...args) {
-                            return originalFunction.apply(ctor, args);
-                        };
-                    }
-                }
-            });
-        },
+        //                 ctor[key] = async function(...args) {
+        //                     return await originalFunction.apply(ctor, args);
+        //                 };
+        //             }
+        //         }
+        //     });
+        // },
         
         async _executeLifecycleHooks(ctor, modulePath, dependencies) {
             try {
@@ -414,7 +425,8 @@ function DependencyResolver() {
             if(window['logger']) logger.log('ctor observables:', Object.keys(window.ctor || {}).filter(k => 
                 typeof window.ctor[k] === 'function' && 
                 window.ctor[k].name && 
-                window.ctor[k].name.includes('observable')
+                window.ctor[k].name.includes('observable') &&
+                window.ctor[k].name.includes('obs')
             ));
             console.groupEnd();
         }

@@ -35,9 +35,7 @@ define(`/static/js/modules/navbar.js`, [`/static/js/mixins/data.source.js`],
             compositionComplete: async (name, path, dependencies, callback, params) => {
                 try {
                     await ctor.initializeNavComponents();
-                    setTimeout(async () => {
-                        await ctor.loadInitialData();
-                    }, 100);
+                    await ctor.loadInitialData();
                     ctor.setupEventNavListeners();
                     ctor.applySubscribers();
                     
@@ -54,7 +52,6 @@ define(`/static/js/modules/navbar.js`, [`/static/js/mixins/data.source.js`],
             },
 
             applySubscribers: () => {
-                debugger
                 ctor.cartCount.subscribe((newCount) => {
                     ctor.animateCounter('cart');
                 });

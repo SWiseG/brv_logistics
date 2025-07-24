@@ -1452,8 +1452,8 @@ define(`/static/js/mixins/components.js`, [],
                 if (!definition.createElement || typeof definition.createElement !== 'function') {
                     throw new Error('createElement é obrigatório para tipos de campo');
                 }
-                
-                ctor.fieldTypes[type] = definition;
+
+                ctor.fieldTypes.set(type, definition);
             },
 
             applyBindings: (input, config) => {
